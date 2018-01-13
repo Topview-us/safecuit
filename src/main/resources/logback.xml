@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+    <!-- 文件输出格式 -->
+    <property name="PATTERN" value="%-12(%d{yyyy-MM-dd HH:mm:ss.SSS}) |-%-5level [%thread] %c [%L] -| %msg%n" />
+    <!-- log文件路径 -->
+    <!--<property name="LOG_PATH" value="D://log" />-->
+
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>${PATTERN}</pattern>
+        </encoder>
+    </appender>
+<!--
+    日志输出文件设置，每天产生一个文件，保存30天的日志文件
+    <appender name="OUTPUT-FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        &lt;!&ndash; 文件路径 &ndash;&gt;
+        &lt;!&ndash;<file>${LOG_PATH}</file>&ndash;&gt;
+        &lt;!&ndash; 每天产生一个文件 &ndash;&gt;
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            &lt;!&ndash; 文件名称,如果没有设置<file>指定输出路径的话，就以该标签为准 &ndash;&gt;
+            <fileNamePattern>${LOG_PATH}/%d{yyyy-MM-dd}.log</fileNamePattern>
+            &lt;!&ndash; 控制保留的归档文件的最大数量，超出数量就删除旧文件 &ndash;&gt;
+            <MaxHistory>30</MaxHistory>
+        </rollingPolicy>
+        &lt;!&ndash;输出格式&ndash;&gt;
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>${PATTERN}</pattern>
+        </encoder>
+    </appender>-->
+
+    <root level="INFO">
+        <appender-ref ref="CONSOLE" />
+        <!--<appender-ref ref="OUTPUT-FILE" />-->
+    </root>
+
+</configuration>

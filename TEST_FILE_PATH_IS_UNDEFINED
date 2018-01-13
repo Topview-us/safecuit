@@ -1,0 +1,30 @@
+2018-01-12 10:55:32.954 |-INFO  [main] com.gdut.safecuit.SafecuitApplication [48] -| Starting SafecuitApplication on DESKTOP-DCG1DU5 with PID 23804 (D:\java\WorkSpace\topview\safecuit-website\target\classes started by wxs in D:\java\WorkSpace\topview\safecuit-website)
+2018-01-12 10:55:32.954 |-INFO  [main] com.gdut.safecuit.SafecuitApplication [593] -| No active profile set, falling back to default profiles: default
+2018-01-12 10:55:33.274 |-INFO  [main] org.springframework.boot.context.embedded.AnnotationConfigEmbeddedWebApplicationContext [583] -| Refreshing org.springframework.boot.context.embedded.AnnotationConfigEmbeddedWebApplicationContext@1e06fbc6: startup date [Fri Jan 12 10:55:33 CST 2018]; root of context hierarchy
+2018-01-12 10:55:33.514 |-INFO  [background-preinit] org.hibernate.validator.internal.util.Version [30] -| HV000001: Hibernate Validator 5.3.6.Final
+2018-01-12 10:55:35.599 |-INFO  [main] org.springframework.boot.context.embedded.tomcat.TomcatEmbeddedServletContainer [89] -| Tomcat initialized with port(s): 8080 (http)
+2018-01-12 10:55:35.629 |-INFO  [main] org.apache.catalina.core.StandardService [179] -| Starting service [Tomcat]
+2018-01-12 10:55:35.629 |-INFO  [main] org.apache.catalina.core.StandardEngine [179] -| Starting Servlet Engine: Apache Tomcat/8.5.23
+2018-01-12 10:55:35.769 |-INFO  [localhost-startStop-1] org.apache.catalina.core.ContainerBase.[Tomcat].[localhost].[/] [179] -| Initializing Spring embedded WebApplicationContext
+2018-01-12 10:55:35.769 |-INFO  [localhost-startStop-1] org.springframework.web.context.ContextLoader [276] -| Root WebApplicationContext: initialization completed in 2495 ms
+2018-01-12 10:55:35.979 |-INFO  [localhost-startStop-1] org.springframework.boot.web.servlet.ServletRegistrationBean [190] -| Mapping servlet: 'dispatcherServlet' to [/]
+2018-01-12 10:55:35.989 |-INFO  [localhost-startStop-1] org.springframework.boot.web.servlet.FilterRegistrationBean [258] -| Mapping filter: 'characterEncodingFilter' to: [/*]
+2018-01-12 10:55:35.989 |-INFO  [localhost-startStop-1] org.springframework.boot.web.servlet.FilterRegistrationBean [258] -| Mapping filter: 'hiddenHttpMethodFilter' to: [/*]
+2018-01-12 10:55:35.989 |-INFO  [localhost-startStop-1] org.springframework.boot.web.servlet.FilterRegistrationBean [258] -| Mapping filter: 'httpPutFormContentFilter' to: [/*]
+2018-01-12 10:55:35.989 |-INFO  [localhost-startStop-1] org.springframework.boot.web.servlet.FilterRegistrationBean [258] -| Mapping filter: 'requestContextFilter' to: [/*]
+2018-01-12 10:55:38.457 |-INFO  [main] org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter [534] -| Looking for @ControllerAdvice: org.springframework.boot.context.embedded.AnnotationConfigEmbeddedWebApplicationContext@1e06fbc6: startup date [Fri Jan 12 10:55:33 CST 2018]; root of context hierarchy
+2018-01-12 10:55:38.547 |-INFO  [main] org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping [543] -| Mapped "{[/name2]}" onto public java.lang.String com.gdut.safecuit.device.web.controller.UserCon.get()
+2018-01-12 10:55:38.547 |-INFO  [main] org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping [543] -| Mapped "{[/name]}" onto public java.lang.String com.gdut.safecuit.device.web.controller.UserCon.getName()
+2018-01-12 10:55:38.557 |-INFO  [main] org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping [543] -| Mapped "{[/error]}" onto public org.springframework.http.ResponseEntity<java.util.Map<java.lang.String, java.lang.Object>> org.springframework.boot.autoconfigure.web.BasicErrorController.error(javax.servlet.http.HttpServletRequest)
+2018-01-12 10:55:38.557 |-INFO  [main] org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping [543] -| Mapped "{[/error],produces=[text/html]}" onto public org.springframework.web.servlet.ModelAndView org.springframework.boot.autoconfigure.web.BasicErrorController.errorHtml(javax.servlet.http.HttpServletRequest,javax.servlet.http.HttpServletResponse)
+2018-01-12 10:55:38.607 |-INFO  [main] org.springframework.web.servlet.handler.SimpleUrlHandlerMapping [362] -| Mapped URL path [/webjars/**] onto handler of type [class org.springframework.web.servlet.resource.ResourceHttpRequestHandler]
+2018-01-12 10:55:38.607 |-INFO  [main] org.springframework.web.servlet.handler.SimpleUrlHandlerMapping [362] -| Mapped URL path [/**] onto handler of type [class org.springframework.web.servlet.resource.ResourceHttpRequestHandler]
+2018-01-12 10:55:38.667 |-INFO  [main] org.springframework.web.servlet.handler.SimpleUrlHandlerMapping [362] -| Mapped URL path [/**/favicon.ico] onto handler of type [class org.springframework.web.servlet.resource.ResourceHttpRequestHandler]
+2018-01-12 10:55:39.367 |-INFO  [main] org.springframework.jmx.export.annotation.AnnotationMBeanExporter [431] -| Registering beans for JMX exposure on startup
+2018-01-12 10:55:39.367 |-INFO  [main] org.springframework.jmx.export.annotation.AnnotationMBeanExporter [916] -| Bean with name 'dataSource' has been autodetected for JMX exposure
+2018-01-12 10:55:39.377 |-INFO  [main] org.springframework.jmx.export.annotation.AnnotationMBeanExporter [671] -| Located MBean 'dataSource': registering with JMX server as MBean [com.alibaba.druid.pool:name=dataSource,type=DruidDataSource]
+2018-01-12 10:55:39.467 |-INFO  [main] org.apache.coyote.http11.Http11NioProtocol [179] -| Initializing ProtocolHandler ["http-nio-8080"]
+2018-01-12 10:55:39.497 |-INFO  [main] org.apache.coyote.http11.Http11NioProtocol [179] -| Starting ProtocolHandler ["http-nio-8080"]
+2018-01-12 10:55:39.517 |-INFO  [main] org.apache.tomcat.util.net.NioSelectorPool [179] -| Using a shared selector for servlet write/read
+2018-01-12 10:55:39.547 |-INFO  [main] org.springframework.boot.context.embedded.tomcat.TomcatEmbeddedServletContainer [201] -| Tomcat started on port(s): 8080 (http)
+2018-01-12 10:55:39.587 |-INFO  [main] com.gdut.safecuit.SafecuitApplication [57] -| Started SafecuitApplication in 7.323 seconds (JVM running for 10.473)
