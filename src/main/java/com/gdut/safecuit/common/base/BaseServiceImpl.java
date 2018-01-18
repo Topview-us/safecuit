@@ -12,7 +12,6 @@ public abstract class BaseServiceImpl<T> implements BaseService<T> {
 
 	@Override
 	public int insert(T t) {
-
 		return getDao().insert(t);
 	}
 
