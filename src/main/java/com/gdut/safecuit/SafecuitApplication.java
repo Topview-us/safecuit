@@ -9,7 +9,7 @@ import org.springframework.boot.web.servlet.ServletComponentScan;
 
 @SpringBootApplication
 @MapperScan("com.gdut.safecuit") //扫描mapper
-@EnableConfigurationProperties({DruidDBConfig.class}) //配置类
+@EnableConfigurationProperties({DruidDBConfig.class})
 @ServletComponentScan //扫描filter
 public class SafecuitApplication {
 

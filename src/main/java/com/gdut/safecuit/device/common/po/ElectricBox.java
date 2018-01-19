@@ -1,4 +1,4 @@
-package com.gdut.safecuit.device.po;
+package com.gdut.safecuit.device.common.po;
 
 /**
  * Created by Garson in 9:53 2018/1/18
@@ -10,8 +10,9 @@ public class ElectricBox {
 	private String name;
 	private String address;
 	private int orgId;//机构id
-	private float longitube;//经度
+	private float longitude;//经度
 	private float latitude;//纬度
+	private int delTag;
 
 	public int getId() {
 		return id;
@@ -45,12 +46,12 @@ public class ElectricBox {
 		this.orgId = orgId;
 	}
 
-	public float getLongitube() {
-		return longitube;
+	public float getLongitude() {
+		return longitude;
 	}
 
-	public void setLongitube(float longitube) {
-		this.longitube = longitube;
+	public void setLongitude(float longitude) {
+		this.longitude = longitude;
 	}
 
 	public float getLatitude() {
@@ -60,4 +61,14 @@ public class ElectricBox {
 	public void setLatitude(float latitude) {
 		this.latitude = latitude;
 	}
+
+	public int getDelTag() {
+		return delTag;
+	}
+
+	public void setDelTag(int delTag) {
+		this.delTag = delTag;
+	}
+
+
 }

@@ -1,4 +1,4 @@
-package com.gdut.safecuit.device.po;
+package com.gdut.safecuit.device.common.po;
 
 /**
  * Created by Garson in 9:50 2018/1/18

@@ -1,12 +1,12 @@
 package com.gdut.safecuit.device.dao;
 
 import com.gdut.safecuit.common.base.BaseDao;
-import com.gdut.safecuit.device.po.Area;
-import com.gdut.safecuit.device.po.City;
+import com.gdut.safecuit.device.common.po.Area;
 import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Garson in 21:04 2018/1/18
@@ -28,14 +28,14 @@ public interface AreaMapper extends BaseDao<Area> {
 			@Result(property = "cityId" ,column = "city_id")
 	})
 	@SelectProvider(type = AreaMapperProvider.class ,method = "select")
-	List<Area> select(int cityId);
+	List<Area> select(@Param("cityId") int cityId);
 
 	//基于注解的动态sql内部类，使用@SelectProvider、@InsertProvider、@UpdateProvider、@DeleteProvider等注解
 	class AreaMapperProvider{
-		public String select(int cityId){
+		public String select(Map<String ,Integer> map){
 			String sql = "select * from area";
-			if(cityId != 0)
-				sql += "where city_id = #{cityId}";
+			if(map.get("cityId") != 0)
+				sql += " where city_id = "+map.get("cityId");
 			return sql;
 		}
 	}

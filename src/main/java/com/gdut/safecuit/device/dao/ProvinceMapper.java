@@ -1,7 +1,7 @@
 package com.gdut.safecuit.device.dao;
 
 import com.gdut.safecuit.common.base.BaseDao;
-import com.gdut.safecuit.device.po.Province;
+import com.gdut.safecuit.device.common.po.Province;
 import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Repository;
 

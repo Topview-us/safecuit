@@ -3,7 +3,7 @@ package com.gdut.safecuit.device.service;
 import com.gdut.safecuit.common.base.BaseDao;
 import com.gdut.safecuit.common.base.BaseServiceImpl;
 import com.gdut.safecuit.device.dao.CityMapper;
-import com.gdut.safecuit.device.po.City;
+import com.gdut.safecuit.device.common.po.City;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
