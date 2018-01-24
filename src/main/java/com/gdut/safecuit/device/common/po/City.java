@@ -5,15 +5,15 @@ package com.gdut.safecuit.device.common.po;
  * Description : 城市po表
  */
 public class City {
-	private Long id;			//主键
+	private Integer id;			//主键
 	private String name;		//城市
-	private int provinceId;		//省份id
+	private Integer provinceId;		//省份id
 
-	public Long getId() {
+	public Integer getId() {
 		return id;
 	}
 
-	public void setId(Long id) {
+	public void setId(Integer id) {
 		this.id = id;
 	}
 
@@ -25,11 +25,11 @@ public class City {
 		this.name = name;
 	}
 
-	public int getProvinceId() {
+	public Integer getProvinceId() {
 		return provinceId;
 	}
 
-	public void setProvinceId(int provinceId) {
+	public void setProvinceId(Integer provinceId) {
 		this.provinceId = provinceId;
 	}
 }

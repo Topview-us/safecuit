@@ -1,5 +1,9 @@
 package com.gdut.safecuit.common.util;
 
+import sun.misc.BASE64Decoder;
+import sun.misc.BASE64Encoder;
+
+import java.io.IOException;
 import java.util.UUID;
 
 /**
@@ -23,6 +27,18 @@ public class StringUtil {
 	//获取UUID字符串
 	public static String getUUID(){
 		return UUID.randomUUID().toString().replaceAll("-","");
+	}
+
+	public static String encoderByBase64(byte[] data){
+		if (data == null)
+			return null;
+		return new BASE64Encoder().encode(data);
+	}
+
+	public static byte[] deCodeByBase64(String str) throws IOException {
+		if (str == null)
+			return null;
+		return new BASE64Decoder().decodeBuffer(str);
 	}
 
 }

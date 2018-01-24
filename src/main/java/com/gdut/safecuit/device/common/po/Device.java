@@ -1,95 +1,98 @@
 package com.gdut.safecuit.device.common.po;
 
-/**
- * Created by Garson in 9:44 2018/1/18
- * Description : 设备po表
- */
 public class Device {
+    private String id;
 
-	private String id;
-	private String code;//设备序号
-	private String name;//设备名称
-	private int electricBoxId;//电箱外键
-	private int typeId;//类型id
-	private int delTag;//假删除标识
+    private String code;
 
-	public String getId() {
-		return id;
-	}
+    private String name;
 
-	public void setId(String id) {
-		this.id = id;
-	}
+    private String temperatureValue;
 
-	public String getCode() {
-		return code;
-	}
+    private String electricBoxId;
 
-	public void setCode(String code) {
-		this.code = code;
-	}
+    private Integer isOnline;
 
-	public String getName() {
-		return name;
-	}
+    private Integer typeId;
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    private Integer delTag;
 
-	public int getElectricBoxId() {
-		return electricBoxId;
-	}
+    public String getId() {
+        return id;
+    }
 
-	public void setElectricBoxId(int electricBoxId) {
-		this.electricBoxId = electricBoxId;
-	}
+    public void setId(String id) {
+        this.id = id == null ? null : id.trim();
+    }
 
-	public int getTypeId() {
-		return typeId;
-	}
+    public String getCode() {
+        return code;
+    }
 
-	public void setTypeId(int typeId) {
-		this.typeId = typeId;
-	}
+    public void setCode(String code) {
+        this.code = code == null ? null : code.trim();
+    }
 
-	public int getDelTag() {
-		return delTag;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public void setDelTag(int delTag) {
-		this.delTag = delTag;
-	}
+    public void setName(String name) {
+        this.name = name == null ? null : name.trim();
+    }
 
-	public Device() {
-	}
+    public String getTemperatureValue() {
+        return temperatureValue;
+    }
 
-	public Device(String code, String name, int electricBoxId, int typeId, int delTag) {
-		this.code = code;
-		this.name = name;
-		this.electricBoxId = electricBoxId;
-		this.typeId = typeId;
-		this.delTag = delTag;
-	}
+    public void setTemperatureValue(String temperatureValue) {
+        this.temperatureValue = temperatureValue == null ? null : temperatureValue.trim();
+    }
 
-	public Device(String id, String code, String name, int electricBoxId, int typeId, int delTag) {
-		this.id = id;
-		this.code = code;
-		this.name = name;
-		this.electricBoxId = electricBoxId;
-		this.typeId = typeId;
-		this.delTag = delTag;
-	}
+    public String getElectricBoxId() {
+        return electricBoxId;
+    }
 
-	@Override
-	public String toString() {
-		return "Device{" +
-				"id=" + id +
-				", code='" + code + '\'' +
-				", name='" + name + '\'' +
-				", electricBoxId=" + electricBoxId +
-				", typeId=" + typeId +
-				", delTag=" + delTag +
-				'}';
-	}
+    public void setElectricBoxId(String electricBoxId) {
+        this.electricBoxId = electricBoxId == null ? null : electricBoxId.trim();
+    }
+
+    public Integer getIsOnline() {
+        return isOnline;
+    }
+
+    public void setIsOnline(Integer isOnline) {
+        this.isOnline = isOnline;
+    }
+
+    public Integer getTypeId() {
+        return typeId;
+    }
+
+    public void setTypeId(Integer typeId) {
+        this.typeId = typeId;
+    }
+
+    public Integer getDelTag() {
+        return delTag;
+    }
+
+    public void setDelTag(Integer delTag) {
+        this.delTag = delTag;
+    }
+
+    public Device(String id, String code, String name, String temperatureValue,
+                  String electricBoxId, Integer isOnline, Integer typeId, Integer delTag) {
+        this.id = id;
+        this.code = code;
+        this.name = name;
+        this.temperatureValue = temperatureValue;
+        this.electricBoxId = electricBoxId;
+        this.isOnline = isOnline;
+        this.typeId = typeId;
+        this.delTag = delTag;
+    }
+
+    public Device() {
+    }
 }

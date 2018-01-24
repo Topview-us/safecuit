@@ -15,15 +15,6 @@ import java.util.Map;
 @Repository
 public interface CityMapper extends BaseDao<City> {
 
-	@Insert("insert into city(id ,name ,province_id) values(#{id} ,#{name} ,#{provinceId})")
-	int insert(City city);
-
-	@Update("update city set name = #{name}, province_id = #{provinceId} where id = #{id}")
-	int update(City city);
-
-	@Delete("delete from city where id = #{id}")
-	int deleteById(Long id);
-
 	/**
 	 * 传入外键省份的id，如果id为0，则显示所有城市；如果id不为0，则显示对应省份id的城市
 	 * @param provinceId 省份id

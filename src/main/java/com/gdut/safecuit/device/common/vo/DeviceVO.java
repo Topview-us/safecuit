@@ -8,6 +8,8 @@ public class DeviceVO {
 
 	private String name;
 	private String code;
+	private String temperatureValue;//温度阈值
+	private int isOnline;//是否在线状态
 	private String electricBoxName;//所属电箱名称
 	private String electricBoxAddress;//所属电箱地址
 	private int typeId;//监控类型
@@ -26,6 +28,22 @@ public class DeviceVO {
 
 	public void setCode(String code) {
 		this.code = code;
+	}
+
+	public String getTemperatureValue() {
+		return temperatureValue;
+	}
+
+	public void setTemperatureValue(String temperatureValue) {
+		this.temperatureValue = temperatureValue;
+	}
+
+	public int getIsOnline() {
+		return isOnline;
+	}
+
+	public void setIsOnline(int isOnline) {
+		this.isOnline = isOnline;
 	}
 
 	public String getElectricBoxName() {
@@ -52,9 +70,12 @@ public class DeviceVO {
 		this.typeId = typeId;
 	}
 
-	public DeviceVO(String name, String code, String electricBoxName, String electricBoxAddress, int typeId) {
+
+	public DeviceVO(String name, String code, String temperatureValue ,int isOnline ,String electricBoxName, String electricBoxAddress, int typeId) {
 		this.name = name;
 		this.code = code;
+		this.temperatureValue = temperatureValue;
+		this.isOnline = isOnline;
 		this.electricBoxName = electricBoxName;
 		this.electricBoxAddress = electricBoxAddress;
 		this.typeId = typeId;

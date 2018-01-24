@@ -19,10 +19,6 @@ public class ProvinceService extends BaseServiceImpl<Province> {
 	@Resource
 	private ProvinceMapper provinceMapper;
 
-	public List<Province> select(){
-		return provinceMapper.select();
-	}
-
 	@Override
 	public BaseDao<Province> getDao() {
 		return provinceMapper;

@@ -37,7 +37,7 @@ public class LocationController {
 	 */
 	@RequestMapping("/province")
 	public Result<List<Province>> provinceSelect(){
-		List<Province> list = provinceService.select();
+		List<Province> list = provinceService.selectAll();
 		return getResult(list);
 	}
 
@@ -57,10 +57,6 @@ public class LocationController {
 
 		list = cityService.select(Integer.valueOf(provinceId));
 
-		//如果传入的cityId无法找到对应数据，则返回全部数据
-		if(list.size() == 0)
-			list = cityService.select(0);
-
 		return getResult(list);
 	}
 
@@ -79,10 +75,6 @@ public class LocationController {
 			return new Result<>(null ,"参数类型有误",false ,400);
 
 		list = areaService.select(Integer.valueOf(cityId));
-
-		//如果传入的cityId无法找到对应数据，则返回全部数据
-		if(list.size() == 0)
-			list = areaService.select(0);
 
 		return getResult(list);
 	}

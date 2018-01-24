@@ -11,28 +11,38 @@ public abstract class BaseServiceImpl<T> implements BaseService<T> {
 	public abstract BaseDao<T> getDao();
 
 	@Override
+	public int deleteByPrimaryKey(Integer id) {
+		return getDao().deleteByPrimaryKey(id);
+	}
+
+	@Override
 	public int insert(T t) {
 		return getDao().insert(t);
 	}
 
 	@Override
-	public int deleteById(Long id) {
-		return getDao().deleteById(id);
+	public int insertSelective(T t) {
+		return getDao().insert(t);
 	}
 
 	@Override
-	public int update(T t) {
-		return getDao().update(t);
+	public T selectByPrimaryKey(Integer id) {
+		return getDao().selectByPrimaryKey(id);
 	}
 
 	@Override
-	public List<T> select(T t) {
-		return getDao().select(t);
+	public int updateByPrimaryKeySelective(T t) {
+		return getDao().updateByPrimaryKeySelective(t);
 	}
 
 	@Override
-	public T selectOneById(Long id) {
-		return getDao().selectOneById(id);
+	public int updateByPrimaryKey(T t) {
+		return getDao().updateByPrimaryKey(t);
+	}
+
+	@Override
+	public int insertList(List<T> t) {
+		return getDao().insertList(t);
 	}
 
 	@Override
@@ -41,7 +51,12 @@ public abstract class BaseServiceImpl<T> implements BaseService<T> {
 	}
 
 	@Override
-	public int getTotal(T t) {
-		return getDao().getTotal(t);
+	public List<T> selectAll() {
+		return getDao().selectAll();
+	}
+
+	@Override
+	public int getTotal() {
+		return getDao().getTotal();
 	}
 }

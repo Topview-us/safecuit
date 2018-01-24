@@ -1,36 +1,38 @@
 package com.gdut.safecuit.device.common.po;
 
-/**
- * Created by Garson in 9:56 2018/1/18
- * Description :回路po
- */
 public class Circuit {
+    private Integer id;
 
-	private int id;
-	private int circuitNo;//回路序号
-	private int deviceId;//外键，设备id
+    private Integer circuitNo;
 
-	public int getId() {
-		return id;
-	}
+    private String deviceId;
 
-	public void setId(int id) {
-		this.id = id;
-	}
+    public Integer getId() {
+        return id;
+    }
 
-	public int getCircuitNo() {
-		return circuitNo;
-	}
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
-	public void setCircuitNo(int circuitNo) {
-		this.circuitNo = circuitNo;
-	}
+    public Integer getCircuitNo() {
+        return circuitNo;
+    }
 
-	public int getDeviceId() {
-		return deviceId;
-	}
+    public void setCircuitNo(Integer circuitNo) {
+        this.circuitNo = circuitNo;
+    }
 
-	public void setDeviceId(int deviceId) {
-		this.deviceId = deviceId;
-	}
+    public String getDeviceId() {
+        return deviceId;
+    }
+
+    public void setDeviceId(String deviceId) {
+        this.deviceId = deviceId == null ? null : deviceId.trim();
+    }
+
+    public Circuit(Integer circuitNo, String deviceId) {
+        this.circuitNo = circuitNo;
+        this.deviceId = deviceId;
+    }
 }

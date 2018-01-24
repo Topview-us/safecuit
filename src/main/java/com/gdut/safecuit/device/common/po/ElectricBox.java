@@ -1,74 +1,83 @@
 package com.gdut.safecuit.device.common.po;
 
-/**
- * Created by Garson in 9:53 2018/1/18
- * Description : 电箱po
- */
 public class ElectricBox {
+    private String id;
 
-	private int id;
-	private String name;
-	private String address;
-	private int orgId;//机构id
-	private float longitude;//经度
-	private float latitude;//纬度
-	private int delTag;
+    private String name;
 
-	public int getId() {
-		return id;
-	}
+    private String address;
 
-	public void setId(int id) {
-		this.id = id;
-	}
+    private Integer orgId;
 
-	public String getName() {
-		return name;
-	}
+    private Float longitude;
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    private Float latitude;
 
-	public String getAddress() {
-		return address;
-	}
+    private Integer delTag;
 
-	public void setAddress(String address) {
-		this.address = address;
-	}
+    public String getId() {
+        return id;
+    }
 
-	public int getOrgId() {
-		return orgId;
-	}
+    public void setId(String id) {
+        this.id = id == null ? null : id.trim();
+    }
 
-	public void setOrgId(int orgId) {
-		this.orgId = orgId;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public float getLongitude() {
-		return longitude;
-	}
+    public void setName(String name) {
+        this.name = name == null ? null : name.trim();
+    }
 
-	public void setLongitude(float longitude) {
-		this.longitude = longitude;
-	}
+    public String getAddress() {
+        return address;
+    }
 
-	public float getLatitude() {
-		return latitude;
-	}
+    public void setAddress(String address) {
+        this.address = address == null ? null : address.trim();
+    }
 
-	public void setLatitude(float latitude) {
-		this.latitude = latitude;
-	}
+    public Integer getOrgId() {
+        return orgId;
+    }
 
-	public int getDelTag() {
-		return delTag;
-	}
+    public void setOrgId(Integer orgId) {
+        this.orgId = orgId;
+    }
 
-	public void setDelTag(int delTag) {
-		this.delTag = delTag;
-	}
+    public Float getLongitude() {
+        return longitude;
+    }
 
+    public void setLongitude(Float longitude) {
+        this.longitude = longitude;
+    }
 
+    public Float getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(Float latitude) {
+        this.latitude = latitude;
+    }
+
+    public Integer getDelTag() {
+        return delTag;
+    }
+
+    public void setDelTag(Integer delTag) {
+        this.delTag = delTag;
+    }
+
+    public ElectricBox(String id, String name, String address, Integer orgId, Float longitude, Float latitude, Integer delTag) {
+        this.id = id;
+        this.name = name;
+        this.address = address;
+        this.orgId = orgId;
+        this.longitude = longitude;
+        this.latitude = latitude;
+        this.delTag = delTag;
+    }
 }

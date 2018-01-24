@@ -9,17 +9,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import static com.gdut.safecuit.common.util.StringUtil.*;
+import static com.gdut.safecuit.common.util.MatchUtil.*;
 
 import javax.annotation.Resource;
 import java.util.List;
 
 /**
  * Created by Garson in 17:01 2018/1/18
- * Description :
+ * Description :se
  */
 @RestController
 @RequestMapping("/device")
-public class DeviceController {
+public class DeviceController extends BaseController {
 
 	@Resource
 	private DeviceService deviceService;
@@ -35,24 +36,30 @@ public class DeviceController {
 	 * @return 结果集
 	 */
 	@RequestMapping("/list")
-	public Result<List<DeviceVO>> selectByPage(@RequestParam(value = "pageNo",required = false ,defaultValue = "0") Integer pageNo
-			, @RequestParam(value = "pageSize" ,required = false ,defaultValue = "10") Integer pageSize
-			, @RequestParam(value = "electricBoxId" ,required = false) Integer electricBoxId
+	public Result<List<DeviceVO>> selectByPage(@RequestParam(value = "pageNo",required = false ,defaultValue = "0") String pageNo
+			, @RequestParam(value = "pageSize" ,required = false ,defaultValue = "10") String pageSize
+			, @RequestParam(value = "electricBoxId" ,required = false) String electricBoxId
 			, @RequestParam(value = "code" ,required = false) String code
-			, @RequestParam(value = "typeId" ,required = false) Integer typeId) {
+			, @RequestParam(value = "typeId" ,required = false ,defaultValue = "0") String typeId) {
 
 		List<DeviceVO> list;
 		String message;
 		int status;
 		Boolean isSuccess;
 
-		if (isEmpty(pageNo, pageSize)) {
-			message = "参数缺失";
+		if(!isPositiveInteger(pageNo) || !isPositiveInteger(pageSize) || !isPositiveInteger(typeId)){
+			message = "url参数有误";
+			status = 400;
+			isSuccess = false;
+			list = null;
+		} else if (isEmpty(electricBoxId)){
+			message = "电箱不能为空";
 			status = 400;
 			isSuccess = false;
 			list = null;
 		} else {
-			list = deviceService.selectByPage(pageNo, pageSize ,electricBoxId, code, typeId);
+			list = deviceService.selectByPage(Integer.valueOf(pageNo), Integer.valueOf(pageSize)
+					,electricBoxId, code, Integer.valueOf(typeId));
 			if (list.size() == 0)
 				message = "暂无设备";
 			else
@@ -72,43 +79,27 @@ public class DeviceController {
 	 */
 	@RequestMapping("/add")
 	public Result<Integer> insert(@RequestBody Device device){
-		String message;
-		int status;
-		Boolean isSuccess;
-		Integer i = deviceService.insert(device);
-		if(i == 0){
-			message = "添加失败";
-			status = 500;
-			isSuccess = false;
-		}else {
-			message = "添加成功";
-			status = 200;
-			isSuccess = true;
-		}
-		return new Result<>(i ,message ,isSuccess ,status);
+
+		Integer i;
+
+		if(isEmpty(device.getCode(),device.getName(),device.getElectricBoxId(),device.getTypeId()))
+			i = 0;
+		else
+			i = deviceService.insert(device);
+
+		return getResult(i);
 	}
 
 	/**
 	 * 假删除设备接口
+	 * url:/device/delete?id=xxx
 	 * @param id 设备id
 	 * @return 结果集
 	 */
 	@RequestMapping("/delete")
 	public Result<Integer> delete(@RequestParam("id") String id){
-		String message;
-		int status;
-		Boolean isSuccess;
 		Integer i = deviceService.fakeDelete(id);
-		if(i == 0){
-			message = "删除失败";
-			status = 500;
-			isSuccess = false;
-		}else {
-			message = "删除成功";
-			status = 200;
-			isSuccess = true;
-		}
-		return new Result<>(i ,message ,isSuccess ,status);
+		return getResult(i);
 	}
 
 	/**
@@ -119,20 +110,15 @@ public class DeviceController {
 	 */
 	@RequestMapping("/update")
 	public Result<Integer> update(@RequestBody Device device){
-		String message;
-		int status;
-		Boolean isSuccess;
-		Integer i = deviceService.update(device);
-		if(i == 0){
-			message = "更新失败";
-			status = 500;
-			isSuccess = false;
-		}else {
-			message = "更新成功";
-			status = 200;
-			isSuccess = true;
-		}
-		return new Result<>(i ,message ,isSuccess ,status);
+
+		Integer i;
+
+		if(isEmpty(device.getCode(),device.getName(),device.getElectricBoxId(),device.getTypeId()))
+			i = -1;
+		else
+			i = deviceService.update(device);
+
+		return getResult(i);
 	}
 
 }

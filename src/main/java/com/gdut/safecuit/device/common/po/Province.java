@@ -6,14 +6,14 @@ package com.gdut.safecuit.device.common.po;
  */
 public class Province {
 
-	private Long id;		//主键
+	private Integer id;		//主键
 	private String name;	//省份
 
-	public Long getId() {
+	public Integer getId() {
 		return id;
 	}
 
-	public void setId(Long id) {
+	public void setId(Integer id) {
 		this.id = id;
 	}
 

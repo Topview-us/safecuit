@@ -27,12 +27,19 @@ public class CrossDomainFilter implements Filter{
 		HttpServletResponse response = (HttpServletResponse) servletResponse;
 
 		//如果发出的方法为OPTIONS且包含“origin”请求头，则为预检验（Preflight）请求，跨域请求
-		if(request.getMethod().equalsIgnoreCase("OPTIONS") && request.getHeader("Origin") != null){
+		/*if(request.getMethod().equalsIgnoreCase("OPTIONS")){
 			response.addHeader("Access-Control-Allow-Origin", request.getHeader("Origin"));//接受request.getHeader("Origin")网站发出请求
 			response.addHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
 			response.setHeader("Access-Control-Allow-Headers", "x-requested-with");
 			response.addHeader("Access-Control-Max-Age", "3600");//1 hour
-		}
+			response.addHeader("Access-Control-Allow-Credentials", "true");
+		}*/
+		response.addHeader("Access-Control-Allow-Origin", request.getHeader("Origin"));//接受request.getHeader("Origin")网站发出请求
+		response.addHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+		response.setHeader("Access-Control-Allow-Headers", "x-requested-with");
+		response.addHeader("Access-Control-Max-Age", "3600");//1 hour
+		response.addHeader("Access-Control-Allow-Credentials", "true");
+
 		filterChain.doFilter(request,response);
 	}
 

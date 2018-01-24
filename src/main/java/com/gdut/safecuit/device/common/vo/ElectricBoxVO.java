@@ -8,11 +8,12 @@ public class ElectricBoxVO {
 
 	private String name;
 	private String address;//省+市+区+电箱地址
+	private float longitude;//电箱经度
+	private float latitude;//电箱纬度
 	private String orgName;//所属机构名称
 	private String orgManager;//机构管理员
 	private String phone;//机构电话
-	private float longitude;//电箱经度
-	private float latitude;//电箱纬度
+
 
 	public String getName() {
 		return name;
@@ -71,14 +72,13 @@ public class ElectricBoxVO {
 	}
 
 
-	public ElectricBoxVO(String name, String address, String orgName, String orgManager, String phone, float longitude,
-						 float latitude) {
+	public ElectricBoxVO(String name, String address, float longitude, float latitude, String orgName, String orgManager, String phone) {
 		this.name = name;
 		this.address = address;
+		this.longitude = longitude;
+		this.latitude = latitude;
 		this.orgName = orgName;
 		this.orgManager = orgManager;
 		this.phone = phone;
-		this.longitude = longitude;
-		this.latitude = latitude;
 	}
 }

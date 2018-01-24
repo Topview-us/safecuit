@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.gdut.safecuit.device.dao.CircuitMapper" >
+  <resultMap id="BaseResultMap" type="com.gdut.safecuit.device.common.po.Circuit" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="circuit_no" property="circuitNo" jdbcType="INTEGER" />
+    <result column="device_id" property="deviceId" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, circuit_no, device_id
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from circuit
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from circuit
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.gdut.safecuit.device.common.po.Circuit" >
+    insert into circuit (id, circuit_no, device_id
+      )
+    values (#{id,jdbcType=INTEGER}, #{circuitNo,jdbcType=INTEGER}, #{deviceId,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.gdut.safecuit.device.common.po.Circuit" >
+    insert into circuit
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="circuitNo != null" >
+        circuit_no,
+      </if>
+      <if test="deviceId != null" >
+        device_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="circuitNo != null" >
+        #{circuitNo,jdbcType=INTEGER},
+      </if>
+      <if test="deviceId != null" >
+        #{deviceId,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.gdut.safecuit.device.common.po.Circuit" >
+    update circuit
+    <set >
+      <if test="circuitNo != null" >
+        circuit_no = #{circuitNo,jdbcType=INTEGER},
+      </if>
+      <if test="deviceId != null" >
+        device_id = #{deviceId,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.gdut.safecuit.device.common.po.Circuit" >
+    update circuit
+    set circuit_no = #{circuitNo,jdbcType=INTEGER},
+      device_id = #{deviceId,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+  <insert id="insertCircuit" parameterType="java.util.List">
+    INSERT INTO circuit (circuit_no,device_id) VALUES
+    <foreach collection="list" item="circuit" index="index" separator=",">
+      (#{circuit.circuitNo} ,#{circuit.deviceId})
+    </foreach>
+  </insert>
+
+</mapper>

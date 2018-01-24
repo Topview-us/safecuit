@@ -15,15 +15,6 @@ import java.util.Map;
 @Repository
 public interface AreaMapper extends BaseDao<Area> {
 
-	@Insert("insert into area(id ,name ,city_id) values(#{id} ,#{name} ,#{cityId})")
-	int insert(Area area);
-
-	@Update("update area set name = #{name}, city_id = #{cityId} where id = #{id}")
-	int update(Area area);
-
-	@Delete("delete from area where id = #{id}")
-	int deleteById(Long id);
-
 	@Results({
 			@Result(property = "cityId" ,column = "city_id")
 	})
@@ -39,4 +30,6 @@ public interface AreaMapper extends BaseDao<Area> {
 			return sql;
 		}
 	}
+
+
 }

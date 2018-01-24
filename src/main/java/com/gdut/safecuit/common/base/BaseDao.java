@@ -10,18 +10,24 @@ import java.util.List;
  */
 public interface BaseDao<T> {
 
+	int deleteByPrimaryKey(Integer id);
+
 	int insert(T t);
 
-	int deleteById(Long id);
+	int insertSelective(T t);
 
-	int update(T t);
+	T selectByPrimaryKey(Integer id);
 
-	List<T> select(T t);
+	int updateByPrimaryKeySelective(T t);
 
-	T selectOneById(Long id);
+	int updateByPrimaryKey(T t);
+
+	int insertList(List<T> t);
 
 	List<T> selectPage(@Param("t") T t);
 
-	int getTotal(T t);
+	List<T> selectAll();
+
+	int getTotal();
 
 }

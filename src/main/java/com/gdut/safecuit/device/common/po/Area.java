@@ -6,15 +6,15 @@ package com.gdut.safecuit.device.common.po;
  */
 public class Area {
 
-	private int id;			//主键
+	private Integer id;			//主键
 	private String name;		//地区
-	private int cityId;			//城市id
+	private Integer cityId;			//城市id
 
-	public int getId() {
+	public Integer getId() {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(Integer id) {
 		this.id = id;
 	}
 
@@ -26,11 +26,11 @@ public class Area {
 		this.name = name;
 	}
 
-	public int getCityId() {
+	public Integer getCityId() {
 		return cityId;
 	}
 
-	public void setCityId(int cityId) {
+	public void setCityId(Integer cityId) {
 		this.cityId = cityId;
 	}
 }

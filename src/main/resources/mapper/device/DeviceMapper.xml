@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.gdut.safecuit.device.dao.DeviceMapper" >
+  <resultMap id="BaseResultMap" type="com.gdut.safecuit.device.common.po.Device" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="code" property="code" jdbcType="VARCHAR" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="temperature_value" property="temperatureValue" jdbcType="VARCHAR" />
+    <result column="electric_box_id" property="electricBoxId" jdbcType="VARCHAR" />
+    <result column="is_online" property="isOneline" jdbcType="INTEGER" />
+    <result column="type_id" property="typeId" jdbcType="INTEGER" />
+    <result column="del_tag" property="delTag" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, code, name, temperature_value, electric_box_id, is_online ,type_id, del_tag
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from device
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+
+  <resultMap id="searchElectricBoxMap" type="java.util.Map">
+    <result column="address" property="address" jdbcType="VARCHAR" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+  </resultMap>
+  <select id="searchElectricBox" resultMap="searchElectricBoxMap" parameterType="java.lang.String">
+    SELECT CONCAT(p.name,c.name,a.name,eb.address) as address ,eb.name as name " +
+            "FROM province p ,city c ,AREA a ,orginazation o ,electric_box eb " +
+            "WHERE p.id = c.province_id AND c.id = a.city_id AND a.id = o.`area_id` " +
+            "AND o.`id` = eb.org_id AND eb.id = #{electricBoxId}
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from device
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.gdut.safecuit.device.common.po.Device" >
+    insert into device (id, code, name, 
+      temperature_value, electric_box_id, is_oneline ,type_id,
+      del_tag)
+    values (#{id,jdbcType=VARCHAR}, #{code,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, 
+      #{temperatureValue,jdbcType=VARCHAR}, #{electricBoxId,jdbcType=VARCHAR}, #{isOnline ,jdbcType=INTEGER},
+      #{typeId,jdbcType=INTEGER}, #{delTag,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="com.gdut.safecuit.device.common.po.Device" >
+    insert into device
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="code != null" >
+        code,
+      </if>
+      <if test="name != null" >
+        name,
+      </if>
+      <if test="temperatureValue != null" >
+        temperature_value,
+      </if>
+      <if test="electricBoxId != null" >
+        electric_box_id,
+      </if>
+      <if test="isOnline != null" >
+        is_online,
+      </if>
+      <if test="typeId != null" >
+        type_id,
+      </if>
+      <if test="delTag != null" >
+        del_tag,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="code != null" >
+        #{code,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null" >
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="temperatureValue != null" >
+        #{temperatureValue,jdbcType=VARCHAR},
+      </if>
+      <if test="isOnline != null" >
+        #{isOnline,jdbcType=INTEGER},
+      </if>
+      <if test="electricBoxId != null" >
+        #{electricBoxId,jdbcType=VARCHAR},
+      </if>
+      <if test="typeId != null" >
+        #{typeId,jdbcType=INTEGER},
+      </if>
+      <if test="delTag != null" >
+        #{delTag,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.gdut.safecuit.device.common.po.Device" >
+    update device
+    <set >
+      <if test="code != null" >
+        code = #{code,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null" >
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="temperatureValue != null" >
+        temperature_value = #{temperatureValue,jdbcType=VARCHAR},
+      </if>
+      <if test="electricBoxId != null" >
+        electric_box_id = #{electricBoxId,jdbcType=VARCHAR},
+      </if>
+      <if test="isOnline != null" >
+        is_online = #{isOnline,jdbcType=INTEGER},
+      </if>
+      <if test="typeId != null" >
+        type_id = #{typeId,jdbcType=INTEGER},
+      </if>
+      <if test="delTag != null" >
+        del_tag = #{delTag,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.gdut.safecuit.device.common.po.Device" >
+    update device
+    set code = #{code,jdbcType=VARCHAR},
+      name = #{name,jdbcType=VARCHAR},
+      temperature_value = #{temperatureValue,jdbcType=VARCHAR},
+      electric_box_id = #{electricBoxId,jdbcType=VARCHAR},
+      is_online = #{isOnline,jdbcType=INTEGER},
+      type_id = #{typeId,jdbcType=INTEGER},
+      del_tag = #{delTag,jdbcType=INTEGER}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>
