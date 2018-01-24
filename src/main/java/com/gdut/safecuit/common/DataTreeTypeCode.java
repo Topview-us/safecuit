@@ -1,4 +1,4 @@
-package com.gdut.safecuit.device.common;
+package com.gdut.safecuit.common;
 
 /**
  * Created by Garson in 11:28 2018/1/21

@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Map;
 
 import static com.gdut.safecuit.common.util.StringUtil.getUUID;
-import static com.gdut.safecuit.device.common.DataTreeTypeCode.DEVICE_TYPE;
+import static com.gdut.safecuit.common.DataTreeTypeCode.DEVICE_TYPE;
 
 /**
  * Created by Garson in 10:19 2018/1/12

@@ -17,7 +17,7 @@ import java.util.Map;
 
 import static com.gdut.safecuit.common.util.StringUtil.getUUID;
 import static com.gdut.safecuit.device.common.util.DataCache.*;
-import static com.gdut.safecuit.device.common.DataTreeTypeCode.ELECTRIC_BOX_TYPE;
+import static com.gdut.safecuit.common.DataTreeTypeCode.ELECTRIC_BOX_TYPE;
 /**
  * Created by Garson in 15:35 2018/1/19
  * Description :

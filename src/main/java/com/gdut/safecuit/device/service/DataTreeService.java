@@ -2,7 +2,7 @@ package com.gdut.safecuit.device.service;
 
 import com.gdut.safecuit.common.base.BaseDao;
 import com.gdut.safecuit.common.base.BaseServiceImpl;
-import com.gdut.safecuit.device.common.DataTreeTypeCode;
+import com.gdut.safecuit.common.DataTreeTypeCode;
 import com.gdut.safecuit.device.common.po.*;
 import com.gdut.safecuit.device.common.vo.DataTreeVO;
 import com.gdut.safecuit.device.dao.*;
@@ -13,7 +13,7 @@ import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.gdut.safecuit.device.common.DataTreeTypeCode.*;
+import static com.gdut.safecuit.common.DataTreeTypeCode.*;
 import static com.gdut.safecuit.device.common.util.DataCache.*;
 
 /**
@@ -25,12 +25,12 @@ public class DataTreeService extends BaseServiceImpl<DataTree> {
 
 	@Resource
 	private DataTreeMapper dataTreeMapper;
-	@Resource
+	/*@Resource
 	private AreaMapper areaMapper;
 	@Resource
 	private CityMapper cityMapper;
 	@Resource
-	private ProvinceMapper provinceMapper;
+	private ProvinceMapper provinceMapper;*/
 	/*@Resource
 	private DeviceMapper deviceMapper;
 	@Resource
@@ -71,7 +71,7 @@ public class DataTreeService extends BaseServiceImpl<DataTree> {
 	public int insertOrg(Integer orgId){
 
 		Integer insert;
-		Area area = areaMapper.selectByPrimaryKey(orgId);
+	/*	Area area = areaMapper.selectByPrimaryKey(orgId);
 		City city = cityMapper.selectByPrimaryKey(area.getCityId());
 		Province province = provinceMapper.selectByPrimaryKey(city.getProvinceId());
 
@@ -84,7 +84,7 @@ public class DataTreeService extends BaseServiceImpl<DataTree> {
 			dataTreeMapper.insert(new DataTree(lastDataId+2 ,city.getName() ,2 ,"city" ,1 ,lastDataId+1 ,0));
 		if(dataTreeMapper.selectIdByName(area.getName()) != null)
 			dataTreeMapper.insert(new DataTree(lastDataId+3 ,area.getName() ,3 ,"area" ,1 ,lastDataId+2 ,0));
-
+*/
 		DataTree dataTree = new DataTree();
 
 		//selectOrgInfo:查找添加的机构的信息
@@ -247,7 +247,6 @@ public class DataTreeService extends BaseServiceImpl<DataTree> {
 
 	/**
 	 * 删除分组的操作
-	 * @param group 分组对象
 	 * @return 删除数
 	 */
 	/*@Transactional

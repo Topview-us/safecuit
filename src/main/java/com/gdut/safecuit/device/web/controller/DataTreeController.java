@@ -9,9 +9,9 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import java.util.List;
 
-import static com.gdut.safecuit.device.common.DataTreeTypeCode.DEVICE_TYPE;
-import static com.gdut.safecuit.device.common.DataTreeTypeCode.ELECTRIC_BOX_TYPE;
-import static com.gdut.safecuit.device.common.DataTreeTypeCode.ORG_TYPE;
+import static com.gdut.safecuit.common.DataTreeTypeCode.DEVICE_TYPE;
+import static com.gdut.safecuit.common.DataTreeTypeCode.ELECTRIC_BOX_TYPE;
+import static com.gdut.safecuit.common.DataTreeTypeCode.ORG_TYPE;
 import static com.gdut.safecuit.device.common.util.DataCache.DEVICE_DATATREEVOS;
 import static com.gdut.safecuit.device.common.util.DataCache.ELECTRIC_BOX_DATATREEVOS;
 import static com.gdut.safecuit.device.common.util.DataCache.ORG_DATATREEVOS;
