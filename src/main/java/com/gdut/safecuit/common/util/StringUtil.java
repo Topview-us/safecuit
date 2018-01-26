@@ -12,6 +12,23 @@ import java.util.UUID;
  */
 public class StringUtil {
 
+    /**
+     * 验证字符串是否处于长度 a 至 b 中
+     * @param str 字符串
+     * @param a 最小长度
+     * @param b 最大长度
+     * @return 符合true, 不符合false
+     */
+	public static boolean isString(String str, int a, int b) {
+	    if (str != null) {
+	        int length = str.length();
+	        if (length >= a && length <= b) {
+	            return true;
+            }
+        }
+        return false;
+    }
+
 	public static boolean isEmpty(Object...objects){
 		Boolean result = false ;
 		for (Object object : objects) {

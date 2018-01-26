@@ -16,11 +16,11 @@ public class User implements Serializable {
 
     private Integer orgId;
 
-    private String phone;
+    private String phone; // 可选
 
-    private Integer qq;
+    private Integer qq; // 可选
 
-    private String description;
+    private String description; // 可选
 
     private Integer delTag;
 
