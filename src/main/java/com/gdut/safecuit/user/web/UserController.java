@@ -3,8 +3,11 @@ package com.gdut.safecuit.user.web;
 import com.gdut.safecuit.common.Result;
 import com.gdut.safecuit.common.util.MatchUtil;
 import com.gdut.safecuit.common.util.StringUtil;
+import com.gdut.safecuit.organization.common.po.Organization;
+import com.gdut.safecuit.organization.service.OrganizationService;
 import com.gdut.safecuit.user.common.po.User;
 import com.gdut.safecuit.user.common.util.UserConstant;
+import com.gdut.safecuit.user.common.vo.UserVO;
 import com.gdut.safecuit.user.service.UserService;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,6 +24,9 @@ public class UserController {
 
     @Resource
     private UserService userService;
+
+    @Resource
+    private OrganizationService organizationService;
 
     @RequestMapping("/add")
     public Result<Integer> addUser(@RequestBody User user) {
@@ -44,10 +50,10 @@ public class UserController {
         return new Result<>(effect, "删除成功", true, 200);
     }
 
-    @RequestMapping("/selectUsersByPage")
+    @RequestMapping("/list")
     public Result<List<User>> selectUsersByPage(@RequestParam("offset") Integer offset, @RequestParam("limit") Integer limit) {
         List<User> users;
-        if (offset == null || limit == null || offset <= 0 || limit <= 0) {
+        if (offset == null || limit == null || offset < 0 || limit < 0) {
             users = new ArrayList<>();
             return new Result<>(users, "获取用户列表失败", false, 500);
         }
@@ -68,5 +74,21 @@ public class UserController {
         //
         int effect = userService.updateUserByUserId(user);
         return new Result<>(effect, "修改成功", true, 200);
+    }
+
+    private UserVO getUserVO(User user) {
+        UserVO userVO = new UserVO();
+        userVO.setUserId(user.getUserId());
+        userVO.setUsername(user.getUsername());
+        userVO.setRealName(user.getRealName());
+        userVO.setPhone(user.getPhone());
+        userVO.setQq(user.getQq());
+        userVO.setDescription(user.getDescription());
+
+        // 获取机构信息
+        Organization org = organizationService.selectOrganizationByOrgId(user.getOrgId());
+        userVO.setOrgName(org.getName());
+
+        return userVO;
     }
 }

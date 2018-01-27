@@ -3,7 +3,7 @@ package com.gdut.safecuit.organization.common.vo;
 /**
  * 机构添加页面
  */
-public class OrgAddVo {
+public class OrgAddVO {
     // 机构信息
     private String orgName;
     private String orgAddress;
@@ -18,7 +18,7 @@ public class OrgAddVo {
     private String userPassword;
     private String userRePassword;
     private String userPhone;
-    private String userQQ;
+    private Integer userQQ;
     private String userDescription;
 
     public String getOrgName() {
@@ -109,11 +109,11 @@ public class OrgAddVo {
         this.userPhone = userPhone;
     }
 
-    public String getUserQQ() {
+    public Integer getUserQQ() {
         return userQQ;
     }
 
-    public void setUserQQ(String userQQ) {
+    public void setUserQQ(Integer userQQ) {
         this.userQQ = userQQ;
     }
 
@@ -127,7 +127,7 @@ public class OrgAddVo {
 
     @Override
     public String toString() {
-        return "OrgAddVo{" +
+        return "OrgAddVO{" +
                 "orgName='" + orgName + '\'' +
                 ", orgAddress='" + orgAddress + '\'' +
                 ", orgAreaId=" + orgAreaId +
@@ -139,7 +139,7 @@ public class OrgAddVo {
                 ", userPassword='" + userPassword + '\'' +
                 ", userRePassword='" + userRePassword + '\'' +
                 ", userPhone='" + userPhone + '\'' +
-                ", userQQ='" + userQQ + '\'' +
+                ", userQQ=" + userQQ +
                 ", userDescription='" + userDescription + '\'' +
                 '}';
     }

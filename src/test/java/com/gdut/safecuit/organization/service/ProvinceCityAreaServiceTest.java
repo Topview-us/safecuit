@@ -5,13 +5,10 @@ import com.gdut.safecuit.organization.common.po.Area;
 import com.gdut.safecuit.organization.common.po.City;
 import com.gdut.safecuit.organization.common.po.Province;
 import org.junit.Test;
-import org.springframework.stereotype.Repository;
 
 import javax.annotation.Resource;
 
 import java.util.List;
-
-import static org.junit.Assert.*;
 
 public class ProvinceCityAreaServiceTest extends BaseTest {
 
@@ -20,7 +17,7 @@ public class ProvinceCityAreaServiceTest extends BaseTest {
 
     @Test
     public void getAllProvince() {
-        List<Province> list = provinceCityAreaService.getAllProvince();
+        List<Province> list = provinceCityAreaService.getAllProvinces();
         for (Province p : list) {
             System.out.println(p);
         }
@@ -28,7 +25,7 @@ public class ProvinceCityAreaServiceTest extends BaseTest {
 
     @Test
     public void getCityByProvinceId() {
-        List<City> list = provinceCityAreaService.getCityByProvinceId("440000");
+        List<City> list = provinceCityAreaService.getCitiesByProvinceId("440000");
         for (City c : list) {
             System.out.println(c);
         }
@@ -36,9 +33,24 @@ public class ProvinceCityAreaServiceTest extends BaseTest {
 
     @Test
     public void getAreaByCityId() {
-        List<Area> list = provinceCityAreaService.getAreaByCityId("440100");
+        List<Area> list = provinceCityAreaService.getAreasByCityId("440100");
         for (Area a : list) {
             System.out.println(a);
         }
+    }
+
+    @Test
+    public void getProvince() {
+        System.out.println(provinceCityAreaService.getProvince("440000"));
+    }
+
+    @Test
+    public void getCity() {
+        System.out.println(provinceCityAreaService.getCity("620800"));
+    }
+
+    @Test
+    public void getArea() {
+        System.out.println(provinceCityAreaService.getArea("110101"));
     }
 }

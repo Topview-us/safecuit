@@ -2,9 +2,6 @@ package com.gdut.safecuit.user.common.po;
 
 import java.io.Serializable;
 
-/**
- * @author 
- */
 public class User implements Serializable {
     private Integer userId;
 
@@ -14,7 +11,7 @@ public class User implements Serializable {
 
     private String password;
 
-    private Integer orgId;
+    private Integer orgId; // 默认为NULL
 
     private String phone; // 可选
 
