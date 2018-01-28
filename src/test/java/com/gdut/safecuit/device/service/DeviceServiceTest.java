@@ -1,8 +1,6 @@
 package com.gdut.safecuit.device.service;
 
 import com.gdut.safecuit.BaseTest;
-import com.gdut.safecuit.common.util.StringUtil;
-import com.gdut.safecuit.device.common.po.Device;
 import com.gdut.safecuit.device.dao.DeviceMapper;
 import org.junit.Test;
 
@@ -21,13 +19,13 @@ public class DeviceServiceTest extends BaseTest {
 
 	@Test
 	public void selectAllByIdTest(){
-		System.out.println(deviceMapper.selectByPrimaryKey("1"));
+		System.out.println(deviceMapper.selectByPrimaryKey(1));
 	}
 
-	@Test
+/*	@Test
 	public void selectByPageTest(){
-		System.out.println(deviceService.selectByPage(0,2 ,"a" ,"aaa" ,null));
-	}
+		System.out.println(deviceService.selectByPage(0,2 ,1 ,null ,null));
+	}*/
 
 	/*@Test
 	public void insertTest(){
@@ -44,18 +42,18 @@ public class DeviceServiceTest extends BaseTest {
 	//	Map<String ,Object> map = new HashMap<>();
 		//map.put("page" , new Page(2,1,3));
 		//map.put("electricBoxId" ,1);
-		System.out.println(deviceMapper.searchElectricBox("a"));
+	//	System.out.println(deviceMapper.searchElectricBox("a"));
 	//	System.out.println(deviceMapper.selectByPage(map));
 	}
 
-	@Test
+	/*@Test
 	public void deleteTest(){
-		System.out.println(deviceService.deleteById("aaa"));
+		System.out.println(deviceService.deleteById(1));
 	}
 
 	@Test
 	public void fakeDeleteTest(){
-		System.out.println(deviceService.fakeDelete("aaa"));
-	}
+		System.out.println(deviceService.fakeDelete(1));
+	}*/
 
 }

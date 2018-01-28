@@ -2,6 +2,7 @@ package com.gdut.safecuit.monitor.common.util;
 
 import com.baidu.aip.speech.AipSpeech;
 import com.baidu.aip.speech.TtsResponse;
+import com.gdut.safecuit.common.util.CacheManager;
 import com.gdut.safecuit.common.util.LogUtil;
 import com.gdut.safecuit.common.util.StringUtil;
 import org.json.JSONException;
@@ -21,7 +22,8 @@ public class BaiduString2AudioUtil {
 	private static final String API_KEY = "4FcYM186IxNbs1r5HUcDyzaZ";
 	private static final String SECRET_KEY = "1c3074b24462b48188a549624915bb56";
 
-	public static String getAudioByte(String str) throws JSONException {
+	public static String getAudioByte(String message) throws JSONException {
+
 		HashMap<String, Object> options = new HashMap<>();
 
 		AipSpeech client = new AipSpeech(APP_ID, API_KEY, SECRET_KEY);
@@ -34,7 +36,7 @@ public class BaiduString2AudioUtil {
 		options.put("per", "0");//发声人，0为女，1为男
 		options.put("vol", "9");//音量，0~15
 
-		TtsResponse res = client.synthesis(str, "zh", 1, options);
+		TtsResponse res = client.synthesis(message, "zh", 1, options);
 		JSONObject result = res.getResult();
 		if(result != null){
 			LogUtil.info(BaiduString2AudioUtil.class ,"err_no: "+String.valueOf(result.get("error_code"))
@@ -42,8 +44,14 @@ public class BaiduString2AudioUtil {
 			return "error";
 		} else {
 			byte[] data = res.getData();
+			//CacheManager.putCache(deviceCode ,StringUtil.encoderByBase64(data));
 			return StringUtil.encoderByBase64(data);
+
 		}
+
 	}
 
+	/*public static synchronized void setIsWarning(Boolean isWarning) {
+		BaiduString2AudioUtil.isWarning = isWarning;
+	}*/
 }

@@ -20,14 +20,14 @@ public class ElectricBoxServiceTest extends BaseTest {
 
 	@Test
 	public void test1(){
-		System.out.println(electricBoxService.insert(new ElectricBox(getUUID() ,"444" ,"xx路62号"
-				,1 ,100F ,100F ,0)));
+	/*	System.out.println(electricBoxService.insert(new ElectricBox(getUUID() ,"444" ,"xx路62号"
+				,1 ,100F ,100F ,0)));*/
 	}
 
-	@Test
+	/*@Test
 	public void test2(){
 		System.out.println(dataTreeMapper.selectByParentId(-1 ,0));
-	}
+	}*/
 
 
 }

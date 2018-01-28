@@ -1,18 +1,22 @@
 package com.gdut.safecuit.device.web.controller;
 
+import com.gdut.safecuit.common.Page;
 import com.gdut.safecuit.common.Result;
 import com.gdut.safecuit.device.common.po.Device;
+import com.gdut.safecuit.device.common.vo.CircuitVO;
 import com.gdut.safecuit.device.common.vo.DeviceVO;
 import com.gdut.safecuit.device.service.DeviceService;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import static com.gdut.safecuit.common.util.StringUtil.*;
-import static com.gdut.safecuit.common.util.MatchUtil.*;
 
 import javax.annotation.Resource;
 import java.util.List;
+
+import static com.gdut.safecuit.common.util.CacheManager.cacheMap;
+import static com.gdut.safecuit.common.util.MatchUtil.isPositiveInteger;
+import static com.gdut.safecuit.common.util.StringUtil.isEmpty;
 
 /**
  * Created by Garson in 17:01 2018/1/18
@@ -38,52 +42,50 @@ public class DeviceController extends BaseController {
 	@RequestMapping("/list")
 	public Result<List<DeviceVO>> selectByPage(@RequestParam(value = "pageNo",required = false ,defaultValue = "0") String pageNo
 			, @RequestParam(value = "pageSize" ,required = false ,defaultValue = "10") String pageSize
-			, @RequestParam(value = "electricBoxId" ,required = false) String electricBoxId
+			, @RequestParam(value = "electricBoxId" ,required = false) Integer electricBoxId
 			, @RequestParam(value = "code" ,required = false) String code
 			, @RequestParam(value = "typeId" ,required = false ,defaultValue = "0") String typeId) {
 
 		List<DeviceVO> list;
 		String message;
-		int status;
-		Boolean isSuccess;
 
 		if(!isPositiveInteger(pageNo) || !isPositiveInteger(pageSize) || !isPositiveInteger(typeId)){
-			message = "url参数有误";
-			status = 400;
-			isSuccess = false;
-			list = null;
+			return new Result<>(null, "url参数有误", true, 400);
 		} else if (isEmpty(electricBoxId)){
-			message = "电箱不能为空";
-			status = 400;
-			isSuccess = false;
-			list = null;
+			return new Result<>(null, "设备id不能为空", false, 400);
 		} else {
-			list = deviceService.selectByPage(Integer.valueOf(pageNo), Integer.valueOf(pageSize)
-					,electricBoxId, code, Integer.valueOf(typeId));
+
+			Integer device_total = (Integer) cacheMap.get("DEVICE_TOTAL");
+			if(device_total == null){
+				device_total = deviceService.getTotalByElectricBoxId(electricBoxId);
+				cacheMap.put("DEVICE_TOTAL" ,device_total);
+			}
+
+			Page page = new Page(Integer.valueOf(pageSize) ,Integer.valueOf(pageNo) ,device_total);
+
+			list = deviceService.selectByPage(page,electricBoxId, code, Integer.valueOf(typeId));
 			if (list.size() == 0)
 				message = "暂无设备";
 			else
 				message = "列举成功";
-			status = 200;
-			isSuccess = true;
+			return new Result<>(list, message, true, 200 ,page.getTotalPages());
 		}
 
-		return new Result<>(list, message, isSuccess, status);
 	}
 
 	/**
 	 * 添加设备接口
 	 * url:	/device/add
-	 * @param device device对象，属性包括：设备编码code、设备名称name、所属电箱id、监控类型
+	 * @param device device对象，属性包括：设备编码code、设备名称name、所属电箱id、温度阈值temperatureValue、监控类型typeId
 	 * @return 结果集
 	 */
 	@RequestMapping("/add")
-	public Result<Integer> insert(@RequestBody Device device){
+	public Result<Integer> insert(Device device){
 
 		Integer i;
 
 		if(isEmpty(device.getCode(),device.getName(),device.getElectricBoxId(),device.getTypeId()))
-			i = 0;
+			i = -1;
 		else
 			i = deviceService.insert(device);
 
@@ -97,19 +99,19 @@ public class DeviceController extends BaseController {
 	 * @return 结果集
 	 */
 	@RequestMapping("/delete")
-	public Result<Integer> delete(@RequestParam("id") String id){
-		Integer i = deviceService.fakeDelete(id);
+	public Result<Integer> delete(@RequestParam("id") Integer id ,@RequestParam("electricBoxId")Integer electricBoxId){
+		Integer i = deviceService.fakeDelete(id ,electricBoxId);
 		return getResult(i);
 	}
 
 	/**
 	 * 更改设备信息接口
 	 * url：/device/update
-	 * @param device 设备对象，属性包括：设备编码code、设备名称name、设备所属电箱的id、监控类型typeId
+	 * @param device 设备对象，属性包括：设备id ,设备编码code、设备名称name、设备所属电箱的id、温度阈值temperatureValue、监控类型typeId
 	 * @return 结果集
 	 */
 	@RequestMapping("/update")
-	public Result<Integer> update(@RequestBody Device device){
+	public Result<Integer> update(Device device){
 
 		Integer i;
 

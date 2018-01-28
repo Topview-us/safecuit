@@ -20,4 +20,7 @@ public class DataCache {
 	public static List<DataTreeVO> ORG_DATATREEVOS;//最下层为机构的数据树
 	public static List<DataTreeVO> ELECTRIC_BOX_DATATREEVOS;//最下层为电箱的数据树
 	public static List<DataTreeVO> DEVICE_DATATREEVOS;//最下层为设备的数据树
+
+
+
 }

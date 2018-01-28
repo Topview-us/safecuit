@@ -6,6 +6,7 @@ package com.gdut.safecuit.device.common.vo;
  */
 public class DeviceVO {
 
+	private Integer deviceId;
 	private String name;
 	private String code;
 	private String temperatureValue;//温度阈值
@@ -13,6 +14,14 @@ public class DeviceVO {
 	private String electricBoxName;//所属电箱名称
 	private String electricBoxAddress;//所属电箱地址
 	private int typeId;//监控类型
+
+	public Integer getDeviceId() {
+		return deviceId;
+	}
+
+	public void setDeviceId(Integer deviceId) {
+		this.deviceId = deviceId;
+	}
 
 	public String getName() {
 		return name;
@@ -78,6 +87,27 @@ public class DeviceVO {
 		this.isOnline = isOnline;
 		this.electricBoxName = electricBoxName;
 		this.electricBoxAddress = electricBoxAddress;
+		this.typeId = typeId;
+	}
+
+	public DeviceVO(Integer deviceId, String name, String code, String temperatureValue,
+					int isOnline, String electricBoxName, String electricBoxAddress, int typeId) {
+		this.deviceId = deviceId;
+		this.name = name;
+		this.code = code;
+		this.temperatureValue = temperatureValue;
+		this.isOnline = isOnline;
+		this.electricBoxName = electricBoxName;
+		this.electricBoxAddress = electricBoxAddress;
+		this.typeId = typeId;
+	}
+
+	public DeviceVO(Integer deviceId ,String name, String code, String temperatureValue, int isOnline, int typeId) {
+		this.deviceId = deviceId;
+		this.name = name;
+		this.code = code;
+		this.temperatureValue = temperatureValue;
+		this.isOnline = isOnline;
 		this.typeId = typeId;
 	}
 

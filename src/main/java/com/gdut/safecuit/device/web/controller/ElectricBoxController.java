@@ -33,7 +33,7 @@ public class ElectricBoxController extends BaseController {
 	 * @return 结果集
 	 */
 	@RequestMapping("/add")
-	public Result<Integer> insert(@RequestBody ElectricBox electricBox){
+	public Result<Integer> insertElectricBox(ElectricBox electricBox){
 
 		Integer i;
 
@@ -41,7 +41,7 @@ public class ElectricBoxController extends BaseController {
 				electricBox.getOrgId(),electricBox.getLatitude(),electricBox.getLongitude()))
 			i = -1;
 		else
-			i = electricBoxService.insert(electricBox);
+			i = electricBoxService.insertElectricBox(electricBox);
 
 		return getResult(i);
 	}
@@ -53,9 +53,9 @@ public class ElectricBoxController extends BaseController {
 	 * @return 结果集
 	 */
 	@RequestMapping("/delete")
-	public Result<Integer> delete(@RequestParam("id") String id){
+	public Result<Integer> deleteElectricBox(@RequestParam("id") Integer id){
 
-		Integer i = electricBoxService.fakeDelete(id);
+		Integer i = electricBoxService.fakeDeleteElectricBox(id);
 		return getResult(i);
 	}
 
@@ -69,7 +69,7 @@ public class ElectricBoxController extends BaseController {
 	 * @return 结果集
 	 */
 	@RequestMapping("/list")
-	public Result<List<ElectricBoxVO>> selectByPage(@RequestParam(value = "pageNo" ,required = false,defaultValue = "0")String pageNo
+	public Result<List<ElectricBoxVO>> selectElectricBoxByPage(@RequestParam(value = "pageNo" ,required = false,defaultValue = "0")String pageNo
 			,@RequestParam(value = "pageSize" ,required = false ,defaultValue = "10")String pageSize
 			,@RequestParam(value = "orgId" ,required = false)String orgId
 			,@RequestParam(value = "name" ,required = false)String name){
@@ -89,7 +89,7 @@ public class ElectricBoxController extends BaseController {
 			isSuccess = false;
 			electricBoxVOS = null;
 		}else {
-			electricBoxVOS = electricBoxService.selectByPage(Integer.valueOf(pageNo) ,Integer.valueOf(pageSize)
+			electricBoxVOS = electricBoxService.selectElectricBoxByPage(Integer.valueOf(pageNo) ,Integer.valueOf(pageSize)
 					,Integer.valueOf(orgId) ,name);
 			if (electricBoxVOS.size() == 0)
 				message = "暂无电箱";
@@ -109,8 +109,8 @@ public class ElectricBoxController extends BaseController {
 	 * @return 结果集
 	 */
 	@RequestMapping("/listElectricBoxName")
-	public Result<List<String>> selectNameByOrgId(@RequestParam("orgId")Integer orgId){
-		return new Result<>(electricBoxService.selectNameByOrgId(orgId) ,"列举成功" ,true ,200);
+	public Result<List<String>> selectElectricBoxNameByOrgId(@RequestParam("orgId")Integer orgId){
+		return new Result<>(electricBoxService.selectElectricBoxNameByOrgId(orgId) ,"列举成功" ,true ,200);
 	}
 
 	/**
@@ -120,7 +120,7 @@ public class ElectricBoxController extends BaseController {
 	 * @return 结果集
 	 */
 	@RequestMapping("/update")
-	public Result<Integer> update(@RequestBody ElectricBox electricBox){
+	public Result<Integer> updateElectricBox(@RequestBody ElectricBox electricBox){
 
 		Integer i;
 
@@ -128,7 +128,7 @@ public class ElectricBoxController extends BaseController {
 				electricBox.getOrgId(),electricBox.getLatitude(),electricBox.getLongitude()))
 			i = -1;
 		else
-			i = electricBoxService.update(electricBox);
+			i = electricBoxService.updateElectricBox(electricBox);
 
 		return getResult(i);
 	}

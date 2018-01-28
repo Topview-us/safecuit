@@ -1,7 +1,7 @@
 package com.gdut.safecuit.device.common.po;
 
 public class ElectricBox {
-    private String id;
+    private Integer id;
 
     private String name;
 
@@ -9,18 +9,20 @@ public class ElectricBox {
 
     private Integer orgId;
 
+    private Integer parentId;
+
     private Float longitude;
 
     private Float latitude;
 
     private Integer delTag;
 
-    public String getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(String id) {
-        this.id = id == null ? null : id.trim();
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public String getName() {
@@ -47,6 +49,14 @@ public class ElectricBox {
         this.orgId = orgId;
     }
 
+    public Integer getParentId() {
+        return parentId;
+    }
+
+    public void setParentId(Integer parentId) {
+        this.parentId = parentId;
+    }
+
     public Float getLongitude() {
         return longitude;
     }
@@ -71,13 +81,14 @@ public class ElectricBox {
         this.delTag = delTag;
     }
 
-    public ElectricBox(String id, String name, String address, Integer orgId, Float longitude, Float latitude, Integer delTag) {
-        this.id = id;
+    public ElectricBox() {
+    }
+
+    public ElectricBox(String name, String address, Integer orgId, Float longitude, Float latitude) {
         this.name = name;
         this.address = address;
         this.orgId = orgId;
         this.longitude = longitude;
         this.latitude = latitude;
-        this.delTag = delTag;
     }
 }

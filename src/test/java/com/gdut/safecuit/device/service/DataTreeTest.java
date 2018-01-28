@@ -19,14 +19,14 @@ public class DataTreeTest extends BaseTest {
 
 	@Test
 	public void dataTreeSelectTest(){
-		System.out.println(dataTreeService.getDataTreeList(-1 ,0 ,6));
+		//System.out.println(dataTreeService.get(-1 ,0 ,6));
 	}
 
 
 
-	@Test
+	/*@Test
 	public void hasChild(){
 		System.out.println(dataTreeMapper.hasChild(10));
-	}
+	}*/
 
 }

@@ -1,6 +1,7 @@
 package com.gdut.safecuit.device.service;
 
 import com.gdut.safecuit.common.Page;
+import com.gdut.safecuit.common.UniqueMainKeyMapper;
 import com.gdut.safecuit.common.base.BaseDao;
 import com.gdut.safecuit.common.base.BaseServiceImpl;
 import com.gdut.safecuit.device.common.po.ElectricBox;
@@ -15,9 +16,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.gdut.safecuit.common.util.StringUtil.getUUID;
-import static com.gdut.safecuit.device.common.util.DataCache.*;
 import static com.gdut.safecuit.common.DataTreeTypeCode.ELECTRIC_BOX_TYPE;
+import static com.gdut.safecuit.common.util.CacheManager.cacheMap;
+
 /**
  * Created by Garson in 15:35 2018/1/19
  * Description :
@@ -28,6 +29,8 @@ public class ElectricBoxService extends BaseServiceImpl<ElectricBox> {
 	@Resource
 	private ElectricBoxMapper electricBoxMapper;
 	@Resource
+	private UniqueMainKeyMapper uniqueMainKeyMapper;
+	@Resource
 	private DataTreeService dataTreeService;
 
 	/**
@@ -36,25 +39,39 @@ public class ElectricBoxService extends BaseServiceImpl<ElectricBox> {
 	 * @return 添加数据的条数
 	 */
 	@Transactional
-	public int insert(ElectricBox electricBox){
+	public int insertElectricBox(ElectricBox electricBox){
 		int insert;
-		electricBox.setId(getUUID());
+
+		electricBox.setId(uniqueMainKeyMapper.getMainKey());
+
 		electricBox.setDelTag(0);
+		electricBox.setParentId(electricBox.getOrgId());
 		//添加电箱
 		insert = electricBoxMapper.insertSelective(electricBox);
 
 		//添加数据树
-		if (insert == 1)
-			dataTreeService.insertElectricBoxOrDevice(electricBox.getId() ,electricBox.getName()
-					,String.valueOf(electricBox.getOrgId()) ,ELECTRIC_BOX_TYPE);
+		//if (insert == 1)
+		//	dataTreeService.insertElectricBoxOrDevice(electricBox.getName()
+		//			,String.valueOf(electricBox.getOrgId()) ,ELECTRIC_BOX_TYPE);
 
-		ELECTRIC_BOX_TOTAL++;//全局变量缓存数加一
+		Integer electric_box_total = (Integer) cacheMap.get("ELECTRIC_BOX_TOTAL");
+
+		if (electric_box_total == null)
+			cacheMap.put("ELECTRIC_BOX_TOTAL" ,electricBoxMapper.getTotal());
+		else
+			cacheMap.put("ELECTRIC_BOX_TOTAL" ,++electric_box_total);//全局变量缓存数加一
+
 		return insert;
 	}
 
-	public int deleteById(String id){
+	public int deleteElectricBoxById(Integer id){
 		int delete = electricBoxMapper.deleteByPrimaryKey(id);
-		ELECTRIC_BOX_TOTAL--;//全局变量缓存数减一
+		Integer electric_box_total = (Integer) cacheMap.get("ELECTRIC_BOX_TOTAL");
+
+		if (electric_box_total == null)
+			cacheMap.put("ELECTRIC_BOX_TOTAL" ,electricBoxMapper.getTotal());
+		else
+			cacheMap.put("ELECTRIC_BOX_TOTAL" ,--electric_box_total);//全局变量缓存数减一
 		return delete;
 	}
 
@@ -64,12 +81,17 @@ public class ElectricBoxService extends BaseServiceImpl<ElectricBox> {
 	 * @return 修改数据条数
 	 */
 	@Transactional
-	public int fakeDelete(String id){
+	public int fakeDeleteElectricBox(Integer id){
 		int delete = electricBoxMapper.fakeDelete(id);
-		if(delete == 1)
-			dataTreeService.deleteData(id ,ELECTRIC_BOX_TYPE);
+		//if(delete == 1)
+		//	dataTreeService.deleteData(id ,ELECTRIC_BOX_TYPE);
 
-		ELECTRIC_BOX_TOTAL--;//全局变量缓存数减一
+		Integer electric_box_total = (Integer) cacheMap.get("ELECTRIC_BOX_TOTAL");
+
+		if (electric_box_total == null)
+			cacheMap.put("ELECTRIC_BOX_TOTAL" ,electricBoxMapper.getTotal());
+		else
+			cacheMap.put("ELECTRIC_BOX_TOTAL" ,--electric_box_total);//全局变量缓存数减一
 		return delete;
 	}
 
@@ -81,20 +103,22 @@ public class ElectricBoxService extends BaseServiceImpl<ElectricBox> {
 	 * @param name 电箱的名称
 	 * @return ElectricBoxVO集合
 	 */
-	public List<ElectricBoxVO> selectByPage(int pageNo , int pageSize , int orgId ,String name){
+	public List<ElectricBoxVO> selectElectricBoxByPage(int pageNo , int pageSize , int orgId ,String name){
 		Page page;
-		Map<String ,Object> map;
+		//Map<String ,Object> map;
 
-		if(ELECTRIC_BOX_TOTAL == 0)
-			ELECTRIC_BOX_TOTAL = electricBoxMapper.getTotal();
+		if(cacheMap.get("ELECTRIC_BOX_TOTAL") == null)
+			cacheMap.put("ELECTRIC_BOX_TOTAL" ,electricBoxMapper.getTotal());
+		//获取电箱总数缓存
+		Integer  electric_box_total = (Integer) cacheMap.get("ELECTRIC_BOX_TOTAL");
 
-		page = new Page(pageSize,pageNo,ELECTRIC_BOX_TOTAL);
-		map = new HashMap<>();
+		page = new Page(pageSize,pageNo,electric_box_total);
+		/*map = new HashMap<>();
 		map.put("page" ,page);
 		map.put("orgId" ,orgId);
-		map.put("name" ,name);
+		map.put("name" ,name);*/
 		//搜索对应机构的电箱
-		List<ElectricBox> electricBoxes = electricBoxMapper.selectByPage(map);
+		List<ElectricBox> electricBoxes = electricBoxMapper.selectByPage(page ,orgId ,name);
 
 		List<ElectricBoxVO> electricBoxVOS = new ArrayList<>();
 
@@ -106,7 +130,7 @@ public class ElectricBoxService extends BaseServiceImpl<ElectricBox> {
 			//搜索电箱对应机构的信息
 			Map<String ,String> map1 = electricBoxMapper.searchOrgInfo(electricBox.getOrgId());
 
-			ElectricBoxVO electricBoxVO = new ElectricBoxVO(electricBox.getName() ,map1.get("address")+electricBox.getAddress()
+			ElectricBoxVO electricBoxVO = new ElectricBoxVO(electricBox.getId() ,electricBox.getName() ,map1.get("address")+electricBox.getAddress()
 					,electricBox.getLongitude() ,electricBox.getLatitude() ,map1.get("orgName") ,map1.get("personName")
 					,map1.get("phone"));
 
@@ -121,17 +145,25 @@ public class ElectricBoxService extends BaseServiceImpl<ElectricBox> {
 	 * @param orgId 机构id
 	 * @return 电箱名称集合
 	 */
-	public List<String> selectNameByOrgId(Integer orgId){
+	public List<String> selectElectricBoxNameByOrgId(Integer orgId){
 		return electricBoxMapper.selectNameByOrgId(orgId);
 	}
 
+	/**
+	 * 搜索电箱对应的相关机构的信息
+	 * @param orgId 机构id
+	 * @return map包括:address地址，orgName机构名，phone机构电话
+	 */
+	public Map<String ,String> searchOrgInfo(Integer orgId){
+		return electricBoxMapper.searchOrgInfo(orgId);
+	}
 	/**
 	 * 修改电箱
 	 * @param electricBox 修改的电箱对象，属性包括：电箱名称name、地址address、电箱所属机构的id、经度longitude、纬度latitude
 	 * @return 修改数据条数
 	 */
 	@Transactional
-	public int update(ElectricBox electricBox){
+	public int updateElectricBox(ElectricBox electricBox){
 
 		Integer update;
 
@@ -140,9 +172,9 @@ public class ElectricBoxService extends BaseServiceImpl<ElectricBox> {
 			return 0;
 		else {
 			update = electricBoxMapper.updateByPrimaryKeySelective(electricBox);
-			if (update == 1)
-				dataTreeService.updateData(electricBox.getId() ,electricBox.getId() ,
-						String.valueOf(electricBox.getOrgId()) ,ELECTRIC_BOX_TYPE);
+		//	if (update == 1)
+		//		dataTreeService.updateData(electricBox.getId() ,electricBox.getId() ,
+		//				String.valueOf(electricBox.getOrgId()) ,ELECTRIC_BOX_TYPE);
 		}
 		return update;
 	}

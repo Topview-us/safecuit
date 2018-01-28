@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.gdut.safecuit.monitor.dao.DataLogMapper" >
+  <resultMap id="BaseResultMap" type="com.gdut.safecuit.monitor.common.po.DataLog" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="serial_no" property="serialNo" jdbcType="INTEGER" />
+    <result column="device_id" property="deviceId" jdbcType="VARCHAR" />
+    <result column="circuit_no" property="circuitNo" jdbcType="INTEGER" />
+    <result column="circuit_status" property="circuitStatus" jdbcType="INTEGER" />
+    <result column="value" property="value" jdbcType="VARCHAR" />
+    <result column="date" property="date" jdbcType="DATE" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, serial_no, device_id, circuit_no, circuit_status, value, date
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from data_log
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+
+  <select id="selectHistoryData" resultMap="BaseResultMap">
+    SELECT * FROM
+    <choose>
+      <when test="typeId = 201">
+        data_log_current
+      </when>
+      <when test="typeId = 202">
+        data_log_temperature
+      </when>
+      <when test="typeId = 203">
+        data_log_mili_current
+      </when>
+    </choose>
+    WHERE device_id = #{deviceId}
+    <if test="startDate != null">
+      AND date &gt; #{startDate}
+    </if>
+    <if test="endDate != null">
+      AND date &lt; #{endDate}
+    </if>
+
+    limit #{page.index} ,#{page.pageSize}
+  </select>
+
+  <select id="getTotalByTypeIdAndDeviceId" resultType="java.lang.Integer">
+    select count(*) FROM
+    <choose>
+      <when test="typeId = 201">
+        data_log_current
+      </when>
+      <when test="typeId = 202">
+        data_log_temperature
+      </when>
+      <when test="typeId = 203">
+        data_log_mili_current
+      </when>
+    </choose>
+    WHERE device_id = #{deviceId}
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from data_log
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.gdut.safecuit.monitor.common.po.DataLog" >
+    insert into data_log (id, serial_no, device_id, 
+      circuit_no, circuit_status, value, 
+      date)
+    values (#{id,jdbcType=INTEGER}, #{serialNo,jdbcType=INTEGER}, #{deviceId,jdbcType=VARCHAR}, 
+      #{circuitNo,jdbcType=INTEGER}, #{circuitStatus,jdbcType=INTEGER}, #{value,jdbcType=VARCHAR}, 
+      #{date,jdbcType=DATE})
+  </insert>
+  <insert id="insertSelective" parameterType="com.gdut.safecuit.monitor.common.po.DataLog" >
+    insert into data_log
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="serialNo != null" >
+        serial_no,
+      </if>
+      <if test="deviceId != null" >
+        device_id,
+      </if>
+      <if test="circuitNo != null" >
+        circuit_no,
+      </if>
+      <if test="circuitStatus != null" >
+        circuit_status,
+      </if>
+      <if test="value != null" >
+        value,
+      </if>
+      <if test="date != null" >
+        date,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="serialNo != null" >
+        #{serialNo,jdbcType=INTEGER},
+      </if>
+      <if test="deviceId != null" >
+        #{deviceId,jdbcType=VARCHAR},
+      </if>
+      <if test="circuitNo != null" >
+        #{circuitNo,jdbcType=INTEGER},
+      </if>
+      <if test="circuitStatus != null" >
+        #{circuitStatus,jdbcType=INTEGER},
+      </if>
+      <if test="value != null" >
+        #{value,jdbcType=VARCHAR},
+      </if>
+      <if test="date != null" >
+        #{date,jdbcType=DATE},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.gdut.safecuit.monitor.common.po.DataLog" >
+    update data_log
+    <set >
+      <if test="serialNo != null" >
+        serial_no = #{serialNo,jdbcType=INTEGER},
+      </if>
+      <if test="deviceId != null" >
+        device_id = #{deviceId,jdbcType=VARCHAR},
+      </if>
+      <if test="circuitNo != null" >
+        circuit_no = #{circuitNo,jdbcType=INTEGER},
+      </if>
+      <if test="circuitStatus != null" >
+        circuit_status = #{circuitStatus,jdbcType=INTEGER},
+      </if>
+      <if test="value != null" >
+        value = #{value,jdbcType=VARCHAR},
+      </if>
+      <if test="date != null" >
+        date = #{date,jdbcType=DATE},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.gdut.safecuit.monitor.common.po.DataLog" >
+    update data_log
+    set serial_no = #{serialNo,jdbcType=INTEGER},
+      device_id = #{deviceId,jdbcType=VARCHAR},
+      circuit_no = #{circuitNo,jdbcType=INTEGER},
+      circuit_status = #{circuitStatus,jdbcType=INTEGER},
+      value = #{value,jdbcType=VARCHAR},
+      date = #{date,jdbcType=DATE}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

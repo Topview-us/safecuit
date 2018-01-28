@@ -2,46 +2,59 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.gdut.safecuit.device.dao.DeviceMapper" >
   <resultMap id="BaseResultMap" type="com.gdut.safecuit.device.common.po.Device" >
-    <id column="id" property="id" jdbcType="VARCHAR" />
+    <id column="id" property="id" jdbcType="INTEGER" />
     <result column="code" property="code" jdbcType="VARCHAR" />
     <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="electric_box_id" property="electricBoxId" jdbcType="INTEGER" />
     <result column="temperature_value" property="temperatureValue" jdbcType="VARCHAR" />
-    <result column="electric_box_id" property="electricBoxId" jdbcType="VARCHAR" />
-    <result column="is_online" property="isOneline" jdbcType="INTEGER" />
+    <result column="is_online" property="isOnline" jdbcType="INTEGER" />
     <result column="type_id" property="typeId" jdbcType="INTEGER" />
     <result column="del_tag" property="delTag" jdbcType="INTEGER" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, code, name, temperature_value, electric_box_id, is_online ,type_id, del_tag
+    id, code, name, electric_box_id, temperature_value, is_online, type_id, del_tag
   </sql>
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
     <include refid="Base_Column_List" />
     from device
-    where id = #{id,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
   </select>
 
-  <resultMap id="searchElectricBoxMap" type="java.util.Map">
-    <result column="address" property="address" jdbcType="VARCHAR" />
+  <!--<resultMap id="selectByPageMap" type="com.gdut.safecuit.device.common.po.Device">
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="code" property="code" jdbcType="VARCHAR" />
     <result column="name" property="name" jdbcType="VARCHAR" />
-  </resultMap>
-  <select id="searchElectricBox" resultMap="searchElectricBoxMap" parameterType="java.lang.String">
-    SELECT CONCAT(p.name,c.name,a.name,eb.address) as address ,eb.name as name " +
-            "FROM province p ,city c ,AREA a ,orginazation o ,electric_box eb " +
-            "WHERE p.id = c.province_id AND c.id = a.city_id AND a.id = o.`area_id` " +
-            "AND o.`id` = eb.org_id AND eb.id = #{electricBoxId}
+    <result column="electric_box_id" property="electricBoxId" jdbcType="INTEGER" />
+    <result column="is_online" property="isOnline" jdbcType="INTEGER" />
+    <result column="type_id" property="typeId" jdbcType="INTEGER" />
+    <result column="del_tag" property="delTag" jdbcType="INTEGER" />
+  </resultMap>-->
+  <select id="selectByPage" resultMap="BaseResultMap">
+    select * from device where
+    <if test="code != null">
+       code = #{code} AND
+    </if>
+    <if test="typeId != 0">
+       type_id = #{typeId} AND
+    </if>
+    electric_box_id = #{electricBoxId} AND del_tag=0 limit #{page.Index} ,#{page.pageSize}
   </select>
 
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+  <select id="selectDeviceIdByElectricBoxId" parameterType="java.util.List">
+    SELECT id from device WHERE electric_box_id = #{electricBoxId}
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from device
-    where id = #{id,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
   </delete>
   <insert id="insert" parameterType="com.gdut.safecuit.device.common.po.Device" >
     insert into device (id, code, name, 
-      temperature_value, electric_box_id, is_oneline ,type_id,
-      del_tag)
-    values (#{id,jdbcType=VARCHAR}, #{code,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, 
-      #{temperatureValue,jdbcType=VARCHAR}, #{electricBoxId,jdbcType=VARCHAR}, #{isOnline ,jdbcType=INTEGER},
+      electric_box_id, temperature_value, is_online, 
+      type_id, del_tag)
+    values (#{id,jdbcType=INTEGER}, #{code,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, 
+      #{electricBoxId,jdbcType=INTEGER}, #{temperatureValue,jdbcType=VARCHAR}, #{isOnline,jdbcType=INTEGER}, 
       #{typeId,jdbcType=INTEGER}, #{delTag,jdbcType=INTEGER})
   </insert>
   <insert id="insertSelective" parameterType="com.gdut.safecuit.device.common.po.Device" >
@@ -56,11 +69,11 @@
       <if test="name != null" >
         name,
       </if>
-      <if test="temperatureValue != null" >
-        temperature_value,
-      </if>
       <if test="electricBoxId != null" >
         electric_box_id,
+      </if>
+      <if test="temperatureValue != null" >
+        temperature_value,
       </if>
       <if test="isOnline != null" >
         is_online,
@@ -74,7 +87,7 @@
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="id != null" >
-        #{id,jdbcType=VARCHAR},
+        #{id,jdbcType=INTEGER},
       </if>
       <if test="code != null" >
         #{code,jdbcType=VARCHAR},
@@ -82,14 +95,14 @@
       <if test="name != null" >
         #{name,jdbcType=VARCHAR},
       </if>
+      <if test="electricBoxId != null" >
+        #{electricBoxId,jdbcType=INTEGER},
+      </if>
       <if test="temperatureValue != null" >
         #{temperatureValue,jdbcType=VARCHAR},
       </if>
       <if test="isOnline != null" >
         #{isOnline,jdbcType=INTEGER},
-      </if>
-      <if test="electricBoxId != null" >
-        #{electricBoxId,jdbcType=VARCHAR},
       </if>
       <if test="typeId != null" >
         #{typeId,jdbcType=INTEGER},
@@ -108,11 +121,11 @@
       <if test="name != null" >
         name = #{name,jdbcType=VARCHAR},
       </if>
+      <if test="electricBoxId != null" >
+        electric_box_id = #{electricBoxId,jdbcType=INTEGER},
+      </if>
       <if test="temperatureValue != null" >
         temperature_value = #{temperatureValue,jdbcType=VARCHAR},
-      </if>
-      <if test="electricBoxId != null" >
-        electric_box_id = #{electricBoxId,jdbcType=VARCHAR},
       </if>
       <if test="isOnline != null" >
         is_online = #{isOnline,jdbcType=INTEGER},
@@ -124,17 +137,17 @@
         del_tag = #{delTag,jdbcType=INTEGER},
       </if>
     </set>
-    where id = #{id,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.gdut.safecuit.device.common.po.Device" >
     update device
     set code = #{code,jdbcType=VARCHAR},
       name = #{name,jdbcType=VARCHAR},
+      electric_box_id = #{electricBoxId,jdbcType=INTEGER},
       temperature_value = #{temperatureValue,jdbcType=VARCHAR},
-      electric_box_id = #{electricBoxId,jdbcType=VARCHAR},
       is_online = #{isOnline,jdbcType=INTEGER},
       type_id = #{typeId,jdbcType=INTEGER},
       del_tag = #{delTag,jdbcType=INTEGER}
-    where id = #{id,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
   </update>
 </mapper>

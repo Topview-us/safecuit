@@ -39,7 +39,7 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
-		<!--springboot-mybatis-->
+		<!--springBoot-mybatis-->
 		<dependency>
 			<groupId>org.mybatis.spring.boot</groupId>
 			<artifactId>mybatis-spring-boot-starter</artifactId>
@@ -61,13 +61,23 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-thymeleaf</artifactId>
 		</dependency>
+		<!--websocket-->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-websocket</artifactId>
+		</dependency>
 		<!--webservice cxf-->
 		<dependency>
 			<groupId>org.apache.cxf</groupId>
 			<artifactId>cxf-spring-boot-starter-jaxws</artifactId>
-			<version>3.2.1</version>
+			<version>3.1.11</version>
 		</dependency>
 
+		<dependency>
+			<groupId>com.alibaba</groupId>
+			<artifactId>fastjson</artifactId>
+			<version>1.2.44</version>
+		</dependency>
 		<!--mysql-->
 		<dependency>
 			<groupId>mysql</groupId>
@@ -86,23 +96,12 @@
 			<artifactId>druid</artifactId>
 			<version>1.1.5</version>
 		</dependency>
-
+		<!--百度语音-->
 		<dependency>
 			<groupId>com.baidu.aip</groupId>
 			<artifactId>java-sdk</artifactId>
 			<version>4.1.0</version>
 		</dependency>
-
-		<!--<dependency>
-			<groupId>com.baidu.aip</groupId>
-			<artifactId>aip-1.0.0</artifactId>
-			<version>1.0.0</version>
-		</dependency>-->
-		<!--<dependency>
-			<groupId>com.alibaba</groupId>
-			<artifactId>druid-spring-boot-starter</artifactId>
-			<version>1.1.6</version>
-		</dependency>-->
 
 	</dependencies>
 

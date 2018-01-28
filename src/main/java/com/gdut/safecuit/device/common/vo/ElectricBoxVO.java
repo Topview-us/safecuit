@@ -6,6 +6,7 @@ package com.gdut.safecuit.device.common.vo;
  */
 public class ElectricBoxVO {
 
+	private Integer electricBoxId;
 	private String name;
 	private String address;//省+市+区+电箱地址
 	private float longitude;//电箱经度
@@ -14,6 +15,13 @@ public class ElectricBoxVO {
 	private String orgManager;//机构管理员
 	private String phone;//机构电话
 
+	public Integer getElectricBoxId() {
+		return electricBoxId;
+	}
+
+	public void setElectricBoxId(Integer electricBoxId) {
+		this.electricBoxId = electricBoxId;
+	}
 
 	public String getName() {
 		return name;
@@ -72,7 +80,8 @@ public class ElectricBoxVO {
 	}
 
 
-	public ElectricBoxVO(String name, String address, float longitude, float latitude, String orgName, String orgManager, String phone) {
+	public ElectricBoxVO(Integer electricBoxId ,String name, String address, float longitude, float latitude, String orgName, String orgManager, String phone) {
+		this.electricBoxId = electricBoxId;
 		this.name = name;
 		this.address = address;
 		this.longitude = longitude;

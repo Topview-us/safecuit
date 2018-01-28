@@ -17,11 +17,15 @@ public class BaseController {
 			message = "参数缺失";
 			status = 400;
 			isSuccess = false;
-		}else if(i == 0){
+		} else if(i == -2){
+			message = "数据已存在";
+			status = 400;
+			isSuccess = false;
+		} else if(i == 0){
 			message = "操作失败，请重试";
 			status = 500;
 			isSuccess = false;
-		}else {
+		} else {
 			message = "操作成功";
 			status = 200;
 			isSuccess = true;

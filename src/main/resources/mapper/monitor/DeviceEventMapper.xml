@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.gdut.safecuit.monitor.dao.DeviceEventMapper" >
+  <resultMap id="BaseResultMap" type="com.gdut.safecuit.monitor.common.po.DeviceEvent" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="event_code" property="eventCode" jdbcType="INTEGER" />
+    <result column="device_id" property="deviceId" jdbcType="INTEGER" />
+    <result column="circuit_no" property="circuitNo" jdbcType="INTEGER" />
+    <result column="time" property="time" jdbcType="TIMESTAMP" />
+    <result column="serial_no" property="serialNo" jdbcType="INTEGER" />
+    <result column="type" property="type" jdbcType="INTEGER" />
+  </resultMap>
+  <resultMap id="ResultMapWithBLOBs" type="com.gdut.safecuit.monitor.common.po.DeviceEvent" extends="BaseResultMap" >
+    <result column="pair" property="pair" jdbcType="LONGVARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, event_code, device_id, circuit_no, time, serial_no, type
+  </sql>
+  <sql id="Blob_Column_List" >
+    pair
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from device_event
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+
+  <select id="selectAllByPage" resultMap="BaseResultMap">
+    select de.* from device_event de ,device d WHERE  de.`device_id` = d.`id`
+    AND electric_box_id = #{electricBoxId} limit #{page.index} ,#{page.pageSize}
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from device_event
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.gdut.safecuit.monitor.common.po.DeviceEvent" >
+    insert into device_event (id, event_code, device_id, 
+      circuit_no, time, serial_no, 
+      type, pair)
+    values (#{id,jdbcType=INTEGER}, #{eventCode,jdbcType=INTEGER}, #{deviceId,jdbcType=INTEGER}, 
+      #{circuitNo,jdbcType=INTEGER}, #{time,jdbcType=TIMESTAMP}, #{serialNo,jdbcType=INTEGER}, 
+      #{type,jdbcType=INTEGER}, #{pair,jdbcType=LONGVARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.gdut.safecuit.monitor.common.po.DeviceEvent" >
+    insert into device_event
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="eventCode != null" >
+        event_code,
+      </if>
+      <if test="deviceId != null" >
+        device_id,
+      </if>
+      <if test="circuitNo != null" >
+        circuit_no,
+      </if>
+      <if test="time != null" >
+        time,
+      </if>
+      <if test="serialNo != null" >
+        serial_no,
+      </if>
+      <if test="type != null" >
+        type,
+      </if>
+      <if test="pair != null" >
+        pair,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="eventCode != null" >
+        #{eventCode,jdbcType=INTEGER},
+      </if>
+      <if test="deviceId != null" >
+        #{deviceId,jdbcType=INTEGER},
+      </if>
+      <if test="circuitNo != null" >
+        #{circuitNo,jdbcType=INTEGER},
+      </if>
+      <if test="time != null" >
+        #{time,jdbcType=TIMESTAMP},
+      </if>
+      <if test="serialNo != null" >
+        #{serialNo,jdbcType=INTEGER},
+      </if>
+      <if test="type != null" >
+        #{type,jdbcType=INTEGER},
+      </if>
+      <if test="pair != null" >
+        #{pair,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.gdut.safecuit.monitor.common.po.DeviceEvent" >
+    update device_event
+    <set >
+      <if test="eventCode != null" >
+        event_code = #{eventCode,jdbcType=INTEGER},
+      </if>
+      <if test="deviceId != null" >
+        device_id = #{deviceId,jdbcType=INTEGER},
+      </if>
+      <if test="circuitNo != null" >
+        circuit_no = #{circuitNo,jdbcType=INTEGER},
+      </if>
+      <if test="time != null" >
+        time = #{time,jdbcType=TIMESTAMP},
+      </if>
+      <if test="serialNo != null" >
+        serial_no = #{serialNo,jdbcType=INTEGER},
+      </if>
+      <if test="type != null" >
+        type = #{type,jdbcType=INTEGER},
+      </if>
+      <if test="pair != null" >
+        pair = #{pair,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.gdut.safecuit.monitor.common.po.DeviceEvent" >
+    update device_event
+    set event_code = #{eventCode,jdbcType=INTEGER},
+      device_id = #{deviceId,jdbcType=INTEGER},
+      circuit_no = #{circuitNo,jdbcType=INTEGER},
+      time = #{time,jdbcType=TIMESTAMP},
+      serial_no = #{serialNo,jdbcType=INTEGER},
+      type = #{type,jdbcType=INTEGER},
+      pair = #{pair,jdbcType=LONGVARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.gdut.safecuit.monitor.common.po.DeviceEvent" >
+    update device_event
+    set event_code = #{eventCode,jdbcType=INTEGER},
+      device_id = #{deviceId,jdbcType=INTEGER},
+      circuit_no = #{circuitNo,jdbcType=INTEGER},
+      time = #{time,jdbcType=TIMESTAMP},
+      serial_no = #{serialNo,jdbcType=INTEGER},
+      type = #{type,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

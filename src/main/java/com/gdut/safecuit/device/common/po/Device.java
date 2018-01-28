@@ -1,15 +1,15 @@
 package com.gdut.safecuit.device.common.po;
 
 public class Device {
-    private String id;
+    private Integer id;
 
     private String code;
 
     private String name;
 
-    private String temperatureValue;
+    private Integer electricBoxId;
 
-    private String electricBoxId;
+    private String temperatureValue;
 
     private Integer isOnline;
 
@@ -17,12 +17,12 @@ public class Device {
 
     private Integer delTag;
 
-    public String getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(String id) {
-        this.id = id == null ? null : id.trim();
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public String getCode() {
@@ -41,20 +41,20 @@ public class Device {
         this.name = name == null ? null : name.trim();
     }
 
+    public Integer getElectricBoxId() {
+        return electricBoxId;
+    }
+
+    public void setElectricBoxId(Integer electricBoxId) {
+        this.electricBoxId = electricBoxId;
+    }
+
     public String getTemperatureValue() {
         return temperatureValue;
     }
 
     public void setTemperatureValue(String temperatureValue) {
         this.temperatureValue = temperatureValue == null ? null : temperatureValue.trim();
-    }
-
-    public String getElectricBoxId() {
-        return electricBoxId;
-    }
-
-    public void setElectricBoxId(String electricBoxId) {
-        this.electricBoxId = electricBoxId == null ? null : electricBoxId.trim();
     }
 
     public Integer getIsOnline() {
@@ -81,18 +81,40 @@ public class Device {
         this.delTag = delTag;
     }
 
-    public Device(String id, String code, String name, String temperatureValue,
-                  String electricBoxId, Integer isOnline, Integer typeId, Integer delTag) {
+    public Device() {
+    }
+
+    public Device(Integer id, String code, String name, Integer electricBoxId,
+                  String temperatureValue, Integer isOnline, Integer typeId, Integer delTag) {
         this.id = id;
         this.code = code;
         this.name = name;
-        this.temperatureValue = temperatureValue;
         this.electricBoxId = electricBoxId;
+        this.temperatureValue = temperatureValue;
         this.isOnline = isOnline;
         this.typeId = typeId;
         this.delTag = delTag;
     }
 
-    public Device() {
+    public Device(String code, String name, Integer electricBoxId, String temperatureValue, Integer typeId) {
+        this.code = code;
+        this.name = name;
+        this.electricBoxId = electricBoxId;
+        this.temperatureValue = temperatureValue;
+        this.typeId = typeId;
+    }
+
+    @Override
+    public String toString() {
+        return "Device{" +
+                "id=" + id +
+                ", code='" + code + '\'' +
+                ", name='" + name + '\'' +
+                ", electricBoxId=" + electricBoxId +
+                ", temperatureValue='" + temperatureValue + '\'' +
+                ", isOnline=" + isOnline +
+                ", typeId=" + typeId +
+                ", delTag=" + delTag +
+                '}';
     }
 }
