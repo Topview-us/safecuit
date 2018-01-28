@@ -66,12 +66,18 @@ public class UserService {
         return userMapper.deleteByExample(userExample);
     }
 
+    /**
+     * 添加 user
+     * @param user user 对象
+     * @return user 的主键
+     */
     public int insert(User user) {
         try {
             String hashPsw = Pbkdf2Util.createHash(user.getPassword());
             user.setDelTag(0);
             user.setPassword(hashPsw);
-            return userMapper.insertSelective(user);
+            userMapper.insertSelective(user);
+            return user.getUserId();
         } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
             e.printStackTrace();
         }

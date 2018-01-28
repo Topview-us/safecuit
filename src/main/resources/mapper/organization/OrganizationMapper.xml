@@ -6,6 +6,7 @@
     <result column="name" jdbcType="VARCHAR" property="name" />
     <result column="address" jdbcType="VARCHAR" property="address" />
     <result column="area_id" jdbcType="INTEGER" property="areaId" />
+    <result column="parent_id" jdbcType="INTEGER" property="parentId" />
     <result column="manager_id" jdbcType="INTEGER" property="managerId" />
     <result column="email" jdbcType="VARCHAR" property="email" />
     <result column="phone" jdbcType="VARCHAR" property="phone" />
@@ -71,7 +72,8 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    org_id, name, address, area_id, manager_id, email, phone, description, del_tag
+    org_id, name, address, area_id, parent_id, manager_id, email, phone, description, 
+    del_tag
   </sql>
   <select id="selectByExample" parameterType="com.gdut.safecuit.organization.common.po.example.OrganizationExample" resultMap="BaseResultMap">
     select
@@ -113,13 +115,13 @@
   </delete>
   <insert id="insert" parameterType="com.gdut.safecuit.organization.common.po.Organization">
     insert into organization (org_id, name, address, 
-      area_id, manager_id, email, 
-      phone, description, del_tag
-      )
+      area_id, parent_id, manager_id, 
+      email, phone, description, 
+      del_tag)
     values (#{orgId,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR}, 
-      #{areaId,jdbcType=INTEGER}, #{managerId,jdbcType=INTEGER}, #{email,jdbcType=VARCHAR}, 
-      #{phone,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, #{delTag,jdbcType=INTEGER}
-      )
+      #{areaId,jdbcType=INTEGER}, #{parentId,jdbcType=INTEGER}, #{managerId,jdbcType=INTEGER}, 
+      #{email,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, 
+      #{delTag,jdbcType=INTEGER})
   </insert>
   <insert id="insertSelective" parameterType="com.gdut.safecuit.organization.common.po.Organization">
     insert into organization
@@ -135,6 +137,9 @@
       </if>
       <if test="areaId != null">
         area_id,
+      </if>
+      <if test="parentId != null">
+        parent_id,
       </if>
       <if test="managerId != null">
         manager_id,
@@ -164,6 +169,9 @@
       </if>
       <if test="areaId != null">
         #{areaId,jdbcType=INTEGER},
+      </if>
+      <if test="parentId != null">
+        #{parentId,jdbcType=INTEGER},
       </if>
       <if test="managerId != null">
         #{managerId,jdbcType=INTEGER},
@@ -203,6 +211,9 @@
       <if test="record.areaId != null">
         area_id = #{record.areaId,jdbcType=INTEGER},
       </if>
+      <if test="record.parentId != null">
+        parent_id = #{record.parentId,jdbcType=INTEGER},
+      </if>
       <if test="record.managerId != null">
         manager_id = #{record.managerId,jdbcType=INTEGER},
       </if>
@@ -229,6 +240,7 @@
       name = #{record.name,jdbcType=VARCHAR},
       address = #{record.address,jdbcType=VARCHAR},
       area_id = #{record.areaId,jdbcType=INTEGER},
+      parent_id = #{record.parentId,jdbcType=INTEGER},
       manager_id = #{record.managerId,jdbcType=INTEGER},
       email = #{record.email,jdbcType=VARCHAR},
       phone = #{record.phone,jdbcType=VARCHAR},
@@ -249,6 +261,9 @@
       </if>
       <if test="areaId != null">
         area_id = #{areaId,jdbcType=INTEGER},
+      </if>
+      <if test="parentId != null">
+        parent_id = #{parentId,jdbcType=INTEGER},
       </if>
       <if test="managerId != null">
         manager_id = #{managerId,jdbcType=INTEGER},
@@ -273,6 +288,7 @@
     set name = #{name,jdbcType=VARCHAR},
       address = #{address,jdbcType=VARCHAR},
       area_id = #{areaId,jdbcType=INTEGER},
+      parent_id = #{parentId,jdbcType=INTEGER},
       manager_id = #{managerId,jdbcType=INTEGER},
       email = #{email,jdbcType=VARCHAR},
       phone = #{phone,jdbcType=VARCHAR},

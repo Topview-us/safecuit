@@ -24,13 +24,14 @@ public class UserServiceTest extends BaseTest {
 
     @Test
     public void insert() {
-        for (int i = 0; i < 20; i++) {
+        for (int i = 40; i < 60; i++) {
             User user = new User();
             user.setUsername("username" + i);
             user.setRealName("realName" + i);
             user.setPassword("qaws");
             user.setOrgId(1);
-            userService.insert(user);
+            int a = userService.insert(user);
+            System.out.println(a);
         }
     }
 

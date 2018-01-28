@@ -22,7 +22,7 @@ public class ProvinceCityAreaController {
 
     @RequestMapping("/getAllProvinces")
     public Result<List<Province>> getAllProvinces() {
-        List<Province> provinces = provinceCityAreaService.getAllProvince();
+        List<Province> provinces = provinceCityAreaService.getAllProvinces();
         return new Result<>(provinces, "请求成功", true, 200);
     }
 
@@ -31,7 +31,7 @@ public class ProvinceCityAreaController {
         if (!MatchUtil.isPositiveNumber(provinceId)) {
             return new Result<>(null, "省份id无效", false, 500);
         } else {
-            List<City> cities = provinceCityAreaService.getCityByProvinceId(provinceId);
+            List<City> cities = provinceCityAreaService.getCitiesByProvinceId(provinceId);
             return new Result<>(cities, "请求成功", true, 200);
         }
     }
@@ -41,7 +41,7 @@ public class ProvinceCityAreaController {
         if (!MatchUtil.isPositiveNumber(cityId)) {
             return new Result<>(null, "市id无效", false, 500);
         } else {
-            List<Area> areas = provinceCityAreaService.getAreaByCityId(cityId);
+            List<Area> areas = provinceCityAreaService.getAreasByCityId(cityId);
             return new Result<>(areas, "请求成功", true, 200);
         }
     }

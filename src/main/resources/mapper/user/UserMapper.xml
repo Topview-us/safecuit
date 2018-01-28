@@ -111,7 +111,7 @@
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="insert" parameterType="com.gdut.safecuit.user.common.po.User">
+  <insert id="insert" useGeneratedKeys="true" keyProperty="userId" parameterType="com.gdut.safecuit.user.common.po.User">
     insert into s_user (user_id, username, real_name, 
       password, org_id, phone, 
       qq, description, del_tag
@@ -121,7 +121,7 @@
       #{qq,jdbcType=INTEGER}, #{description,jdbcType=VARCHAR}, #{delTag,jdbcType=INTEGER}
       )
   </insert>
-  <insert id="insertSelective" parameterType="com.gdut.safecuit.user.common.po.User">
+  <insert id="insertSelective" useGeneratedKeys="true" keyProperty="userId" parameterType="com.gdut.safecuit.user.common.po.User">
     insert into s_user
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="userId != null">

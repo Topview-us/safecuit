@@ -14,13 +14,15 @@ public class Organization implements Serializable {
 
     private Integer areaId;
 
+    private Integer parentId;
+
     private Integer managerId;
 
-    private String email;
+    private String email; // 可选
 
-    private String phone;
+    private String phone; // 可选
 
-    private String description;
+    private String description; // 可选
 
     private Integer delTag;
 
@@ -56,6 +58,14 @@ public class Organization implements Serializable {
 
     public void setAreaId(Integer areaId) {
         this.areaId = areaId;
+    }
+
+    public Integer getParentId() {
+        return parentId;
+    }
+
+    public void setParentId(Integer parentId) {
+        this.parentId = parentId;
     }
 
     public Integer getManagerId() {
@@ -114,6 +124,7 @@ public class Organization implements Serializable {
             && (this.getName() == null ? other.getName() == null : this.getName().equals(other.getName()))
             && (this.getAddress() == null ? other.getAddress() == null : this.getAddress().equals(other.getAddress()))
             && (this.getAreaId() == null ? other.getAreaId() == null : this.getAreaId().equals(other.getAreaId()))
+            && (this.getParentId() == null ? other.getParentId() == null : this.getParentId().equals(other.getParentId()))
             && (this.getManagerId() == null ? other.getManagerId() == null : this.getManagerId().equals(other.getManagerId()))
             && (this.getEmail() == null ? other.getEmail() == null : this.getEmail().equals(other.getEmail()))
             && (this.getPhone() == null ? other.getPhone() == null : this.getPhone().equals(other.getPhone()))
@@ -129,6 +140,7 @@ public class Organization implements Serializable {
         result = prime * result + ((getName() == null) ? 0 : getName().hashCode());
         result = prime * result + ((getAddress() == null) ? 0 : getAddress().hashCode());
         result = prime * result + ((getAreaId() == null) ? 0 : getAreaId().hashCode());
+        result = prime * result + ((getParentId() == null) ? 0 : getParentId().hashCode());
         result = prime * result + ((getManagerId() == null) ? 0 : getManagerId().hashCode());
         result = prime * result + ((getEmail() == null) ? 0 : getEmail().hashCode());
         result = prime * result + ((getPhone() == null) ? 0 : getPhone().hashCode());
@@ -147,6 +159,7 @@ public class Organization implements Serializable {
         sb.append(", name=").append(name);
         sb.append(", address=").append(address);
         sb.append(", areaId=").append(areaId);
+        sb.append(", parentId=").append(parentId);
         sb.append(", managerId=").append(managerId);
         sb.append(", email=").append(email);
         sb.append(", phone=").append(phone);
