@@ -55,13 +55,15 @@ public class OrganizationService {
         OrganizationExample example = new OrganizationExample();
         example.setOffset(offset);
         example.setLimit(limit);
-        example.or().andDelTagEqualTo(0);
+        example.or()
+                .andDelTagEqualTo(0);
         return organizationMapper.selectByExample(example);
     }
 
     public List<Organization> selectOrganizationByParentId(int parentId) {
         OrganizationExample example = new OrganizationExample();
-        example.or().andParentIdEqualTo(parentId);
+        example.or()
+                .andParentIdEqualTo(parentId);
         return organizationMapper.selectByExample(example);
     }
 
@@ -77,7 +79,8 @@ public class OrganizationService {
     }
 
     public int update(Organization org) {
-        //设置禁止修改项
+        Organization originalOrg = selectOrganizationByOrgId(org.getOrgId());
+        // 设置禁止修改项
         org.setDelTag(null);
         return organizationMapper.updateByPrimaryKeySelective(org);
     }

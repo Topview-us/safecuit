@@ -24,7 +24,7 @@ public class UserServiceTest extends BaseTest {
 
     @Test
     public void insert() {
-        for (int i = 40; i < 60; i++) {
+        for (int i = 0; i < 60; i++) {
             User user = new User();
             user.setUsername("username" + i);
             user.setRealName("realName" + i);

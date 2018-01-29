@@ -1,12 +1,9 @@
 package com.gdut.safecuit.user.web;
 
 import com.gdut.safecuit.common.Result;
-import com.gdut.safecuit.common.util.MatchUtil;
-import com.gdut.safecuit.common.util.StringUtil;
 import com.gdut.safecuit.organization.common.po.Organization;
 import com.gdut.safecuit.organization.service.OrganizationService;
 import com.gdut.safecuit.user.common.po.User;
-import com.gdut.safecuit.user.common.util.UserConstant;
 import com.gdut.safecuit.user.common.vo.UserVO;
 import com.gdut.safecuit.user.service.UserService;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -16,7 +13,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/user")
@@ -29,9 +28,9 @@ public class UserController {
     private OrganizationService organizationService;
 
     @RequestMapping("/add")
-    public Result<Integer> addUser(@RequestBody User user) {
+    public Result<Integer> addUser(@RequestBody User user, @RequestParam("repassword") String rePassword) {
         if (user.getUsername() == null || user.getRealName() == null || user.getPassword() == null
-                || user.getUserId() == null) {
+                || user.getUserId() == null || rePassword == null) {
             return new Result<>(0, "信息不能为空", false, 500);
         }
         //
@@ -41,26 +40,75 @@ public class UserController {
         return new Result<>(effect, "添加成功", true, 200);
     }
 
-    @RequestMapping("/delete")
-    public Result<Integer> deleteUser(@RequestParam("username") String username) {
-        if (!StringUtil.isString(username, UserConstant.getUsernameMinLength(), UserConstant.getUsernameMaxLength())) {
-            return new Result<>(0, "用户名不正确", false, 500);
+    @RequestMapping("/checkDuplicateUsername")
+    public Result<Integer> checkDuplicateUsername(@RequestParam("username") String username) {
+        if (userService.isExist(username)) {
+            return new Result<>(0, "username已存在", false, 500);
+        } else {
+            return new Result<>(1, "username不存在", true, 500);
         }
-        int effect = userService.fakeDeleteByUsername(username);
-        return new Result<>(effect, "删除成功", true, 200);
     }
 
+//    @RequestMapping("/delete")
+//    public Result<Integer> deleteUser(@RequestParam("username") String username) {
+//        if (!StringUtil.isString(username, UserConstant.getUsernameMinLength(), UserConstant.getUsernameMaxLength())) {
+//            return new Result<>(0, "用户名不正确", false, 500);
+//        }
+//        int effect = userService.fakeDeleteByUsername(username);
+//        return new Result<>(effect, "删除成功", true, 200);
+//    }
+
+    @RequestMapping("/delete")
+    public Result<Integer> deleteUsers(@RequestParam("id") int[] id) {
+        int effect = userService.fakeDeleteUsers(id);
+        if (effect > 0) {
+            return new Result<>(effect, "删除成功", true, 200);
+        } else {
+            return new Result<>(effect, "删除失败", true, 200);
+        }
+    }
+
+//    @RequestMapping("/list")
+//    public Result<List<UserVO>> selectUsersByPage(@RequestParam("offset") Integer offset, @RequestParam("limit") Integer limit) {
+//        List<UserVO> userVOS = new ArrayList<>();
+//        if (offset == null || limit == null || offset < 0 || limit < 0) {
+//            return new Result<>(userVOS, "获取用户列表失败", false, 500);
+//        }
+//        List<User> users = userService.selectUsersByPage(offset, limit);
+//        for (User user : users) {
+//            userVOS.add(getUserVO(user));
+//        }
+//        return new Result<>(userVOS, "获取用户列表成功", true, 200);
+//    }
+
     @RequestMapping("/list")
-    public Result<List<UserVO>> selectUsersByPage(@RequestParam("offset") Integer offset, @RequestParam("limit") Integer limit) {
-        List<UserVO> userVOS = new ArrayList<>();
-        if (offset == null || limit == null || offset < 0 || limit < 0) {
-            return new Result<>(userVOS, "获取用户列表失败", false, 500);
+    public Result<Map<String, Object>> selectUsersByPage(@RequestParam("page") Integer page, @RequestParam("limit") Integer limit) {
+        if (page == null || page < 0 || limit == null || limit < 0) {
+            return new Result<>(null, "获取用户列表失败", false, 500);
         }
-        List<User> users = userService.selectUsersByPage(offset, limit);
-        for (User user : users) {
-            userVOS.add(getUserVO(user));
+        Map<String, Object> map = new HashMap<>();
+        int totalPage = userService.getTotalPge(limit);
+        map.put("totalPage", totalPage);
+
+        List<User> users = userService.selectUsersByPage(page, limit);
+        map.put("userVOS", getUserVOS(users));
+
+        return new Result<>(map, "获取用户列表成功", true, 200);
+    }
+
+    /**
+     * 获取机构下所有员工
+     * @param orgId 机构id
+     * @return 员工VO数组
+     */
+    @RequestMapping("/listByOrg")
+    public Result<List<UserVO>> selectUsersByOrgId(@RequestParam("orgId") Integer orgId) {
+        if (orgId == null) {
+            return new Result<>(null, "orgId无效", false, 500);
         }
-        return new Result<>(userVOS, "获取用户列表成功", true, 200);
+
+        List<User> users = userService.selectUsersByOrgId(orgId);
+        return new Result<>(getUserVOS(users), "获取用户列表成功", true, 200);
     }
 
     @RequestMapping("/update")
@@ -93,4 +141,13 @@ public class UserController {
 
         return userVO;
     }
+
+    private List<UserVO> getUserVOS(List<User> users) {
+        List<UserVO> userVOS = new ArrayList<>();
+        for (User user : users) {
+            userVOS.add(getUserVO(user));
+        }
+        return userVOS;
+    }
+
 }
