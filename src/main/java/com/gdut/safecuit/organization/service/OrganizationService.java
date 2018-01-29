@@ -77,7 +77,8 @@ public class OrganizationService {
     }
 
     public int update(Organization org) {
-        //设置禁止修改项
+        Organization originalOrg = selectOrganizationByOrgId(org.getOrgId());
+        // 设置禁止修改项
         org.setDelTag(null);
         return organizationMapper.updateByPrimaryKeySelective(org);
     }

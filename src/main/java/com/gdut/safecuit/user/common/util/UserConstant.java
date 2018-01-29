@@ -2,7 +2,7 @@ package com.gdut.safecuit.user.common.util;
 
 public class UserConstant {
     private static final Integer USERNAME_MIN_LENGTH = 4;
-    private static final Integer USERNAME_MAX_LENGTH = 30;
+    private static final Integer USERNAME_MAX_LENGTH = 20;
 
     private static final Integer REAL_NAME_MIN_LENGTH = 1;
     private static final Integer REAL_NAME_MAX_LENGTH = 100;

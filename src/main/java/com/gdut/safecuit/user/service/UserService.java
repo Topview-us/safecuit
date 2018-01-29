@@ -5,10 +5,12 @@ import com.gdut.safecuit.user.common.po.User;
 import com.gdut.safecuit.user.common.po.example.UserExample;
 import com.gdut.safecuit.user.dao.UserMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -56,6 +58,15 @@ public class UserService {
         return userMapper.updateByExampleSelective(user, userExample);
     }
 
+    @Transactional
+    public int fakeDeleteUsers(int[] userIds) {
+        int effect = 0;
+        for (int userId : userIds) {
+            effect += fakeDeleteByUserId(userId);
+        }
+        return effect;
+    }
+
     public int deleteByUserId(int userId) {
         return userMapper.deleteByPrimaryKey(userId);
     }
@@ -68,6 +79,7 @@ public class UserService {
 
     /**
      * 添加 user
+     *
      * @param user user 对象
      * @return user 的主键
      */
@@ -84,12 +96,38 @@ public class UserService {
         return 0;
     }
 
-    public List<User> selectUsersByPage(int offset, int limit) {
+//    public List<User> selectUsersByPage(int offset, int limit) {
+//        UserExample userExample = new UserExample();
+//        userExample.setLimit(limit);
+//        userExample.setOffset(offset);
+//        userExample.or().andDelTagEqualTo(0);
+//        return userMapper.selectByExample(userExample);
+//    }
+
+    public List<User> selectUsersByPage(int page, int limit) {
+        if (page < 0 || limit < 0) {
+            return new ArrayList<>();
+        }
+        int offset = (page - 1) * limit;
         UserExample userExample = new UserExample();
         userExample.setLimit(limit);
         userExample.setOffset(offset);
         userExample.or().andDelTagEqualTo(0);
         return userMapper.selectByExample(userExample);
+    }
+
+    public List<User> selectUsersByOrgId(int orgId) {
+        UserExample example = new UserExample();
+        example.or().andOrgIdEqualTo(orgId).andDelTagEqualTo(0);
+        return userMapper.selectByExample(example);
+    }
+
+    public int getTotalPge(int limit) {
+        UserExample userExample = new UserExample();
+        userExample.or().andDelTagEqualTo(0);
+        long rows = userMapper.countByExample(userExample);
+        int page = (int) rows / limit;
+        return rows % limit == 0 ? page : page + 1;
     }
 
     public User selectUserByUserId(int userId) {
