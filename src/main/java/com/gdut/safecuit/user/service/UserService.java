@@ -54,7 +54,8 @@ public class UserService {
         user.setDelTag(1);
         // 设定修改对象
         UserExample userExample = new UserExample();
-        userExample.or().andUsernameEqualTo(username);
+        userExample.or()
+                .andUsernameEqualTo(username);
         return userMapper.updateByExampleSelective(user, userExample);
     }
 
@@ -73,7 +74,8 @@ public class UserService {
 
     public int deleteByUsername(String username) {
         UserExample userExample = new UserExample();
-        userExample.or().andUsernameEqualTo(username);
+        userExample.or()
+                .andUsernameEqualTo(username);
         return userMapper.deleteByExample(userExample);
     }
 
@@ -112,19 +114,23 @@ public class UserService {
         UserExample userExample = new UserExample();
         userExample.setLimit(limit);
         userExample.setOffset(offset);
-        userExample.or().andDelTagEqualTo(0);
+        userExample.or()
+                .andDelTagEqualTo(0);
         return userMapper.selectByExample(userExample);
     }
 
     public List<User> selectUsersByOrgId(int orgId) {
         UserExample example = new UserExample();
-        example.or().andOrgIdEqualTo(orgId).andDelTagEqualTo(0);
+        example.or()
+                .andOrgIdEqualTo(orgId)
+                .andDelTagEqualTo(0);
         return userMapper.selectByExample(example);
     }
 
     public int getTotalPge(int limit) {
         UserExample userExample = new UserExample();
-        userExample.or().andDelTagEqualTo(0);
+        userExample.or()
+                .andDelTagEqualTo(0);
         long rows = userMapper.countByExample(userExample);
         int page = (int) rows / limit;
         return rows % limit == 0 ? page : page + 1;
@@ -137,7 +143,8 @@ public class UserService {
 
     public User selectUserByUsername(String username) {
         UserExample userExample = new UserExample();
-        userExample.or().andUsernameEqualTo(username);
+        userExample.or()
+                .andUsernameEqualTo(username);
         List<User> users = userMapper.selectByExample(userExample);
 //        return users.size() == 0 ? null : users.get(0);
         if (users.size() == 0) {

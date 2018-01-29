@@ -55,13 +55,15 @@ public class OrganizationService {
         OrganizationExample example = new OrganizationExample();
         example.setOffset(offset);
         example.setLimit(limit);
-        example.or().andDelTagEqualTo(0);
+        example.or()
+                .andDelTagEqualTo(0);
         return organizationMapper.selectByExample(example);
     }
 
     public List<Organization> selectOrganizationByParentId(int parentId) {
         OrganizationExample example = new OrganizationExample();
-        example.or().andParentIdEqualTo(parentId);
+        example.or()
+                .andParentIdEqualTo(parentId);
         return organizationMapper.selectByExample(example);
     }
 

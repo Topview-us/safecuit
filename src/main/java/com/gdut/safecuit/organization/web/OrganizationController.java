@@ -70,7 +70,7 @@ public class OrganizationController {
         if (orgId == null) {
             return new Result<>(0, "ordId无效", false, 500);
         }
-        int effect = organizationService.delete(orgId);
+        int effect = organizationService.fakeDelete(orgId);
         return new Result<>(effect, "删除成功", true, 200);
     }
 
