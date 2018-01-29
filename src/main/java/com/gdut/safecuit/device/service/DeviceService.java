@@ -26,8 +26,6 @@ public  class DeviceService extends BaseServiceImpl<Device> {
 
 	@Resource
 	private DeviceMapper deviceMapper;
-	@Resource
-	private DataTreeService dataTreeService;
 
 	/**
 	 * 添加设备对象
@@ -35,26 +33,20 @@ public  class DeviceService extends BaseServiceImpl<Device> {
 	 * @return 添加数据条数
 	 */
 	@Transactional
-	public int insert(Device device){
+	public int insertDevice(Device device){
 		int insert;
 		device.setDelTag(0);
 		device.setIsOnline(1);//在线
 		//添加设备
 		insert = deviceMapper.insertSelective(device);
 
-		//添加数据树
-		//if (insert == 1)
-		//	dataTreeService.insertElectricBoxOrDevice(device.getId() ,device.getName() ,device.getElectricBoxId() ,DEVICE_TYPE);
-
 		Integer device_total = (Integer) cacheMap.get("DEVICE_TOTAL");
 
 		if (device_total == null)
 			cacheMap.put("DEVICE_TOTAL" ,deviceMapper.getTotalByElectricBoxId(device.getElectricBoxId()));
-		else {
+		else
 			cacheMap.put("DEVICE_TOTAL" ,++device_total);//全局变量缓存数加一
-			System.out.println("11111");
-		}
-		System.out.println(cacheMap.get("DEVICE_TOTAL"));
+
 		return insert;
 	}
 
@@ -76,10 +68,9 @@ public  class DeviceService extends BaseServiceImpl<Device> {
 	 * @return 修改数据条数
 	 */
 	@Transactional
-	public int fakeDelete(Integer id ,Integer electricBoxId){
+	public int fakeDeleteDevice(Integer id ,Integer electricBoxId){
 		int delete = deviceMapper.fakeDelete(id);
-		//if (delete == 1)
-		//	dataTreeService.deleteData(id ,DEVICE_TYPE);
+
 		Integer device_total = (Integer) cacheMap.get("DEVICE_TOTAL");
 
 		if (device_total == null)
@@ -91,48 +82,21 @@ public  class DeviceService extends BaseServiceImpl<Device> {
 
 	/**
 	 * 通过电箱id来分页显示相关设备编号或监控类型的设备
-	 * @param pageNo 当前页数
-	 * @param pageSize 每页数据量
+	 * @param page 页数对象
 	 * @param electricBoxId 下拉框选择的电箱id
 	 * @param code 查询的设备编码
 	 * @param typeId 下拉框选择的监控类型
 	 * @return DeviceVO集合
 	 */
-	public List<DeviceVO> selectByPage(Page page ,Integer electricBoxId ,String code ,Integer typeId){
-//		Page page;
-//		Map<String ,Object> map;
+	public List<DeviceVO> selectDeviceByPage(Page page ,Integer electricBoxId ,String code ,Integer typeId){
 
-		//如果全局变量值为0，则在数据库查找数量,如果不为0则直接使用
-		/*if(DataCache.DEVICE_TOTAL == 0)
-			DataCache.DEVICE_TOTAL = deviceMapper.getTotal();*/
-		/*Integer device_total = (Integer) cacheMap.get("DEVICE_TOTAL");
-		if(device_total == null){
-			device_total = deviceMapper.getTotalByElectricBoxId(electricBoxId);
-			cacheMap.put("DEVICE_TOTAL" ,device_total);
-		}*/
-
-//		page = new Page(pageSize,pageNo,device_total);
-//		map = new HashMap<>();
 		List<DeviceVO> DeviceVOList = new ArrayList<>();
-/*
-		map.put("page",page);
-		map.put("electricBoxId",electricBoxId);
-		map.put("code" ,code);
-		map.put("typeId" ,typeId);*/
 
 		List<Device> devices = deviceMapper.selectByPage(code ,typeId ,page ,electricBoxId);
 		for (Device device: devices) {
 			//假删除标志为1
-			if(device.getDelTag() == 1){
+			if(device.getDelTag() == 1)
 				continue;
-
-			}
-
-		//	Map<String ,String> electricBoxInfo = deviceMapper.searchElectricBox(device.getElectricBoxId());
-
-		//	DeviceVOList.add(new DeviceVO(device.getName() ,device.getCode() ,device.getTemperatureValue() ,
-		//			device.getIsOnline(),electricBoxInfo.get("name"), electricBoxInfo.get("address"),device.getTypeId()));
-
 			DeviceVOList.add(new DeviceVO(device.getId() ,device.getName() ,device.getCode() ,device.getTemperatureValue()
 					,device.getIsOnline() ,device.getTypeId()));
 		}
@@ -145,19 +109,16 @@ public  class DeviceService extends BaseServiceImpl<Device> {
 	 * @param device 修改的设备对象，属性包括：设备编码code、设备名称name、设备所属电箱的id、监控类型typeId、温度阈值
 	 * @return 修改数据条数
 	 */
-	public int update(Device device){
+	public int updateDevice(Device device){
 
 		Integer update;
 
 		//如果该设备假删除标识为1，则返回0
 		if(deviceMapper.selectDelTag(device.getId()) == 1)
 			return 0;
-		else {
+		else
 			update = deviceMapper.updateByPrimaryKeySelective(device);
-			//如果有修改，则修改数据树信息
-		//	if (update == 1)
-		//		dataTreeService.updateData(device.getId() ,device.getName() ,device.getElectricBoxId() ,DEVICE_TYPE);
-		}
+
 		return update;
 	}
 
@@ -169,10 +130,9 @@ public  class DeviceService extends BaseServiceImpl<Device> {
 	 * 修改设备的状态，供getInfoFromDevice（dto交互）方法使用
 	 * @param id 设备id
 	 * @param isOnline 是否在线状态
-	 * @return 修改数
 	 */
-	public int updateIsOnline(Integer id ,int isOnline){
-		return deviceMapper.updateIsOnline(id ,isOnline);
+	public void updateIsOnline(Integer id ,int isOnline){
+		 deviceMapper.updateIsOnline(id ,isOnline);
 	}
 
 	@Override

@@ -26,36 +26,27 @@ public class CircuitService extends BaseServiceImpl<Circuit> {
 	@Resource
 	private DeviceMapper deviceMapper;
 
-	public int insertSelective(Circuit circuit){
-		if(circuitMapper.selectByNameAndDeviceId(circuit.getName() ,circuit.getDeviceId()) != null)
-			return -2;
-		Integer insert = circuitMapper.insertSelective(circuit);
-		Integer circuit_total = (Integer) cacheMap.get("CIRCUIT_TOTAL");
+	public int insertCircuit(Circuit circuit){
 
-		if(cacheMap.get("CIRCUIT_TOTAL") == null)
-			cacheMap.put("CIRCUIT_TOTAL" ,circuitMapper.getTotal());
-		else
-			cacheMap.put("CIRCUIT_TOTAL" ,++circuit_total);
-		return insert;
+		Integer circuit_total = circuitMapper.selectCircuitCountByDeviceId(circuit.getDeviceId());
+		circuit.setCircuitNo(++circuit_total);
+		return circuitMapper.insertSelective(circuit);
 	}
 
-	public int deleteByPrimaryKey(Integer id){
+	public int deleteCircuit(Integer id ,Integer deviceId){
 		Integer delete = circuitMapper.deleteByPrimaryKey(id);
 		Integer circuit_total = (Integer) cacheMap.get("CIRCUIT_TOTAL");
 
 		if(cacheMap.get("CIRCUIT_TOTAL") == null)
-			cacheMap.put("CIRCUIT_TOTAL" ,circuitMapper.getTotal());
+			cacheMap.put("CIRCUIT_TOTAL" ,circuitMapper.selectCircuitCountByDeviceId(deviceId));
 		else
 			cacheMap.put("CIRCUIT_TOTAL" ,--circuit_total);
 
 		return delete;
 	}
 
-	public List<CircuitVO> select(Page page ,Integer deviceId){
+	public List<CircuitVO> selectCircuitByPage(Page page ,Integer deviceId){
 		List<CircuitVO> circuitVOS = new ArrayList<>();
-
-		/*if(cacheMap.get("CIRCUIT_TOTAL") == null)
-			cacheMap.put("CIRCUIT_TOTAL" ,circuitMapper.selectCircuitCountByDeviceId(deviceId));*/
 
 		List<Circuit> circuits = circuitMapper.selectAllByPageAndDeviceId(page ,deviceId);
 

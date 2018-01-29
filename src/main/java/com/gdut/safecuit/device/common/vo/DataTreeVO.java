@@ -8,14 +8,11 @@ import java.util.List;
  */
 public class DataTreeVO {
 
-	//private DataTree dataTree;//自身数据树属性
 	private Integer id;
 	private String label;//结点姓名
-	private Integer typeId;//结点类型
-	private String typeInfo;//机构id或电箱id
-	private Integer stateId;
+	private Integer typeId;//结点类型，1为分组，2为机构，3为电箱
 	private Integer parentId;
-	private Integer roleId;
+	private Integer orgId;
 	private Integer isHint;//报警标志
 	private List<DataTreeVO> children;//孩子对象
 
@@ -25,14 +22,6 @@ public class DataTreeVO {
 
 	public void setId(Integer id) {
 		this.id = id;
-	}
-
-	public Integer getStateId() {
-		return stateId;
-	}
-
-	public void setStateId(Integer stateId) {
-		this.stateId = stateId;
 	}
 
 	public Integer getTypeId() {
@@ -51,28 +40,12 @@ public class DataTreeVO {
 		this.parentId = parentId;
 	}
 
-	public Integer getRoleId() {
-		return roleId;
-	}
-
-	public void setRoleId(Integer roleId) {
-		this.roleId = roleId;
-	}
-
 	public String getLabel() {
 		return label;
 	}
 
 	public void setLabel(String label) {
 		this.label = label;
-	}
-
-	public String getTypeInfo() {
-		return typeInfo;
-	}
-
-	public void setTypeInfo(String typeInfo) {
-		this.typeInfo = typeInfo;
 	}
 
 	public Integer getIsHint() {
@@ -83,6 +56,14 @@ public class DataTreeVO {
 		this.isHint = isHint;
 	}
 
+	public Integer getOrgId() {
+		return orgId;
+	}
+
+	public void setOrgId(Integer orgId) {
+		this.orgId = orgId;
+	}
+
 	public List<DataTreeVO> getChildren() {
 		return children;
 	}
@@ -91,16 +72,27 @@ public class DataTreeVO {
 		this.children = children;
 	}
 
-	public DataTreeVO(Integer id ,String label, Integer typeId, String typeInfo, Integer parentId,
-					  Integer roleId, Integer isHint ,Integer stateId) {
+	public DataTreeVO(Integer id, String label, Integer typeId, Integer parentId,
+					  Integer orgId, Integer isHint, List<DataTreeVO> children) {
 		this.id = id;
 		this.label = label;
 		this.typeId = typeId;
-		this.typeInfo = typeInfo;
 		this.parentId = parentId;
-		this.roleId = roleId;
+		this.orgId = orgId;
 		this.isHint = isHint;
-		this.stateId = stateId;
+		this.children = children;
+	}
+
+	public DataTreeVO(Integer id, String label, Integer typeId,
+					   Integer parentId, Integer orgId) {
+		this.id = id;
+		this.label = label;
+		this.typeId = typeId;
+		this.parentId = parentId;
+		this.orgId = orgId;
+	}
+
+	public DataTreeVO() {
 	}
 
 	@Override
@@ -108,9 +100,7 @@ public class DataTreeVO {
 		return "DataTreeVO{" +
 				"label='" + label + '\'' +
 				", typeId=" + typeId +
-				", typeInfo='" + typeInfo + '\'' +
 				", parentId=" + parentId +
-				", roleId=" + roleId +
 				", isHint=" + isHint +
 				", children=" + children +
 				'}';

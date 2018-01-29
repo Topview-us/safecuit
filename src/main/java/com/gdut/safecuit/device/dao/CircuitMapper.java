@@ -12,9 +12,6 @@ import java.util.List;
 @Repository
 public interface CircuitMapper extends BaseDao<Circuit> {
 
-    @Select("select id from circuit where name = #{name} and device_Id = #{deviceId}")
-    Integer selectByNameAndDeviceId(@Param("name")String name , @Param("deviceId")Integer deviceId);
-
     List<Circuit> selectAllByPageAndDeviceId(@Param("page")Page page , @Param("deviceId")Integer deviceId);
 
     @Select("select count(*) from circuit where device_id = #{deviceId}")

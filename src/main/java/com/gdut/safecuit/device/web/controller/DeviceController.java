@@ -3,10 +3,8 @@ package com.gdut.safecuit.device.web.controller;
 import com.gdut.safecuit.common.Page;
 import com.gdut.safecuit.common.Result;
 import com.gdut.safecuit.device.common.po.Device;
-import com.gdut.safecuit.device.common.vo.CircuitVO;
 import com.gdut.safecuit.device.common.vo.DeviceVO;
 import com.gdut.safecuit.device.service.DeviceService;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -15,7 +13,6 @@ import javax.annotation.Resource;
 import java.util.List;
 
 import static com.gdut.safecuit.common.util.CacheManager.cacheMap;
-import static com.gdut.safecuit.common.util.MatchUtil.isPositiveInteger;
 import static com.gdut.safecuit.common.util.StringUtil.isEmpty;
 
 /**
@@ -40,18 +37,16 @@ public class DeviceController extends BaseController {
 	 * @return 结果集
 	 */
 	@RequestMapping("/list")
-	public Result<List<DeviceVO>> selectByPage(@RequestParam(value = "pageNo",required = false ,defaultValue = "0") String pageNo
-			, @RequestParam(value = "pageSize" ,required = false ,defaultValue = "10") String pageSize
+	public Result<List<DeviceVO>> selectByPage(@RequestParam(value = "pageNo",required = false ,defaultValue = "1") Integer pageNo
+			, @RequestParam(value = "pageSize" ,required = false ,defaultValue = "10") Integer pageSize
 			, @RequestParam(value = "electricBoxId" ,required = false) Integer electricBoxId
 			, @RequestParam(value = "code" ,required = false) String code
-			, @RequestParam(value = "typeId" ,required = false ,defaultValue = "0") String typeId) {
+			, @RequestParam(value = "typeId" ,required = false ,defaultValue = "0") Integer typeId) {
 
 		List<DeviceVO> list;
 		String message;
 
-		if(!isPositiveInteger(pageNo) || !isPositiveInteger(pageSize) || !isPositiveInteger(typeId)){
-			return new Result<>(null, "url参数有误", true, 400);
-		} else if (isEmpty(electricBoxId)){
+		if (isEmpty(electricBoxId)){
 			return new Result<>(null, "设备id不能为空", false, 400);
 		} else {
 
@@ -61,14 +56,14 @@ public class DeviceController extends BaseController {
 				cacheMap.put("DEVICE_TOTAL" ,device_total);
 			}
 
-			Page page = new Page(Integer.valueOf(pageSize) ,Integer.valueOf(pageNo) ,device_total);
+			Page page = new Page(pageSize ,pageNo ,device_total);
 
-			list = deviceService.selectByPage(page,electricBoxId, code, Integer.valueOf(typeId));
+			list = deviceService.selectDeviceByPage(page,electricBoxId, code, typeId);
 			if (list.size() == 0)
 				message = "暂无设备";
 			else
 				message = "列举成功";
-			return new Result<>(list, message, true, 200 ,page.getTotalPages());
+			return new Result<>(list, message, true, 200 ,page.getTotal());
 		}
 
 	}
@@ -84,10 +79,11 @@ public class DeviceController extends BaseController {
 
 		Integer i;
 
-		if(isEmpty(device.getCode(),device.getName(),device.getElectricBoxId(),device.getTypeId()))
+		if(isEmpty(device.getCode(),device.getName(),device.getTemperatureValue()
+				,device.getElectricBoxId(),device.getTypeId()))
 			i = -1;
 		else
-			i = deviceService.insert(device);
+			i = deviceService.insertDevice(device);
 
 		return getResult(i);
 	}
@@ -100,7 +96,9 @@ public class DeviceController extends BaseController {
 	 */
 	@RequestMapping("/delete")
 	public Result<Integer> delete(@RequestParam("id") Integer id ,@RequestParam("electricBoxId")Integer electricBoxId){
-		Integer i = deviceService.fakeDelete(id ,electricBoxId);
+		if (id == null || electricBoxId == null)
+			return getResult(-1);
+		Integer i = deviceService.fakeDeleteDevice(id ,electricBoxId);
 		return getResult(i);
 	}
 
@@ -118,7 +116,7 @@ public class DeviceController extends BaseController {
 		if(isEmpty(device.getCode(),device.getName(),device.getElectricBoxId(),device.getTypeId()))
 			i = -1;
 		else
-			i = deviceService.update(device);
+			i = deviceService.updateDevice(device);
 
 		return getResult(i);
 	}

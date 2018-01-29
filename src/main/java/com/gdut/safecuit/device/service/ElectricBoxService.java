@@ -1,23 +1,16 @@
 package com.gdut.safecuit.device.service;
 
-import com.gdut.safecuit.common.Page;
 import com.gdut.safecuit.common.UniqueMainKeyMapper;
 import com.gdut.safecuit.common.base.BaseDao;
 import com.gdut.safecuit.common.base.BaseServiceImpl;
 import com.gdut.safecuit.device.common.po.ElectricBox;
-import com.gdut.safecuit.device.common.vo.ElectricBoxVO;
 import com.gdut.safecuit.device.dao.ElectricBoxMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import static com.gdut.safecuit.common.DataTreeTypeCode.ELECTRIC_BOX_TYPE;
-import static com.gdut.safecuit.common.util.CacheManager.cacheMap;
 
 /**
  * Created by Garson in 15:35 2018/1/19
@@ -30,8 +23,6 @@ public class ElectricBoxService extends BaseServiceImpl<ElectricBox> {
 	private ElectricBoxMapper electricBoxMapper;
 	@Resource
 	private UniqueMainKeyMapper uniqueMainKeyMapper;
-	@Resource
-	private DataTreeService dataTreeService;
 
 	/**
 	 * 添加电箱
@@ -40,39 +31,23 @@ public class ElectricBoxService extends BaseServiceImpl<ElectricBox> {
 	 */
 	@Transactional
 	public int insertElectricBox(ElectricBox electricBox){
-		int insert;
-
-		electricBox.setId(uniqueMainKeyMapper.getMainKey());
+		Integer id = uniqueMainKeyMapper.getMainKey();
+		electricBox.setId(id+1);
+		uniqueMainKeyMapper.updateMainKey(id+1 ,id);
 
 		electricBox.setDelTag(0);
-		electricBox.setParentId(electricBox.getOrgId());
 		//添加电箱
-		insert = electricBoxMapper.insertSelective(electricBox);
+		return electricBoxMapper.insertSelective(electricBox);
 
-		//添加数据树
-		//if (insert == 1)
-		//	dataTreeService.insertElectricBoxOrDevice(electricBox.getName()
-		//			,String.valueOf(electricBox.getOrgId()) ,ELECTRIC_BOX_TYPE);
-
-		Integer electric_box_total = (Integer) cacheMap.get("ELECTRIC_BOX_TOTAL");
-
-		if (electric_box_total == null)
-			cacheMap.put("ELECTRIC_BOX_TOTAL" ,electricBoxMapper.getTotal());
-		else
-			cacheMap.put("ELECTRIC_BOX_TOTAL" ,++electric_box_total);//全局变量缓存数加一
-
-		return insert;
 	}
 
+	/**
+	 * 删除电箱
+	 * @param id 电箱id
+	 * @return 删除数
+	 */
 	public int deleteElectricBoxById(Integer id){
-		int delete = electricBoxMapper.deleteByPrimaryKey(id);
-		Integer electric_box_total = (Integer) cacheMap.get("ELECTRIC_BOX_TOTAL");
-
-		if (electric_box_total == null)
-			cacheMap.put("ELECTRIC_BOX_TOTAL" ,electricBoxMapper.getTotal());
-		else
-			cacheMap.put("ELECTRIC_BOX_TOTAL" ,--electric_box_total);//全局变量缓存数减一
-		return delete;
+		return electricBoxMapper.deleteByPrimaryKey(id);
 	}
 
 	/**
@@ -80,19 +55,8 @@ public class ElectricBoxService extends BaseServiceImpl<ElectricBox> {
 	 * @param id 电箱id
 	 * @return 修改数据条数
 	 */
-	@Transactional
 	public int fakeDeleteElectricBox(Integer id){
-		int delete = electricBoxMapper.fakeDelete(id);
-		//if(delete == 1)
-		//	dataTreeService.deleteData(id ,ELECTRIC_BOX_TYPE);
-
-		Integer electric_box_total = (Integer) cacheMap.get("ELECTRIC_BOX_TOTAL");
-
-		if (electric_box_total == null)
-			cacheMap.put("ELECTRIC_BOX_TOTAL" ,electricBoxMapper.getTotal());
-		else
-			cacheMap.put("ELECTRIC_BOX_TOTAL" ,--electric_box_total);//全局变量缓存数减一
-		return delete;
+		return electricBoxMapper.fakeDelete(id);
 	}
 
 	/**
@@ -103,9 +67,8 @@ public class ElectricBoxService extends BaseServiceImpl<ElectricBox> {
 	 * @param name 电箱的名称
 	 * @return ElectricBoxVO集合
 	 */
-	public List<ElectricBoxVO> selectElectricBoxByPage(int pageNo , int pageSize , int orgId ,String name){
+	/*public List<ElectricBoxVO> selectElectricBoxByPage(int pageNo , int pageSize , int orgId ,String name){
 		Page page;
-		//Map<String ,Object> map;
 
 		if(cacheMap.get("ELECTRIC_BOX_TOTAL") == null)
 			cacheMap.put("ELECTRIC_BOX_TOTAL" ,electricBoxMapper.getTotal());
@@ -113,10 +76,6 @@ public class ElectricBoxService extends BaseServiceImpl<ElectricBox> {
 		Integer  electric_box_total = (Integer) cacheMap.get("ELECTRIC_BOX_TOTAL");
 
 		page = new Page(pageSize,pageNo,electric_box_total);
-		/*map = new HashMap<>();
-		map.put("page" ,page);
-		map.put("orgId" ,orgId);
-		map.put("name" ,name);*/
 		//搜索对应机构的电箱
 		List<ElectricBox> electricBoxes = electricBoxMapper.selectByPage(page ,orgId ,name);
 
@@ -138,7 +97,7 @@ public class ElectricBoxService extends BaseServiceImpl<ElectricBox> {
 		}
 
 		return electricBoxVOS;
-	}
+	}*/
 
 	/**
 	 * 添加数据树或设备时下拉框显示的对应机构的电箱名称
@@ -172,9 +131,6 @@ public class ElectricBoxService extends BaseServiceImpl<ElectricBox> {
 			return 0;
 		else {
 			update = electricBoxMapper.updateByPrimaryKeySelective(electricBox);
-		//	if (update == 1)
-		//		dataTreeService.updateData(electricBox.getId() ,electricBox.getId() ,
-		//				String.valueOf(electricBox.getOrgId()) ,ELECTRIC_BOX_TYPE);
 		}
 		return update;
 	}

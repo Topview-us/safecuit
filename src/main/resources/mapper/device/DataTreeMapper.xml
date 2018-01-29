@@ -16,6 +16,26 @@
     from data_tree
     where id = #{id,jdbcType=INTEGER}
   </select>
+
+
+  <select id="hasChild" resultType="java.lang.Integer">
+    select id from
+    <choose>
+      <when test="type == 1">
+        data_tree
+      </when>
+      <when test="type == 2">
+        organization
+      </when>
+      <when test="type == 3">
+        electric_box
+      </when>
+    </choose>
+    WHERE parent_id = #{parentId}
+  </select>
+
+
+
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from data_tree
     where id = #{id,jdbcType=INTEGER}

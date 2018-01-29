@@ -15,7 +15,7 @@ public interface UniqueMainKeyMapper {
 	@Select("select id from main_key")
 	int getMainKey();
 
-	@Update("update set id = #{newId} where id = #{oldId}")
+	@Update("update main_key set id = #{newId} where id = #{oldId}")
 	int updateMainKey(@Param("newId")Integer newId ,@Param("oldId")Integer oldId);
 
 }

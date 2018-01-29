@@ -5,7 +5,6 @@ import com.gdut.safecuit.common.Result;
 import com.gdut.safecuit.device.common.po.Circuit;
 import com.gdut.safecuit.device.common.vo.CircuitVO;
 import com.gdut.safecuit.device.service.CircuitService;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -14,8 +13,7 @@ import javax.annotation.Resource;
 import java.util.List;
 
 import static com.gdut.safecuit.common.util.CacheManager.cacheMap;
-import static com.gdut.safecuit.common.util.MatchUtil.isPositiveInteger;
-import static com.gdut.safecuit.common.util.StringUtil.*;
+import static com.gdut.safecuit.common.util.StringUtil.isEmpty;
 /**
  * Created by Garson in 11:46 2018/1/24
  * Description :
@@ -31,33 +29,31 @@ public class CircuitController extends BaseController {
 	public Result<Integer> insertCircuit(Circuit circuit){
 
 		Integer result;
-		if(isEmpty(circuit.getAddress() ,circuit.getCircuitNo() ,circuit.getDeviceId() ,circuit.getName()))
+		if(isEmpty(circuit.getAddress() ,circuit.getDeviceId() ,circuit.getName()))
 			result = -1;
 		else
-			result = circuitService.insertSelective(circuit);
+			result = circuitService.insertCircuit(circuit);
 		return getResult(result);
 	}
 
 	@RequestMapping("/delete")
-	public Result<Integer> deleteCircuit(@RequestParam(value = "circuitId" ,required = false)Integer circuitId){
-		if (circuitId == null)
+	public Result<Integer> deleteCircuit(@RequestParam(value = "id" ,required = false)Integer circuitId
+								,@RequestParam(value = "deviceId" ,required = false)Integer deviceId){
+		if (circuitId == null || deviceId == null)
 			return getResult(-1);
 		else
-			return getResult(circuitService.deleteByPrimaryKey(circuitId));
+			return getResult(circuitService.deleteCircuit(circuitId ,deviceId));
 	}
 
 	@RequestMapping("/list")
-	public Result<List<CircuitVO>> selectCircuit(@RequestParam(value = "pageNo",required = false ,defaultValue = "0") String pageNo
-			, @RequestParam(value = "pageSize" ,required = false ,defaultValue = "10") String pageSize
+	public Result<List<CircuitVO>> selectCircuit(@RequestParam(value = "pageNo",required = false ,defaultValue = "1") Integer pageNo
+			, @RequestParam(value = "pageSize" ,required = false ,defaultValue = "10") Integer pageSize
 			, @RequestParam(value = "deviceId" ,required = false) Integer deviceId){
 
 		List<CircuitVO> list;
 		String message;
 
-		if(!isPositiveInteger(pageNo) || !isPositiveInteger(pageSize)){
-			return new Result<>(null, "url参数有误", true, 400);
-
-		} else if (isEmpty(deviceId)){
+		if (isEmpty(deviceId)){
 			return new Result<>(null, "设备id不能为空", false, 400);
 		} else {
 			Integer circuit_total = (Integer) cacheMap.get("CIRCUIT_TOTAL");
@@ -66,22 +62,22 @@ public class CircuitController extends BaseController {
 				cacheMap.put("DEVICE_TOTAL" ,circuit_total);
 			}
 
-			Page page = new Page(Integer.valueOf(pageSize), Integer.valueOf(pageNo) ,circuit_total);
-			list = circuitService.select(page ,deviceId);
+			Page page = new Page(pageSize, pageNo ,circuit_total);
+			list = circuitService.selectCircuitByPage(page ,deviceId);
 			if (list.size() == 0)
 				message = "暂无设备";
 			else
 				message = "列举成功";
-			return new Result<>(list, message, true, 200 ,page.getTotalPages());
+			return new Result<>(list, message, true, 200 ,page.getTotal());
 		}
-
 
 	}
 
 	@RequestMapping("/update")
 	public Result<Integer> update(Circuit circuit){
 		Integer result;
-		if(isEmpty(circuit.getAddress() ,circuit.getCircuitNo() ,circuit.getDeviceId() ,circuit.getName()))
+		if(isEmpty(circuit.getId() ,circuit.getAddress()
+				,circuit.getDeviceId() ,circuit.getName()))
 			result = -1;
 		else
 			result = circuitService.updateByPrimaryKeySelective(circuit);

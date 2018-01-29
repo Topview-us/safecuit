@@ -29,8 +29,14 @@
   </select>
 
   <select id="selectAllByPage" resultMap="BaseResultMap">
-    select de.* from device_event de ,device d WHERE  de.`device_id` = d.`id`
-    AND electric_box_id = #{electricBoxId} limit #{page.index} ,#{page.pageSize}
+    select de.* from device_event de ,device d
+    WHERE  de.`device_id` = d.`id`AND electric_box_id = #{electricBoxId}
+    AND d.`del_tag` = 0
+    limit #{page.index} ,#{page.pageSize}
+  </select>
+
+  <select id="selectByDeviceId" resultMap="BaseResultMap">
+    SELECT * FROM device_event WHERE device_id = #{deviceId}
   </select>
 
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >

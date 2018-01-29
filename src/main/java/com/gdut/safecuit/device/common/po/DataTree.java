@@ -40,4 +40,14 @@ public class DataTree {
     public void setOrgId(Integer orgId) {
         this.orgId = orgId;
     }
+
+    public DataTree() {
+    }
+
+    public DataTree(Integer id, String name, Integer parentId, Integer orgId) {
+        this.id = id;
+        this.name = name;
+        this.parentId = parentId;
+        this.orgId = orgId;
+    }
 }

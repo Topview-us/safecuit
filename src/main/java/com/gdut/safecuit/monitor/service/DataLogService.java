@@ -9,18 +9,22 @@ import com.gdut.safecuit.device.dao.DeviceMapper;
 import com.gdut.safecuit.device.dao.ElectricBoxMapper;
 import com.gdut.safecuit.monitor.common.po.CircuitDataLog;
 import com.gdut.safecuit.monitor.common.po.DataLog;
+import com.gdut.safecuit.monitor.common.po.DeviceEvent;
 import com.gdut.safecuit.monitor.common.vo.DataLogHistoryVO;
 import com.gdut.safecuit.monitor.common.vo.DataLogVO;
 import com.gdut.safecuit.monitor.dao.DataLogMapper;
-import org.apache.ibatis.annotations.Param;
-import org.omg.CORBA.PUBLIC_MEMBER;
+import com.gdut.safecuit.monitor.dao.DeviceEventMapper;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import javax.swing.plaf.PanelUI;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import com.gdut.safecuit.monitor.common.EventCode.*;
+
+import static com.gdut.safecuit.monitor.common.EventCode.CURRENT_EXCESS;
+import static com.gdut.safecuit.monitor.common.EventCode.TEMPERATURE_EXCESS;
 
 /**
  * Created by Garson in 9:39 2018/1/26
@@ -34,6 +38,8 @@ public class DataLogService extends BaseServiceImpl<DataLog> {
 	@Resource
 	private DeviceMapper deviceMapper;
 	@Resource
+	private DeviceEventMapper deviceEventMapper;
+	@Resource
 	private ElectricBoxMapper electricBoxMapper;
 	@Resource
 	private CircuitMapper circuitMapper;
@@ -44,39 +50,41 @@ public class DataLogService extends BaseServiceImpl<DataLog> {
 	 * @return 返回某电箱下所有设备的监控信息
 	 */
 	public List<DataLogVO> selectDataLog(Integer electricBoxId){
-
 		List<DataLogVO> dataLogVOS = new ArrayList<>();
 
 		List<Integer> deviceIds = electricBoxMapper.selectAllDeviceByElectricBoxId(electricBoxId);
-		for (Integer deviceId : deviceIds)
-			dataLogVOS.add(getDataLogVo(deviceId));
 
+		for (Integer deviceId : deviceIds){
+			dataLogVOS.add(getDataLogVo(deviceId));
+		}
 		return dataLogVOS;
 	}
 
 	private DataLogVO getDataLogVo(Integer deviceId){
+		Integer isHint = 0;
 		Device device = deviceMapper.selectByPrimaryKey(deviceId);
-		return new DataLogVO(device.getId() ,device.getCode() ,device.getIsOnline() ,device.getTypeId() ,getCircuitDataLogs(deviceId));
+		DeviceEvent deviceEvent = deviceEventMapper.selectByDeviceId(deviceId);
+		if (deviceEvent.getType() == 0)
+			isHint = 1;
+
+		return new DataLogVO(device.getId() ,device.getCode() ,device.getIsOnline() ,device.getTypeId()
+				,isHint ,getCircuitDataLogs(deviceId ,device.getTypeId()));
 	}
 
-	private List<CircuitDataLog> getCircuitDataLogs(Integer deviceId){
+	private List<CircuitDataLog> getCircuitDataLogs(Integer deviceId ,Integer typeId){
 
 		List<CircuitDataLog> circuitDataLogs = new ArrayList<>();
 		Integer circuitCount = circuitMapper.selectCircuitCountByDeviceId(deviceId);
 		for (Integer circuitNo = 1 ; circuitNo <= circuitCount ; circuitNo++)
-			circuitDataLogs.add(getCircuitDataLog(deviceId ,circuitNo));
+			circuitDataLogs.add(getCircuitDataLog(deviceId ,typeId ,circuitNo));
 
 		return circuitDataLogs;
 	}
 
-	private CircuitDataLog getCircuitDataLog(Integer deviceId ,Integer circuitNo){
-		DataLog currentData = dataLogMapper.selectByDeviceIdInCurrentTable(deviceId ,circuitNo);
-		DataLog miLiCurrentData = dataLogMapper.selectByDeviceIdInMiliCurrentTable(deviceId ,circuitNo);
-		DataLog temperatureData = dataLogMapper.selectByDeviceIdInTemperatureTable(deviceId ,circuitNo);
-
-		return new CircuitDataLog(circuitNo ,temperatureData.getValue() ,miLiCurrentData.getValue() ,currentData.getValue());
+	private CircuitDataLog getCircuitDataLog(Integer deviceId ,Integer typeId ,Integer circuitNo){
+		DataLog dataLog = dataLogMapper.selectByDeviceIdAndCircuitNo(deviceId ,circuitNo ,typeId);
+		return new CircuitDataLog(circuitNo ,dataLog.getValue());
 	}
-
 
 	/**
 	 * 获取某设备的历史监控信息

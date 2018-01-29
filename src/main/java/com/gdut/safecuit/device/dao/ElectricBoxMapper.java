@@ -31,6 +31,14 @@ public interface ElectricBoxMapper extends BaseDao<ElectricBox> {
     List<String> selectNameByOrgId(Integer orgId);
 
     /**
+     * 查找对应父母结点的电箱信息
+     * @param parentId 父母结点id
+     * @return 返回电箱信息
+     */
+    @Select("select * from electric_box where parent_id = #{parentId}")
+    List<ElectricBox> selectByParentId(Integer parentId);
+
+    /**
      * 搜索某电箱下的所有设备id
      * @param electricBoxId 电箱id
      * @return 设备id集合

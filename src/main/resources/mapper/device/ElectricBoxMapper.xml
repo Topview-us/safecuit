@@ -35,7 +35,7 @@
     <if test="name != null">
       AND name = #{name}
     </if>
-    limit #{page.Index} ,#{page.pageSize}
+    limit #{page.index} ,#{page.pageSize}
   </select>
 
   <!--获取电箱对应机构的地址与名称-->

@@ -16,5 +16,5 @@ import java.util.List;
 public interface InteractiveWarningService {
 
 	@WebMethod
-	Result<Integer> getWarningInfoFromDevice(@WebParam(name = "warningDTO") WarningDTO warningDTO);
+	Result<Object> getWarningInfoFromDevice(@WebParam(name = "warningDTO") WarningDTO warningDTO);
 }

@@ -20,6 +20,22 @@
     where id = #{id,jdbcType=INTEGER}
   </select>
 
+  <select id="selectByDeviceIdAndCircuitNo" resultMap="BaseResultMap">
+    select * from
+    <choose>
+      <when test="typeId = 201">
+        data_log_current
+      </when>
+      <when test="typeId = 202">
+        data_log_temperature
+      </when>
+      <when test="typeId = 203">
+        data_log_mili_current
+      </when>
+    </choose>
+    where device_id = #{deviceId} and circuit_no = #{circuitNo}
+  </select>
+
   <select id="selectHistoryData" resultMap="BaseResultMap">
     SELECT * FROM
     <choose>

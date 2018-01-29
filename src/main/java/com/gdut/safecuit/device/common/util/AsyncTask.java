@@ -6,8 +6,8 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 
-import static com.gdut.safecuit.common.DataTreeTypeCode.*;
 import static com.gdut.safecuit.common.util.CacheManager.cacheMap;
+import static com.gdut.safecuit.device.common.DataTreeType.ORG_TREE_TYPE;
 
 
 /**
@@ -22,24 +22,16 @@ public class AsyncTask {
 
 	/**
 	 * 异步更新缓存
-	 * @param typeId 类型id
+	 * @param treeType 树类型
 	 */
 	@Async
-	public void updateDataTreeCache(int typeId){
+	public void updateDataTreeCache(int treeType){
 
-		//依据类型更新数据树，
-		/*if(typeId == DEVICE_TYPE)
-			cacheMap.put("DEVICE_DATA_TREE" ,dataTreeService.get(-1 ,0 ,ELECTRIC_BOX_TYPE));
+		//依据类型更新数据树
+		if (treeType == ORG_TREE_TYPE)
+			cacheMap.put("ORG_TREE_TYPE" ,dataTreeService.showTree(-1 ,treeType));
+		else
+			cacheMap.put("ELECTRIC_BOX_TREE_TYPE" ,dataTreeService.showTree(-1 ,treeType));
 
-		else if(typeId == ELECTRIC_BOX_TYPE){
-
-			cacheMap.put("ELECTRIC_BOX_DATA_TREE" ,dataTreeService.get(-1 ,0 ,ORG_TYPE));
-			cacheMap.put("DEVICE_DATA_TREE" ,dataTreeService.get(-1 ,0 ,ELECTRIC_BOX_TYPE));
-
-		}else {
-			cacheMap.put("ORG_DATA_TREE" ,dataTreeService.get(-1 ,0 ,AREA_TYPE));
-			cacheMap.put("ELECTRIC_BOX_DATA_TREE" ,dataTreeService.get(-1 ,0 ,ORG_TYPE));
-			cacheMap.put("DEVICE_DATA_TREE" ,dataTreeService.get(-1 ,0 ,ELECTRIC_BOX_TYPE));
-		}*/
 	}
 }

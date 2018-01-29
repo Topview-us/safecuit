@@ -36,7 +36,7 @@ public class InteractiveWarningServiceImpl implements InteractiveWarningService 
 	private WarningSocketController warningSocketController;
 
 	@Override
-	public Result<Integer> getWarningInfoFromDevice(WarningDTO warningDTO) {
+	public Result<Object> getWarningInfoFromDevice(WarningDTO warningDTO) {
 		if(warningDTO.getEventCode() == EQPT_ONLINE)
 			//将设备修改为上线状态
 			deviceService.updateIsOnline(warningDTO.getDeviceId() ,EQPT_ONLINE);
@@ -54,17 +54,15 @@ public class InteractiveWarningServiceImpl implements InteractiveWarningService 
 						+ ",所属机构:" + orgInfo.get("orgName");
 
 				warningSocketController.PushWarningAudio(BaiduString2AudioUtil.getAudioByte(message));
-
-
 			} catch (JSONException e) {
 				e.printStackTrace();
 				LogUtil.error(this.getClass() ,"语音转换抛异常\n" ,e);
-				return new Result<>(-1 ,"语音转换异常" ,false ,500);
+				return new Result<>(null ,"语音转换异常" ,false ,500);
 
 			}
 		}
 
-		return new Result<>(1 ,"报警信息接受成功" ,true ,200);
+		return new Result<>(null ,"报警信息接受成功" ,true ,200);
 
 	}
 }

@@ -7,6 +7,7 @@ package com.gdut.safecuit.monitor.common.po;
 public class CircuitDataLog {
 
 	private int circuitNo;//回路序号
+	private String value;//值
 	private String temperatureValue;//温度值
 	private String miliCurrentValue;//漏电流值
 	private String currentValue;//电流值
@@ -17,6 +18,14 @@ public class CircuitDataLog {
 
 	public void setCircuitNo(int circuitNo) {
 		this.circuitNo = circuitNo;
+	}
+
+	public String getValue() {
+		return value;
+	}
+
+	public void setValue(String value) {
+		this.value = value;
 	}
 
 	public String getTemperatureValue() {
@@ -41,6 +50,11 @@ public class CircuitDataLog {
 
 	public void setCurrentValue(String currentValue) {
 		this.currentValue = currentValue;
+	}
+
+	public CircuitDataLog(int circuitNo, String value) {
+		this.circuitNo = circuitNo;
+		this.value = value;
 	}
 
 	public CircuitDataLog(int circuitNo, String temperatureValue, String miliCurrentValue, String currentValue) {

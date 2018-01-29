@@ -12,7 +12,7 @@ public class Result<T> implements Serializable {
 	private String message;
 	private Boolean isSuccess;
 	private int status;
-	private Integer pageTotal;
+	private Integer totalData;
 
 	public T getObject() {
 		return object;
@@ -46,23 +46,23 @@ public class Result<T> implements Serializable {
 		isSuccess = success;
 	}
 
-	public Integer getPageTotal() {
-		return pageTotal;
+	public Integer getTotalData() {
+		return totalData;
 	}
 
-	public void setPageTotal(Integer pageTotal) {
-		this.pageTotal = pageTotal;
+	public void setTotalData(Integer totalData) {
+		this.totalData = totalData;
 	}
 
 	public Result() {
 	}
 
-	public Result(T object, String message, Boolean isSuccess, int status, Integer pageTotal) {
+	public Result(T object, String message, Boolean isSuccess, int status, Integer totalData) {
 		this.object = object;
 		this.message = message;
 		this.isSuccess = isSuccess;
 		this.status = status;
-		this.pageTotal = pageTotal;
+		this.totalData = totalData;
 	}
 
 	public Result(T object, String message, Boolean isSuccess, int status) {

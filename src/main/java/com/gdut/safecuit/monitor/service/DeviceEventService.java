@@ -38,15 +38,11 @@ public class DeviceEventService extends BaseServiceImpl<DeviceEvent> {
 		try{
 			List<DeviceEvent> deviceEvents = deviceEventMapper.selectAllByPage(page ,electricBoxId);
 
-			System.out.println(deviceEvents);
-
 			for (DeviceEvent deviceEvent :deviceEvents) {
 				Device device = deviceMapper.selectByPrimaryKey(deviceEvent.getDeviceId());
 
-				System.out.println(device);
-
-				if (device.getElectricBoxId().intValue() !=  electricBoxId)
-					continue;
+				/*if (device.getElectricBoxId().intValue() !=  electricBoxId)
+					continue;*/
 
 				//将pair分割成json数据
 				JSONObject jsonObject = textToJson(deviceEvent.getPair());
@@ -72,18 +68,22 @@ public class DeviceEventService extends BaseServiceImpl<DeviceEvent> {
 
 		String[] strings = pair.replaceAll(" " ,"").split(",");
 		for (String string : strings) {
-			System.out.println(string);
 			String[] keyAndValue = string.split(":");
 			jsonObject.put(keyAndValue[0] ,keyAndValue[1]);
 		}
 		return jsonObject;
 	}
 
-
 	public Integer getTotalByElectricBoxId(Integer electricBoxId){
-		return deviceEventMapper.getTotalByEelectricBoxId(electricBoxId);
+		return deviceEventMapper.getTotalByElectricBoxId(electricBoxId);
 	}
 
+	public Integer updateType(Integer type ,Integer id){
+		DeviceEvent deviceEvent = new DeviceEvent();
+		deviceEvent.setId(id);
+		deviceEvent.setType(type);
+		return deviceEventMapper.updateByPrimaryKeySelective(deviceEvent);
+	}
 
 	@Override
 	public BaseDao<DeviceEvent> getDao() {

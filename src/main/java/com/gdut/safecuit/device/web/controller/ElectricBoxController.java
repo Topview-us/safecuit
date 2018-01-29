@@ -29,16 +29,16 @@ public class ElectricBoxController extends BaseController {
 	/**
 	 * 添加电箱接口
 	 * url:	/electricBox/add
-	 * @param electricBox 添加的电箱对象，属性包括电箱名称name、地址address、电箱所属机构的id、经度longitude、纬度latitude
+	 * @param electricBox 添加的电箱对象，属性包括电箱名称name、地址address、电箱所属机构的id、经度longitude、纬度latitude、父母结点id
 	 * @return 结果集
 	 */
 	@RequestMapping("/add")
 	public Result<Integer> insertElectricBox(ElectricBox electricBox){
-
 		Integer i;
 
 		if(isEmpty(electricBox.getAddress() ,electricBox.getName(),
-				electricBox.getOrgId(),electricBox.getLatitude(),electricBox.getLongitude()))
+				   electricBox.getOrgId(),electricBox.getLatitude(),
+				   electricBox.getLongitude() ,electricBox.getParentId()))
 			i = -1;
 		else
 			i = electricBoxService.insertElectricBox(electricBox);
@@ -55,7 +55,7 @@ public class ElectricBoxController extends BaseController {
 	@RequestMapping("/delete")
 	public Result<Integer> deleteElectricBox(@RequestParam("id") Integer id){
 
-		Integer i = electricBoxService.fakeDeleteElectricBox(id);
+		Integer i = electricBoxService.deleteElectricBoxById(id);
 		return getResult(i);
 	}
 
@@ -67,8 +67,7 @@ public class ElectricBoxController extends BaseController {
 	 * @param orgId 机构id
  	 * @param name 电箱名称
 	 * @return 结果集
-	 */
-	@RequestMapping("/list")
+*/	/*@RequestMapping("/list")
 	public Result<List<ElectricBoxVO>> selectElectricBoxByPage(@RequestParam(value = "pageNo" ,required = false,defaultValue = "0")String pageNo
 			,@RequestParam(value = "pageSize" ,required = false ,defaultValue = "10")String pageSize
 			,@RequestParam(value = "orgId" ,required = false)String orgId
@@ -100,6 +99,11 @@ public class ElectricBoxController extends BaseController {
 		}
 
 		return new Result<>(electricBoxVOS ,message ,isSuccess ,status);
+	}*/
+
+	@RequestMapping("/updateSelect")
+	public Result<ElectricBox> selectWhenUpdate(@RequestParam("id")Integer id){
+		return new Result<>(electricBoxService.selectByPrimaryKey(id) ,"列举成功" ,true ,200);
 	}
 
 	/**
@@ -108,10 +112,10 @@ public class ElectricBoxController extends BaseController {
 	 * @param orgId 机构id
 	 * @return 结果集
 	 */
-	@RequestMapping("/listElectricBoxName")
+	/*@RequestMapping("/listElectricBoxName")
 	public Result<List<String>> selectElectricBoxNameByOrgId(@RequestParam("orgId")Integer orgId){
 		return new Result<>(electricBoxService.selectElectricBoxNameByOrgId(orgId) ,"列举成功" ,true ,200);
-	}
+	}*/
 
 	/**
 	 * 更改电箱信息接口
@@ -120,7 +124,7 @@ public class ElectricBoxController extends BaseController {
 	 * @return 结果集
 	 */
 	@RequestMapping("/update")
-	public Result<Integer> updateElectricBox(@RequestBody ElectricBox electricBox){
+	public Result<Integer> updateElectricBox(ElectricBox electricBox){
 
 		Integer i;
 

@@ -91,4 +91,28 @@ public class ElectricBox {
         this.longitude = longitude;
         this.latitude = latitude;
     }
+
+    public ElectricBox(String name, String address, Integer orgId,
+                       Integer parentId, Float longitude, Float latitude) {
+        this.name = name;
+        this.address = address;
+        this.orgId = orgId;
+        this.parentId = parentId;
+        this.longitude = longitude;
+        this.latitude = latitude;
+    }
+
+    @Override
+    public String toString() {
+        return "ElectricBox{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", address='" + address + '\'' +
+                ", orgId=" + orgId +
+                ", parentId=" + parentId +
+                ", longitude=" + longitude +
+                ", latitude=" + latitude +
+                ", delTag=" + delTag +
+                '}';
+    }
 }
