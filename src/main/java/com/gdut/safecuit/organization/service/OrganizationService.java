@@ -59,6 +59,12 @@ public class OrganizationService {
         return organizationMapper.selectByExample(example);
     }
 
+    public List<Organization> selectOrganizationByParentId(int parentId) {
+        OrganizationExample example = new OrganizationExample();
+        example.or().andParentIdEqualTo(parentId);
+        return organizationMapper.selectByExample(example);
+    }
+
     public int delete(int orgId) {
         return organizationMapper.deleteByPrimaryKey(orgId);
     }
@@ -75,6 +81,4 @@ public class OrganizationService {
         org.setDelTag(null);
         return organizationMapper.updateByPrimaryKeySelective(org);
     }
-
-
 }

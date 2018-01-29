@@ -51,14 +51,16 @@ public class UserController {
     }
 
     @RequestMapping("/list")
-    public Result<List<User>> selectUsersByPage(@RequestParam("offset") Integer offset, @RequestParam("limit") Integer limit) {
-        List<User> users;
+    public Result<List<UserVO>> selectUsersByPage(@RequestParam("offset") Integer offset, @RequestParam("limit") Integer limit) {
+        List<UserVO> userVOS = new ArrayList<>();
         if (offset == null || limit == null || offset < 0 || limit < 0) {
-            users = new ArrayList<>();
-            return new Result<>(users, "获取用户列表失败", false, 500);
+            return new Result<>(userVOS, "获取用户列表失败", false, 500);
         }
-        users = userService.selectUsersByPage(offset, limit);
-        return new Result<>(users, "获取用户列表成功", true, 200);
+        List<User> users = userService.selectUsersByPage(offset, limit);
+        for (User user : users) {
+            userVOS.add(getUserVO(user));
+        }
+        return new Result<>(userVOS, "获取用户列表成功", true, 200);
     }
 
     @RequestMapping("/update")
