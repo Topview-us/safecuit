@@ -1,5 +1,6 @@
 package com.gdut.safecuit.organization.service;
 
+import com.gdut.safecuit.common.UniqueMainKeyMapper;
 import com.gdut.safecuit.organization.common.po.Organization;
 import com.gdut.safecuit.organization.common.po.example.OrganizationExample;
 import com.gdut.safecuit.organization.dao.OrganizationMapper;
@@ -10,7 +11,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.List;
-import java.util.Random;
 
 @Service
 public class OrganizationService {
@@ -19,12 +19,15 @@ public class OrganizationService {
     private OrganizationMapper organizationMapper;
 
     @Resource
+    private UniqueMainKeyMapper uniqueMainKeyMapper;
+
+    @Resource
     private UserService userService;
 
     @Transactional
     public int insert(Organization org, User user) {
         // 从全局变量中获取 orgId
-        int orgId = new Random().nextInt(100000000);
+        int orgId = uniqueMainKeyMapper.getMainKey();
 
         // 添加用户
         user.setOrgId(orgId);
