@@ -21,16 +21,12 @@
     where id = #{id,jdbcType=INTEGER}
   </select>
 
-  <resultMap id="selectByPageMap" type="com.gdut.safecuit.device.common.po.ElectricBox">
-    <id column="id" property="id" jdbcType="INTEGER" />
-    <result column="name" property="name" jdbcType="VARCHAR" />
-    <result column="address" property="address" jdbcType="VARCHAR" />
-    <result column="org_id" property="orgId" jdbcType="INTEGER" />
-    <result column="longitude" property="longitude" jdbcType="REAL" />
-    <result column="latitude" property="latitude" jdbcType="REAL" />
-    <result column="del_tag" property="delTag" jdbcType="INTEGER" />
-  </resultMap>
-  <select id="selectByPage" resultMap="selectByPageMap">
+  <select id="selectElectricBoxByFuzzyQuery" resultMap="BaseResultMap" parameterType="java.lang.String">
+    select * from electricBox_box
+    where name like '%#{name}%'
+  </select>
+
+  <select id="selectByPage" resultMap="BaseResultMap">
     select * from electric_box where org_id = #{orgId}
     <if test="name != null">
       AND name = #{name}

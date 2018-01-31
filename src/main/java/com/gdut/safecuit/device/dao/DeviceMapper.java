@@ -29,7 +29,7 @@ public interface DeviceMapper extends BaseDao<Device> {
     int getTotalByElectricBoxId(Integer electricBoxId);
 
     //修改设备在线状态
-    @Update("update device set isOnline = #{isOnline} where id = #{id}")
+    @Update("update device set is_online = #{isOnline} where id = #{id}")
     int updateIsOnline(@Param("id") Integer id , @Param("isOnline") int isOnline);
 
     List<Integer> selectDeviceIdByElectricBoxId(@Param("electricBoxId")Integer electricBoxId);

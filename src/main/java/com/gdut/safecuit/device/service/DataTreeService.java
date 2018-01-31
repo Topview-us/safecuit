@@ -41,15 +41,7 @@ public class DataTreeService extends BaseServiceImpl<DataTree> {
 	private UniqueMainKeyMapper uniqueMainKeyMapper;
 	@Resource
 	private DataTreeMapper dataTreeMapper;
-
-	/*@Resource
-	private AsyncTask asyncTask;
 	@Resource
-	private DataTreeMapper dataTreeMapper;
-	@Resource
-	private DeviceEventMapper deviceEventMapper;
-
-	*/@Resource
 	private AreaMapper areaMapper;
 	@Resource
 	private OrganizationMapper organizationMapper;
@@ -232,33 +224,61 @@ public class DataTreeService extends BaseServiceImpl<DataTree> {
 		List<DataTreeVO> dataTreeVOS = new ArrayList<>();
 		List<DataTree> groupDataTrees = dataTreeMapper.selectByParentId(parentId);
 		List<Organization> organizations = organizationService.selectOrganizationByParentId(parentId);
-		List<ElectricBox> electricBoxs = electricBoxMapper.selectByParentId(parentId);
+		List<ElectricBox> electricBoxes = electricBoxMapper.selectByParentId(parentId);
 
 		for (DataTree groupDataTree : groupDataTrees) {
-			System.out.println(groupDataTrees);
+
 			DataTreeVO dataTreeVO = new DataTreeVO(groupDataTree.getId() ,groupDataTree.getName()
-					, GROUP_TYPE ,parentId ,null);
+					, GROUP_TYPE ,parentId ,groupDataTree.getOrgId());
 
 			dataTreeVOS.add(dataTreeVO);
 		}
 
 		for (Organization organization : organizations) {
-			System.out.println(organizations);
 			DataTreeVO dataTreeVO = new DataTreeVO(organization.getOrgId() ,organization.getName()
 					, ORG_TYPE ,organization.getParentId() ,organization.getOrgId());
 
 			dataTreeVOS.add(dataTreeVO);
 		}
 
-		for (ElectricBox electricBox : electricBoxs) {
-			System.out.println(electricBoxs);
+		for (ElectricBox electricBox : electricBoxes) {
 			DataTreeVO dataTreeVO = new DataTreeVO(electricBox.getId() ,electricBox.getName()
-					, ELECTRIC_BOX_TYPE, parentId ,electricBox.getOrgId());
+					, ELECTRIC_BOX_TYPE ,parentId ,electricBox.getOrgId());
 
 			dataTreeVOS.add(dataTreeVO);
 		}
 		return dataTreeVOS;
 	}
+
+	public List<DataTreeVO> selectByFuzzyQuery(String name){
+		List<DataTreeVO> dataTreeVOS = new ArrayList<>();
+		List<DataTree> dataTrees = dataTreeMapper.selectGroupByFuzzyQuery(name);
+	//	List<Organization> organizations = dataTreeMapper.selectOrganizationByFuzzyQuery(name);
+		List<ElectricBox> electricBoxes = electricBoxMapper.selectElectricBoxByFuzzyQuery(name);
+
+		for (DataTree groupDataTree : dataTrees) {
+			DataTreeVO dataTreeVO = new DataTreeVO(groupDataTree.getId() ,groupDataTree.getName()
+					, GROUP_TYPE ,groupDataTree.getParentId() ,groupDataTree.getOrgId());
+
+			dataTreeVOS.add(dataTreeVO);
+		}
+
+	/*	for (Organization organization : organizations) {
+			DataTreeVO dataTreeVO = new DataTreeVO(organization.getOrgId() ,organization.getName()
+					, ORG_TYPE ,organization.getParentId() ,organization.getOrgId());
+
+			dataTreeVOS.add(dataTreeVO);
+		}*/
+
+		for (ElectricBox electricBox : electricBoxes) {
+			DataTreeVO dataTreeVO = new DataTreeVO(electricBox.getId() ,electricBox.getName()
+					, ELECTRIC_BOX_TYPE ,electricBox.getParentId() ,electricBox.getOrgId());
+
+			dataTreeVOS.add(dataTreeVO);
+		}
+		return dataTreeVOS;
+	}
+
 
 	/**
 	 * 修改某结点的父母结点（拖动该结点或该名称）,如果某机构下的结点被移动到机构外(传进来的父母结点的orgId为null)则返回并提示错误
@@ -300,11 +320,8 @@ public class DataTreeService extends BaseServiceImpl<DataTree> {
 			update = electricBoxMapper.updateByPrimaryKeySelective(electricBox);
 		}
 
-		//异步更新缓存
-		//asyncTask.updateDataTreeCache(DEVICE_TYPE);
 		return update;
 	}
-
 
 	@Override
 	public BaseDao<DataTree> getDao() {

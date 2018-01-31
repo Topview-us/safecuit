@@ -24,4 +24,5 @@ public class HandleDeviceExceptionClient {
 		}
 		return object;
 	}
+
 }

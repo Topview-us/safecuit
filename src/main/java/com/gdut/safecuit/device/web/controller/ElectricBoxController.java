@@ -4,6 +4,7 @@ import com.gdut.safecuit.common.Result;
 import com.gdut.safecuit.device.common.po.ElectricBox;
 import com.gdut.safecuit.device.common.vo.ElectricBoxVO;
 import com.gdut.safecuit.device.service.ElectricBoxService;
+import com.gdut.safecuit.user.common.vo.UserVO;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -44,6 +45,39 @@ public class ElectricBoxController extends BaseController {
 			i = electricBoxService.insertElectricBox(electricBox);
 
 		return getResult(i);
+	}
+
+	/**
+	 * 关联电箱管理员接口
+	 * @param electricBoxId 电箱id
+	 * @param userId 人员id
+	 * @return 结果集
+	 */
+	@RequestMapping("/relateUser")
+	public Result<Integer> relateUser(@RequestParam(value = "electricBoxId" ,required = false)Integer electricBoxId
+							,@RequestParam(value = "userId" ,required = false)Integer userId){
+		Integer i;
+		if (isEmpty(electricBoxId ,userId))
+			i = -1;
+		else
+			i = electricBoxService.relateUser(electricBoxId ,userId);
+		return getResult(i);
+	}
+
+	/**
+	 * 显示电箱管理员
+	 * @param electricBoxId 电箱id
+	 * @return 结果集
+	 */
+	@RequestMapping("/listRelatedUser")
+	public Result<List<UserVO>> showRelatedUser(@RequestParam(value = "electricBoxId" ,required = false)Integer electricBoxId){
+		if (isEmpty(electricBoxId))
+			return new Result<>(null ,"请求参数不能为空" ,false ,400);
+		List<UserVO> userVOS = electricBoxService.showRelatedUser(electricBoxId);
+		if (userVOS.size() == 0)
+			return new Result<>(null ,"暂无管理员" ,true ,200);
+		else
+			return new Result<>(userVOS ,"列举成功" ,true ,200);
 	}
 
 	/**
