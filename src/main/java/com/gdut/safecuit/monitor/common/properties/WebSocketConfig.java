@@ -17,7 +17,7 @@ public class WebSocketConfig extends AbstractWebSocketMessageBrokerConfigurer {
 	@Override
 	public void registerStompEndpoints(StompEndpointRegistry stompEndpointRegistry) {
 		// 允许使用socketJs方式访问，访问点为webSocketServer，允许跨域
-		// 在网页上我们就可以通过这个链接：http://localhost:8080/warningSocket 来和服务器的WebSocket连接
+		// 在网页上我们就可以通过这个链接：http://localhost:8080/warningSocket 来和服务器的WebSocket连接,setAllowedOrigins("*")设置跨域
 		stompEndpointRegistry.addEndpoint("/warningSocket").setAllowedOrigins("*").withSockJS();
 	}
 

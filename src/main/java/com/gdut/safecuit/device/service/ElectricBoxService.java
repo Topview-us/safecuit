@@ -5,10 +5,14 @@ import com.gdut.safecuit.common.base.BaseDao;
 import com.gdut.safecuit.common.base.BaseServiceImpl;
 import com.gdut.safecuit.device.common.po.ElectricBox;
 import com.gdut.safecuit.device.dao.ElectricBoxMapper;
+import com.gdut.safecuit.user.common.po.User;
+import com.gdut.safecuit.user.common.vo.UserVO;
+import com.gdut.safecuit.user.dao.UserMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -23,6 +27,8 @@ public class ElectricBoxService extends BaseServiceImpl<ElectricBox> {
 	private ElectricBoxMapper electricBoxMapper;
 	@Resource
 	private UniqueMainKeyMapper uniqueMainKeyMapper;
+	@Resource
+	private UserMapper userMapper;
 
 	/**
 	 * 添加电箱
@@ -39,6 +45,26 @@ public class ElectricBoxService extends BaseServiceImpl<ElectricBox> {
 		//添加电箱
 		return electricBoxMapper.insertSelective(electricBox);
 
+	}
+
+	//关联管理员
+	public int relateUser(Integer electricBoxId ,Integer userId){
+		return electricBoxMapper.relateUser(electricBoxId ,userId);
+	}
+
+	//显示关联管理员
+	public List<UserVO> showRelatedUser(Integer electricBoxId){
+		List<Integer> userIds = electricBoxMapper.selectUserIdByElectricBoxId(electricBoxId);
+		List<UserVO> userVOS = new ArrayList<>();
+		for (Integer userId : userIds) {
+			User user = userMapper.selectByPrimaryKey(userId);
+			UserVO userVO = new UserVO();
+			userVO.setUserId(user.getUserId());
+			userVO.setRealName(user.getRealName());
+			userVO.setPhone(user.getPhone());
+			userVOS.add(userVO);
+		}
+		return userVOS;
 	}
 
 	/**
@@ -108,14 +134,6 @@ public class ElectricBoxService extends BaseServiceImpl<ElectricBox> {
 		return electricBoxMapper.selectNameByOrgId(orgId);
 	}
 
-	/**
-	 * 搜索电箱对应的相关机构的信息
-	 * @param orgId 机构id
-	 * @return map包括:address地址，orgName机构名，phone机构电话
-	 */
-	public Map<String ,String> searchOrgInfo(Integer orgId){
-		return electricBoxMapper.searchOrgInfo(orgId);
-	}
 	/**
 	 * 修改电箱
 	 * @param electricBox 修改的电箱对象，属性包括：电箱名称name、地址address、电箱所属机构的id、经度longitude、纬度latitude

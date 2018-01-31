@@ -17,18 +17,30 @@
     where id = #{id,jdbcType=INTEGER}
   </select>
 
+  <select id="selectByParentId" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+    select * from data_tree where parent_id = #{parentId}
+  </select>
+
+  <select id="selectByName" resultMap="BaseResultMap" parameterType="java.lang.String">
+    select * from data_tree where name = #{name} limit 0,1
+  </select>
+
+  <select id="selectGroupByFuzzyQuery" resultMap="BaseResultMap" parameterType="java.lang.String">
+    select * from data_tree
+    where name like '%#{name}%'
+  </select>
 
   <select id="hasChild" resultType="java.lang.Integer">
-    select id from
+    select
     <choose>
       <when test="type == 1">
-        data_tree
+        id from data_tree
       </when>
       <when test="type == 2">
-        organization
+        org_id from organization
       </when>
       <when test="type == 3">
-        electric_box
+        id FROM electric_box
       </when>
     </choose>
     WHERE parent_id = #{parentId}

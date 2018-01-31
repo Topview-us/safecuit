@@ -10,7 +10,6 @@ public class DataTreeType {
 	public final static int ORG_TYPE = 2;
 	public final static int ELECTRIC_BOX_TYPE = 3;
 
-
 	public final static int ORG_TREE_TYPE = 1;
 	public final static int ELECTRIC_BOX_TREE_TYPE = 2;
 }

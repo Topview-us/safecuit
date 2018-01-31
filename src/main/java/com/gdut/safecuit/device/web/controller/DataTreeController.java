@@ -53,8 +53,10 @@ public class DataTreeController {
 		Integer delete = dataTreeService.deleteData(groupId);
 		if(delete == 0)
 			return new Result<>(delete ,"操作失败，请重试" ,false,500);
-		else
+		else if (delete == 1)
 			return new Result<>(delete ,"操作成功" ,true,200);
+		else
+			return new Result<>(delete ,"分组下仍有分组，请删除孩子分组再删除该分组" ,true,400);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -65,7 +67,7 @@ public class DataTreeController {
 		if (isEmpty(treeType))
 			return new Result<>(null ,"请求参数不为空",false ,400);
 
-		if(treeType == ORG_TREE_TYPE && cacheMap.get("ORG_TREE_TYPE") != null)
+		/*if(treeType == ORG_TREE_TYPE && cacheMap.get("ORG_TREE_TYPE") != null)
 			dataTreeVOS = (List<DataTreeVO>) cacheMap.get("ORG_TREE_TYPE");
 		else if(treeType == ELECTRIC_BOX_TREE_TYPE && cacheMap.get("ELECTRIC_BOX_TREE_TYPE") != null)
 			dataTreeVOS = (List<DataTreeVO>) cacheMap.get("ELECTRIC_BOX_TREE_TYPE");
@@ -73,13 +75,27 @@ public class DataTreeController {
 			asyncTask.updateDataTreeCache(treeType);
 			//parentId待权限改变
 			dataTreeVOS = dataTreeService.showTree(-1 ,treeType);
-		}
+		}*/
+
+		dataTreeVOS = dataTreeService.showTree(-1 ,treeType);
 
 		if (dataTreeVOS.size() == 0)
 			return new Result<>(dataTreeVOS ,"暂无数据",true ,200);
 		else
 			return new Result<>(dataTreeVOS ,"显示成功",true ,200);
 
+	}
+
+	@RequestMapping("/listByName")
+	public Result<List<DataTreeVO>> listByFuzzyQuery(@RequestParam(value = "name" ,required = false)String name){
+		List<DataTreeVO> dataTreeVOS;
+		if (isEmpty(name))
+			return new Result<>(null ,"请求参数不为空",false ,400);
+		dataTreeVOS = dataTreeService.selectByFuzzyQuery(name);
+		if (dataTreeVOS.size() == 0)
+			return new Result<>(dataTreeVOS ,"暂无数据",true ,200);
+		else
+			return new Result<>(dataTreeVOS ,"显示成功",true ,200);
 	}
 
 	@RequestMapping("/update")

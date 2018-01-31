@@ -33,7 +33,7 @@
         data_log_mili_current
       </when>
     </choose>
-    where device_id = #{deviceId} and circuit_no = #{circuitNo}
+    where device_id = #{deviceId} and circuit_no = #{circuitNo} limit 0,1
   </select>
 
   <select id="selectHistoryData" resultMap="BaseResultMap">

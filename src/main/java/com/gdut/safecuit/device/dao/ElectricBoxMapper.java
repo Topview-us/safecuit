@@ -5,15 +5,26 @@ import com.gdut.safecuit.common.base.BaseDao;
 import com.gdut.safecuit.device.common.po.ElectricBox;
 import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Repository;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.List;
 import java.util.Map;
 
 @Repository
 public interface ElectricBoxMapper extends BaseDao<ElectricBox> {
+
+    @Insert("insert into electric_user(user_id ,electric_box_id) values(#{electricBoxId} ,#{userId})")
+    int relateUser(@Param("electricBoxId")Integer electricBoxId ,@Param("userId")Integer userId);
+
     //假删除操作
     @Update("update electric_box set del_tag=1 where id = #{id}")
     int fakeDelete(Integer id);
+
+    @Results({
+            @Result(property = "userId" ,column = "user_id")
+    })
+    @Select("select user_id from electric_user where electric_box_id = #{electricBoxId}")
+    List<Integer> selectUserIdByElectricBoxId(@Param("electricBoxId")Integer electricBoxId);
 
     //获取某设备的假删除标识
     @Results({
@@ -47,13 +58,6 @@ public interface ElectricBoxMapper extends BaseDao<ElectricBox> {
     List<Integer> selectAllDeviceByElectricBoxId(@Param("electricBoxId")Integer electricBoxId);
 
     /**
-     * 获取电箱对应机构的信息
-     * @param orgId 机构id
-     * @return 机构信息的map
-     */
-    Map<String ,String> searchOrgInfo(Integer orgId);
-
-    /**
      * 分页查询
      * @param page
      * @param orgId
@@ -62,6 +66,8 @@ public interface ElectricBoxMapper extends BaseDao<ElectricBox> {
      */
     List<ElectricBox> selectByPage(@Param("page") Page page , @Param("orgId") int orgId , @Param("name")String name);
 
+    //电箱表模糊查询
+    List<ElectricBox> selectElectricBoxByFuzzyQuery(@Param("name")String name);
 
     List<ElectricBox> selectByElectricId(@Param("electricBoxId")Integer electricBoxId);
 }

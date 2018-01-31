@@ -72,4 +72,17 @@ public class DataLog {
     public void setDate(Date date) {
         this.date = date;
     }
+
+    @Override
+    public String toString() {
+        return "DataLog{" +
+                "id=" + id +
+                ", serialNo=" + serialNo +
+                ", deviceId='" + deviceId + '\'' +
+                ", circuitNo=" + circuitNo +
+                ", circuitStatus=" + circuitStatus +
+                ", value='" + value + '\'' +
+                ", date=" + date +
+                '}';
+    }
 }

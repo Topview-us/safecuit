@@ -1,6 +1,6 @@
 package com.gdut.safecuit.monitor.common.properties;
 
-import com.gdut.safecuit.monitor.web.webservice.service.InteractiveWarningService;
+import com.gdut.safecuit.monitor.web.webservice.service.InteractiveWarning;
 import org.apache.cxf.Bus;
 import org.apache.cxf.jaxws.EndpointImpl;
 import org.springframework.context.annotation.Bean;
@@ -22,12 +22,12 @@ public class CxfConfig {
 	private Bus bus;
 
 	@Resource
-	private InteractiveWarningService interactiveWarningService;
+	private InteractiveWarning interactiveWarning;
 
 	@Bean
 	public Endpoint endpoint(){
-		EndpointImpl endpoint = new EndpointImpl(bus , interactiveWarningService);
-		endpoint.publish("/InteractiveWarningService");
+		EndpointImpl endpoint = new EndpointImpl(bus , interactiveWarning);
+		endpoint.publish("/safecuit-website/ws");//客户端接受的接口，此处为ip:端口/services/safecuit-website/ws?wsdl
 		return endpoint;
 	}
 

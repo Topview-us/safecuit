@@ -4,7 +4,9 @@ import com.gdut.safecuit.common.util.CacheManager;
 import com.gdut.safecuit.common.util.LogUtil;
 import org.springframework.stereotype.Component;
 
-import static com.gdut.safecuit.common.DataTreeTypeCode.*;
+import static com.gdut.safecuit.device.common.DataTreeType.ELECTRIC_BOX_TYPE;
+import static com.gdut.safecuit.device.common.DataTreeType.ORG_TYPE;
+
 /**
  * Created by Garson in 22:33 2018/1/24
  * Description : 开线程以定时清理缓存
@@ -21,8 +23,6 @@ public class DataTreeCacheTask implements Runnable {
 				CacheManager.clearOnly(ORG_TYPE);//清理缓存
 
 				CacheManager.clearOnly(ELECTRIC_BOX_TYPE);//清理缓存
-
-				CacheManager.clearOnly(DEVICE_TYPE);//清理缓存
 
 				LogUtil.info(this.getClass() ,"清理一次树缓存");
 			}

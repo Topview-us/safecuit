@@ -64,6 +64,9 @@ public class DataLogService extends BaseServiceImpl<DataLog> {
 		Integer isHint = 0;
 		Device device = deviceMapper.selectByPrimaryKey(deviceId);
 		DeviceEvent deviceEvent = deviceEventMapper.selectByDeviceId(deviceId);
+
+		System.out.println(deviceId);
+
 		if (deviceEvent.getType() == 0)
 			isHint = 1;
 
@@ -82,7 +85,11 @@ public class DataLogService extends BaseServiceImpl<DataLog> {
 	}
 
 	private CircuitDataLog getCircuitDataLog(Integer deviceId ,Integer typeId ,Integer circuitNo){
+		System.out.println("deviceId:" + deviceId);
+		System.out.println("typeId:" + typeId);
+		System.out.println("circuitNo:" + circuitNo);
 		DataLog dataLog = dataLogMapper.selectByDeviceIdAndCircuitNo(deviceId ,circuitNo ,typeId);
+		System.out.println(dataLog);
 		return new CircuitDataLog(circuitNo ,dataLog.getValue());
 	}
 
