@@ -83,6 +83,14 @@ public class DataLogVO {
 		this.circuitDataLogs = circuitDataLogs;
 	}
 
+	public DataLogVO(Integer deviceId, String deviceCode, Integer isOnline, Integer isHint, List<CircuitDataLog> circuitDataLogs) {
+		this.deviceId = deviceId;
+		this.deviceCode = deviceCode;
+		this.isOnline = isOnline;
+		this.isHint = isHint;
+		this.circuitDataLogs = circuitDataLogs;
+	}
+
 	@Override
 	public String toString() {
 		return "DataLogVO{" +

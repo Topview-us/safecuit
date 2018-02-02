@@ -2,10 +2,7 @@ package com.gdut.safecuit.device.dao;
 
 import com.gdut.safecuit.common.base.BaseDao;
 import com.gdut.safecuit.device.common.po.DataTree;
-import com.gdut.safecuit.device.common.po.ElectricBox;
-import com.gdut.safecuit.organization.common.po.Organization;
 import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -21,7 +18,7 @@ public interface DataTreeMapper extends BaseDao<DataTree> {
 	/*@Select("select * from data_tree where id = #{parentId}")
 	DataTree selectByParentIdInGroup(Integer parentId);*/
 
-	DataTree selectByName(@Param("name") String name ,@Param("parentId")Integer parentId);
+	DataTree selectByNameAndParentId(@Param("name") String name ,@Param("parentId")Integer parentId);
 
  	/**
 	 * 向下查找各结点
@@ -30,8 +27,13 @@ public interface DataTreeMapper extends BaseDao<DataTree> {
 	 */
 	List<DataTree> selectByParentId(@Param("parentId")Integer parentId);
 
-	Integer selectParentIdById(@Param("id")Integer id
-			,@Param("typeId")Integer typeId);
+	/**
+	 * 根据id搜索父母结点id
+	 * @param id 结点id
+	 * @param typeId 类型
+	 * @return 父母结点id
+	 */
+	Integer selectParentIdById(@Param("id")Integer id ,@Param("typeId")Integer typeId);
 
 	/**
 	 * 根据父母结点id查询是否存在孩子

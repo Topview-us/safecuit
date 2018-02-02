@@ -74,7 +74,7 @@ public class DeviceController extends BaseController {
 		Integer i;
 
 		if(isEmpty(device.getCode(),device.getName(),device.getTemperatureValue()
-				,device.getElectricBoxId(),device.getTypeId()))
+				,device.getElectricBoxId()))
 			i = -1;
 		else
 			i = deviceService.insertDevice(device);
@@ -107,7 +107,8 @@ public class DeviceController extends BaseController {
 
 		Integer i;
 
-		if(isEmpty(device.getCode(),device.getName(),device.getElectricBoxId(),device.getTypeId()))
+		if(isEmpty(device.getId() ,device.getCode(),device.getName()
+				,device.getElectricBoxId(),device.getTemperatureValue()))
 			i = -1;
 		else
 			i = deviceService.updateDevice(device);

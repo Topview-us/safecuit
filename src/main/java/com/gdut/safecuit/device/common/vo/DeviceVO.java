@@ -111,6 +111,14 @@ public class DeviceVO {
 		this.typeId = typeId;
 	}
 
+	public DeviceVO(Integer deviceId, String name, String code, String temperatureValue, int isOnline) {
+		this.deviceId = deviceId;
+		this.name = name;
+		this.code = code;
+		this.temperatureValue = temperatureValue;
+		this.isOnline = isOnline;
+	}
+
 	@Override
 	public String toString() {
 		return "DeviceVO{" +
