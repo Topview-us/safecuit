@@ -11,7 +11,6 @@ import com.gdut.safecuit.organization.service.OrganizationService;
 import com.gdut.safecuit.organization.service.ProvinceCityAreaService;
 import com.gdut.safecuit.user.common.po.User;
 import com.gdut.safecuit.user.service.UserService;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -34,15 +33,14 @@ public class OrganizationController {
     private ProvinceCityAreaService provinceCityAreaService;
 
     @RequestMapping("/add")
-    public Result<Integer> add(@RequestBody OrgAddVO orgAddVO) {
+    public Result<Integer> add(OrgAddVO orgAddVO) {
         if (orgAddVO.getOrgName() == null || orgAddVO.getOrgAddress() == null || orgAddVO.getOrgAreaId() == null
                 || orgAddVO.getUsername() == null || orgAddVO.getUserRealName() == null || orgAddVO.getUserPassword() == null
                 || orgAddVO.getUserRePassword() == null) {
             return new Result<>(0, "信息不能为空", false, 500);
         }
-        //
         // 检验 user 数据合法性
-        //
+        boolean pass = false;
         User user = new User();
         user.setUsername(orgAddVO.getUsername());
         user.setRealName(orgAddVO.getUserRealName());
@@ -89,26 +87,44 @@ public class OrganizationController {
         return new Result<>(effect, "修改成功", true, 200);
     }
 
-    @RequestMapping("/list")
-    public Result<List<OrgVO>> selectByPage(@RequestParam("offset") Integer offset, @RequestParam("limit") Integer limit) {
-        if (offset == null || limit == null || offset < 0 || limit < 0) {
-            return new Result<>(null, "无效请求", false, 500);
-        }
-        List<Organization> orgs = organizationService.selectOrganizationsByPage(offset, limit);
-        List<OrgVO> orgVOS = new ArrayList<>();
-        for (Organization org : orgs) {
-            orgVOS.add(getOrgVo(org));
-        }
-        return new Result<>(orgVOS, "获取列表成功", true, 200);
-    }
+//    @RequestMapping("/list")
+//    public Result<List<OrgVO>> selectByPage(@RequestParam("offset") Integer offset, @RequestParam("limit") Integer limit) {
+//        if (offset == null || limit == null || offset < 0 || limit < 0) {
+//            return new Result<>(null, "无效请求", false, 500);
+//        }
+//        List<Organization> orgs = organizationService.selectOrganizationsByPage(offset, limit);
+//        return new Result<>(getOrgVOs(orgs), "获取列表成功", true, 200);
+//    }
 
-    @RequestMapping("/selectByOrgId")
-    public Result<OrgVO> selectByOrgId(@RequestParam("orgId") Integer orgId) {
+    @RequestMapping("/selectOrganizationByOrgId")
+    public Result<OrgVO> selectOrganizationByOrgId(@RequestParam("orgId") Integer orgId) {
         if (orgId == null) {
             return new Result<>(null, "orgId无效", false, 500);
         }
         Organization org = organizationService.selectOrganizationByOrgId(orgId);
         return new Result<>(getOrgVo(org), "获取成功", true, 200);
+    }
+
+    @RequestMapping("/list")
+    public Result<List<OrgVO>> selectOrganizationsByParentId(@RequestParam("parentId") Integer parentId,
+                                                             @RequestParam("page") Integer page,
+                                                             @RequestParam("limit") Integer limit) {
+        if (parentId == null || page == null || page < 0 || limit == null || limit < 0) {
+            return new Result<>(null, "获取机构列表失败", false, 500);
+        }
+        long rows = organizationService.getTotalRowsByParentId(parentId);
+
+        List<Organization> orgs = organizationService.selectOrganizationsByParent(parentId, page, limit);
+
+        return new Result<>(getOrgVOs(orgs), "获取列表成功", true, 200, (int) rows);
+    }
+
+    private List<OrgVO> getOrgVOs(List<Organization> orgs) {
+        List<OrgVO> orgVOS = new ArrayList<>();
+        for (Organization org : orgs) {
+            orgVOS.add(getOrgVo(org));
+        }
+        return orgVOS;
     }
 
     /**

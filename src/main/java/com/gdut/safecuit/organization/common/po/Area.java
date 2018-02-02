@@ -3,7 +3,7 @@ package com.gdut.safecuit.organization.common.po;
 import java.io.Serializable;
 
 /**
- * @author 
+ * @author
  */
 public class Area implements Serializable {
     private Integer id;
@@ -61,9 +61,9 @@ public class Area implements Serializable {
         }
         Area other = (Area) that;
         return (this.getId() == null ? other.getId() == null : this.getId().equals(other.getId()))
-            && (this.getAreaId() == null ? other.getAreaId() == null : this.getAreaId().equals(other.getAreaId()))
-            && (this.getArea() == null ? other.getArea() == null : this.getArea().equals(other.getArea()))
-            && (this.getFather() == null ? other.getFather() == null : this.getFather().equals(other.getFather()));
+                && (this.getAreaId() == null ? other.getAreaId() == null : this.getAreaId().equals(other.getAreaId()))
+                && (this.getArea() == null ? other.getArea() == null : this.getArea().equals(other.getArea()))
+                && (this.getFather() == null ? other.getFather() == null : this.getFather().equals(other.getFather()));
     }
 
     @Override

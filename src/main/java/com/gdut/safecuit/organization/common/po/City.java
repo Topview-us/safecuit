@@ -3,7 +3,7 @@ package com.gdut.safecuit.organization.common.po;
 import java.io.Serializable;
 
 /**
- * @author 
+ * @author
  */
 public class City implements Serializable {
     private Integer id;
@@ -61,9 +61,9 @@ public class City implements Serializable {
         }
         City other = (City) that;
         return (this.getId() == null ? other.getId() == null : this.getId().equals(other.getId()))
-            && (this.getCityId() == null ? other.getCityId() == null : this.getCityId().equals(other.getCityId()))
-            && (this.getCity() == null ? other.getCity() == null : this.getCity().equals(other.getCity()))
-            && (this.getFather() == null ? other.getFather() == null : this.getFather().equals(other.getFather()));
+                && (this.getCityId() == null ? other.getCityId() == null : this.getCityId().equals(other.getCityId()))
+                && (this.getCity() == null ? other.getCity() == null : this.getCity().equals(other.getCity()))
+                && (this.getFather() == null ? other.getFather() == null : this.getFather().equals(other.getFather()));
     }
 
     @Override

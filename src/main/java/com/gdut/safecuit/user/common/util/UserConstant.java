@@ -10,7 +10,8 @@ public class UserConstant {
     private static final Integer PASSWORD_MIN_LENGTH = 6;
     private static final Integer PASSWORD_MAX_LENGTH = 36;
 
-    private static final Integer DESCRIPTION_MAX_LENGTH = 6;
+    private static final Integer DESCRIPTION_MIN_LENGTH = 0;
+    private static final Integer DESCRIPTION_MAX_LENGTH = 255;
 
     public static Integer getUsernameMinLength() {
         return USERNAME_MIN_LENGTH;
@@ -34,6 +35,10 @@ public class UserConstant {
 
     public static Integer getPasswordMaxLength() {
         return PASSWORD_MAX_LENGTH;
+    }
+
+    public static Integer getDescriptionMinLength() {
+        return DESCRIPTION_MIN_LENGTH;
     }
 
     public static Integer getDescriptionMaxLength() {

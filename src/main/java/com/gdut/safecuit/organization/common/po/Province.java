@@ -3,7 +3,7 @@ package com.gdut.safecuit.organization.common.po;
 import java.io.Serializable;
 
 /**
- * @author 
+ * @author
  */
 public class Province implements Serializable {
     private Integer id;
@@ -51,8 +51,8 @@ public class Province implements Serializable {
         }
         Province other = (Province) that;
         return (this.getId() == null ? other.getId() == null : this.getId().equals(other.getId()))
-            && (this.getProvinceId() == null ? other.getProvinceId() == null : this.getProvinceId().equals(other.getProvinceId()))
-            && (this.getProvince() == null ? other.getProvince() == null : this.getProvince().equals(other.getProvince()));
+                && (this.getProvinceId() == null ? other.getProvinceId() == null : this.getProvinceId().equals(other.getProvinceId()))
+                && (this.getProvince() == null ? other.getProvince() == null : this.getProvince().equals(other.getProvince()));
     }
 
     @Override
