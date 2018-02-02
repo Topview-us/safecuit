@@ -211,13 +211,10 @@ public class UserService {
         }
         UserExample userExample = new UserExample();
         userExample.or()
-                .andUsernameEqualTo(username);
+                .andUsernameEqualTo(username)
+                .andDelTagEqualTo(0);
         List<User> users = userMapper.selectByExample(userExample);
-//        return users.size() == 0 ? null : users.get(0);
-        if (users.size() == 0) {
-            return null;
-        }
-        return users.get(0).getDelTag() == 1 ? null : users.get(0);
+        return users.size() == 0 ? null : users.get(0);
     }
 
     public int updateUserByUserId(User user) {

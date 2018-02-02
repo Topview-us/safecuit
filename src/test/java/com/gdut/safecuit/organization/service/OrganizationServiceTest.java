@@ -16,19 +16,20 @@ public class OrganizationServiceTest extends BaseTest {
     @Test
     public void insert() {
         Organization org = new Organization();
-        for (int i = 0; i < 1; i++) {
+        for (int i = 0; i < 10; i++) {
             org.setName("name" + i);
             org.setAreaId(110102);
             org.setAddress("address");
             org.setEmail("email");
-            org.setPhone("1220202");
+            org.setPhone("18045631296");
             org.setDescription("desc");
 
             User user = new User();
             user.setUsername("zkyyo" + i);
             user.setRealName("bingo" + i);
             user.setPassword("qaww");
-            user.setPhone("13031111");
+            user.setPhone("13015654345");
+            user.setQq(123667312 + i * i);
             organizationService.insert(org, user);
         }
     }
