@@ -2,7 +2,9 @@ package com.gdut.safecuit.organization.dao;
 
 import com.gdut.safecuit.organization.common.po.Organization;
 import com.gdut.safecuit.organization.common.po.example.OrganizationExample;
+
 import java.util.List;
+
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 

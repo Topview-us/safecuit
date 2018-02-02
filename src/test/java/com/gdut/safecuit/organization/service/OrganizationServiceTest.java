@@ -16,19 +16,21 @@ public class OrganizationServiceTest extends BaseTest {
     @Test
     public void insert() {
         Organization org = new Organization();
-        org.setName("name");
-        org.setAreaId(1);
-        org.setAddress("address");
-        org.setEmail("email");
-        org.setPhone("1220202");
-        org.setDescription("desc");
+        for (int i = 0; i < 1; i++) {
+            org.setName("name" + i);
+            org.setAreaId(110102);
+            org.setAddress("address");
+            org.setEmail("email");
+            org.setPhone("1220202");
+            org.setDescription("desc");
 
-        User user = new User();
-        user.setUsername("zkyyo");
-        user.setRealName("bingo");
-        user.setPassword("qaww");
-        user.setPhone("13031111");
-        organizationService.insert(org, user);
+            User user = new User();
+            user.setUsername("zkyyo" + i);
+            user.setRealName("bingo" + i);
+            user.setPassword("qaww");
+            user.setPhone("13031111");
+            organizationService.insert(org, user);
+        }
     }
 
     @Test
@@ -62,5 +64,25 @@ public class OrganizationServiceTest extends BaseTest {
         org.setPhone("123232-323");
         org.setDelTag(9);
         organizationService.update(org);
+    }
+
+    @Test
+    public void fuzzySearchByOrgName() {
+        List<Organization> orgs = organizationService.fuzzySearchByOrgName("na");
+        System.out.println("-------------------------------------");
+        for (Organization org : orgs) {
+            System.out.println(org);
+        }
+        System.out.println("-------------------------------------");
+    }
+
+    @Test
+    public void selectOrganizationsByArea() {
+        List<Organization> orgs = organizationService.selectOrganizationsByArea(110102);
+        System.out.println("-------------------------------------");
+        for (Organization org : orgs) {
+            System.out.println(org);
+        }
+        System.out.println("-------------------------------------");
     }
 }
