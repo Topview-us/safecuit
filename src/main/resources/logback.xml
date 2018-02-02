@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
-
     <!-- 文件输出格式 -->
-    <property name="PATTERN" value="%-12(%d{yyyy-MM-dd HH:mm:ss.SSS}) |-%-5level [%thread] %c [%L] -| %msg%n" />
+    <property name="PATTERN" value="%yellow(%d{yyyy-MM-dd HH:mm:ss}) %cyan([%thread]) %highlight(%-5level) %magenta(%logger{36}) - %black(%msg%n)" />
     <!-- log文件路径 -->
     <!--<property name="LOG_PATH" value="D://log" />-->
 

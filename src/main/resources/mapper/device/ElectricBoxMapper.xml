@@ -48,10 +48,22 @@
     "AND o.`id` = #{orgId};
   </select>
 
+  <select id="selectByParentId" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+    select * from electric_box where parent_id = #{parentId}
+  </select>
+
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from electric_box
     where id = #{id,jdbcType=INTEGER}
   </delete>
+
+  <insert id="relateUser" >
+    insert into electric_user(user_id ,electric_box_id) values
+    <foreach collection="userIds" item="userId" separator=",">
+      (#{userId} ,#{electricBoxId})
+    </foreach>
+  </insert>
+
   <insert id="insert" parameterType="com.gdut.safecuit.device.common.po.ElectricBox" >
     insert into electric_box (id, name, address, 
       org_id, parent_id, longitude, 

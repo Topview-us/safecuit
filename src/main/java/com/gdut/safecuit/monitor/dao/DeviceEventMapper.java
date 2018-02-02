@@ -31,7 +31,8 @@ public interface DeviceEventMapper extends BaseDao<DeviceEvent> {
      * @param electricBoxId 电箱id
      * @return 返回电箱下设备的报警信息的总数
      */
-    @Select("SELECT COUNT(*) FROM device_event de ,device d WHERE de.`device_id` = d.`id` AND d.`electric_box_id` = #{electricBoxId}  ")
+    @Select("SELECT COUNT(*) FROM device_event de ,device d WHERE de.`device_id` = d.`id` " +
+            "AND d.`electric_box_id` = #{electricBoxId} AND d.`del_tag` = 0")
     int getTotalByElectricBoxId(@Param("electricBoxId")Integer electricBoxId);
 
 

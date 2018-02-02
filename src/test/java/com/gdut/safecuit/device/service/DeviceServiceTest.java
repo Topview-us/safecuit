@@ -17,6 +17,8 @@ public class DeviceServiceTest extends BaseTest {
 	@Resource
 	private DeviceMapper deviceMapper;
 
+
+
 	@Test
 	public void selectAllByIdTest(){
 		System.out.println(deviceMapper.selectByPrimaryKey(1));

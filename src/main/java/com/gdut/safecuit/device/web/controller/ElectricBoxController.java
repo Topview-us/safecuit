@@ -1,19 +1,22 @@
 package com.gdut.safecuit.device.web.controller;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+import com.gdut.safecuit.common.Page;
 import com.gdut.safecuit.common.Result;
 import com.gdut.safecuit.device.common.po.ElectricBox;
-import com.gdut.safecuit.device.common.vo.ElectricBoxVO;
+import com.gdut.safecuit.device.common.vo.ElectricBoxRelateUserVO;
 import com.gdut.safecuit.device.service.ElectricBoxService;
-import com.gdut.safecuit.user.common.vo.UserVO;
-import org.springframework.web.bind.annotation.RequestBody;
+import netscape.javascript.JSObject;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.List;
 
-import static com.gdut.safecuit.common.util.MatchUtil.isPositiveInteger;
 import static com.gdut.safecuit.common.util.StringUtil.isEmpty;
 
 /**
@@ -55,12 +58,22 @@ public class ElectricBoxController extends BaseController {
 	 */
 	@RequestMapping("/relateUser")
 	public Result<Integer> relateUser(@RequestParam(value = "electricBoxId" ,required = false)Integer electricBoxId
-							,@RequestParam(value = "userId" ,required = false)Integer userId){
+							,@RequestParam(value = "userId" ,required = false)String userIdJson){
+
+		
 		Integer i;
-		if (isEmpty(electricBoxId ,userId))
+		if (isEmpty(electricBoxId ,userIdJson))
 			i = -1;
-		else
-			i = electricBoxService.relateUser(electricBoxId ,userId);
+		else {
+			JSONArray jsonArray = JSON.parseArray(userIdJson);
+			List<Integer> userIds = new ArrayList<>();
+			for (Object object : jsonArray) {
+				JSONObject jsonObject = (JSONObject) object;
+				userIds.add((Integer) jsonObject.get("userId"));
+			}
+			i = electricBoxService.relateUser(electricBoxId ,userIds);
+		}
+
 		return getResult(i);
 	}
 
@@ -70,14 +83,18 @@ public class ElectricBoxController extends BaseController {
 	 * @return 结果集
 	 */
 	@RequestMapping("/listRelatedUser")
-	public Result<List<UserVO>> showRelatedUser(@RequestParam(value = "electricBoxId" ,required = false)Integer electricBoxId){
+	public Result<List<ElectricBoxRelateUserVO>> showRelatedUser(@RequestParam(value = "electricBoxId" ,required = false)Integer electricBoxId
+							, @RequestParam(value = "pageNo" ,required = false ,defaultValue = "1")Integer pageNo
+							, @RequestParam(value = "pageSize" ,required = false ,defaultValue = "10")Integer pageSize){
 		if (isEmpty(electricBoxId))
 			return new Result<>(null ,"请求参数不能为空" ,false ,400);
-		List<UserVO> userVOS = electricBoxService.showRelatedUser(electricBoxId);
+		Integer total = electricBoxService.getRelatedUserTotal(electricBoxId);
+		Page page = new Page(pageSize ,pageNo ,total);
+		List<ElectricBoxRelateUserVO> userVOS = electricBoxService.showRelatedUser(page ,electricBoxId);
 		if (userVOS.size() == 0)
 			return new Result<>(null ,"暂无管理员" ,true ,200);
 		else
-			return new Result<>(userVOS ,"列举成功" ,true ,200);
+			return new Result<>(userVOS ,"列举成功" ,true ,200 ,page.getTotal());
 	}
 
 	/**

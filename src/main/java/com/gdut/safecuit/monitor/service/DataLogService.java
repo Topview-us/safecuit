@@ -21,11 +21,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import com.gdut.safecuit.monitor.common.EventCode.*;
-
-import static com.gdut.safecuit.monitor.common.EventCode.CURRENT_EXCESS;
-import static com.gdut.safecuit.monitor.common.EventCode.TEMPERATURE_EXCESS;
-
 /**
  * Created by Garson in 9:39 2018/1/26
  * Description :
@@ -64,11 +59,10 @@ public class DataLogService extends BaseServiceImpl<DataLog> {
 		Integer isHint = 0;
 		Device device = deviceMapper.selectByPrimaryKey(deviceId);
 		DeviceEvent deviceEvent = deviceEventMapper.selectByDeviceId(deviceId);
-
-		System.out.println(deviceId);
-
-		if (deviceEvent.getType() == 0)
-			isHint = 1;
+		//设备报警字段设为1
+		if (deviceEvent != null)
+			if (deviceEvent.getType() == 0)
+				isHint = 1;
 
 		return new DataLogVO(device.getId() ,device.getCode() ,device.getIsOnline() ,device.getTypeId()
 				,isHint ,getCircuitDataLogs(deviceId ,device.getTypeId()));
@@ -78,19 +72,21 @@ public class DataLogService extends BaseServiceImpl<DataLog> {
 
 		List<CircuitDataLog> circuitDataLogs = new ArrayList<>();
 		Integer circuitCount = circuitMapper.selectCircuitCountByDeviceId(deviceId);
-		for (Integer circuitNo = 1 ; circuitNo <= circuitCount ; circuitNo++)
-			circuitDataLogs.add(getCircuitDataLog(deviceId ,typeId ,circuitNo));
+		for (Integer circuitNo = 1 ; circuitNo <= circuitCount ; circuitNo++){
+				CircuitDataLog circuitDataLog = getCircuitDataLog(deviceId ,typeId ,circuitNo);
+				if (circuitDataLog != null)
+					circuitDataLogs.add(circuitDataLog);
+		}
 
 		return circuitDataLogs;
 	}
 
 	private CircuitDataLog getCircuitDataLog(Integer deviceId ,Integer typeId ,Integer circuitNo){
-		System.out.println("deviceId:" + deviceId);
-		System.out.println("typeId:" + typeId);
-		System.out.println("circuitNo:" + circuitNo);
 		DataLog dataLog = dataLogMapper.selectByDeviceIdAndCircuitNo(deviceId ,circuitNo ,typeId);
-		System.out.println(dataLog);
-		return new CircuitDataLog(circuitNo ,dataLog.getValue());
+		if (dataLog == null)
+			return null;
+		else
+			return new CircuitDataLog(circuitNo ,dataLog.getValue());
 	}
 
 	/**

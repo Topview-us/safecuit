@@ -79,23 +79,11 @@ public class DataTreeController {
 
 		dataTreeVOS = dataTreeService.showTree(-1 ,treeType);
 
-		if (dataTreeVOS.size() == 0)
+		if (dataTreeVOS == null || dataTreeVOS.size() == 0)
 			return new Result<>(dataTreeVOS ,"暂无数据",true ,200);
 		else
 			return new Result<>(dataTreeVOS ,"显示成功",true ,200);
 
-	}
-
-	@RequestMapping("/listByName")
-	public Result<List<DataTreeVO>> listByFuzzyQuery(@RequestParam(value = "name" ,required = false)String name){
-		List<DataTreeVO> dataTreeVOS;
-		if (isEmpty(name))
-			return new Result<>(null ,"请求参数不为空",false ,400);
-		dataTreeVOS = dataTreeService.selectByFuzzyQuery(name);
-		if (dataTreeVOS.size() == 0)
-			return new Result<>(dataTreeVOS ,"暂无数据",true ,200);
-		else
-			return new Result<>(dataTreeVOS ,"显示成功",true ,200);
 	}
 
 	@RequestMapping("/update")
@@ -103,18 +91,32 @@ public class DataTreeController {
 			,@RequestParam(value = "id" ,required = false)Integer id
 			,@RequestParam(value = "parentId" ,required = false)Integer parentId
 			,@RequestParam(value = "orgId" ,required = false)Integer orgId
+			,@RequestParam(value = "parentOrgId",required = false)Integer parentOrgId
 			,@RequestParam(value = "typeId" ,required = false)Integer typeId){
-		if (isEmpty(id ,parentId ,orgId ,typeId ,name))
+		if (isEmpty(id ,parentId ,typeId ,name))
 			return new Result<>(-1 ,"请求参数不能为空", false ,400);
 
-		Integer update = dataTreeService.update(id ,name ,parentId ,orgId ,typeId);
+		Integer update = dataTreeService.update(id ,name ,parentId ,parentOrgId ,orgId ,typeId);
 		if(update == 0)
 			return new Result<>(update ,"修改失败，请重试" ,false ,400);
 		else if (update == -2)
 			return new Result<>(-2 ,"请勿将机构下的结点移到机构外" ,true ,400);
+		else if (update == -3)
+			return new Result<>(update ,"请勿将结点移动到其父结点下", true ,200);
 		else
 			return new Result<>(update ,"修改成功", true ,200);
+
 	}
 
-
+	/*@RequestMapping("/listByName")
+		public Result<List<DataTreeVO>> listByFuzzyQuery(@RequestParam(value = "name" ,required = false)String name){
+			List<DataTreeVO> dataTreeVOS;
+			if (isEmpty(name))
+				return new Result<>(null ,"请求参数不为空",false ,400);
+			dataTreeVOS = dataTreeService.selectByFuzzyQuery(name);
+			if (dataTreeVOS.size() == 0)
+				return new Result<>(dataTreeVOS ,"暂无数据",true ,200);
+			else
+				return new Result<>(dataTreeVOS ,"显示成功",true ,200);
+		}*/
 }

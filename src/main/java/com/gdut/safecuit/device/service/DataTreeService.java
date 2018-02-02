@@ -23,6 +23,7 @@ import com.gdut.safecuit.organization.service.ProvinceCityAreaService;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.context.annotation.RequestScope;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
@@ -42,9 +43,9 @@ public class DataTreeService extends BaseServiceImpl<DataTree> {
 	@Resource
 	private DataTreeMapper dataTreeMapper;
 	@Resource
-	private AreaMapper areaMapper;
-	@Resource
 	private OrganizationMapper organizationMapper;
+	@Resource
+	private AreaMapper areaMapper;
 	@Resource
 	private ProvinceCityAreaService provinceCityAreaService;
 	@Resource
@@ -95,66 +96,56 @@ public class DataTreeService extends BaseServiceImpl<DataTree> {
 	@Async
 	@Transactional
 	public void insertOrg(Integer orgId){
-		//判断省结点是否为空
-		Boolean proIsEmpty = false;
-		//判断市结点是否为空
-		Boolean cityIsEmpty = false;
 
 		Organization organization = organizationMapper.selectByPrimaryKey(orgId);
 		Area area = areaMapper.selectByPrimaryKey(organization.getAreaId());
+		//Area area = provinceCityAreaService.getArea(String.valueOf(organization.getAreaId()));
 		City city = provinceCityAreaService.getCity(area.getFather());
 		Province province = provinceCityAreaService.getProvince(city.getFather());
 
-		Integer id = uniqueMainKeyMapper.getMainKey();//数据库获取全局唯一的id
+		Integer id = uniqueMainKeyMapper.getMainKey();//数据库获取全局唯一的id,该值已用
+		Integer oldId = id;//记录未修改前的全局id
 
-		DataTree provinceDataTree = dataTreeMapper.selectByName(province.getProvince());
-		DataTree cityDataTree = dataTreeMapper.selectByName(city.getCity());
-		DataTree areaDataTree = dataTreeMapper.selectByName(area.getArea());
+		DataTree provinceDataTree = dataTreeMapper.selectByName(province.getProvince() ,-1);
+		DataTree cityDataTree;
+		DataTree areaDataTree;
 
 		//先查看是否存在数据，再决定是否将数据插入树中
 		if(provinceDataTree == null){
-			insertNode(new DataTree(id+1 ,province.getProvince() ,-1 ,null));
 
-			proIsEmpty = true;
+			id = insertNode(new DataTree(id+1 ,province.getProvince() ,-1 ,null) ,id);
+			id = insertNode(new DataTree(id+1 ,city.getCity() ,id ,null) ,id);
+			id = insertNode(new DataTree(id+1 ,area.getArea() ,id ,null) ,id);
+			uniqueMainKeyMapper.updateMainKey(id ,oldId);
+			organization.setParentId(id);
+
+		} else {
+
+			cityDataTree = dataTreeMapper.selectByName(city.getCity() ,provinceDataTree.getId());
+			if (cityDataTree == null){
+				id = insertNode(new DataTree(id+1 ,city.getCity() ,provinceDataTree.getId() ,null) ,id);
+				id = insertNode(new DataTree(id+1 ,area.getArea() ,id ,null) ,id);
+				uniqueMainKeyMapper.updateMainKey(id ,oldId);
+				organization.setParentId(id);
+			}else {
+				areaDataTree = dataTreeMapper.selectByName(area.getArea() ,cityDataTree.getId());
+				if (areaDataTree == null){
+					id = insertNode(new DataTree(id+1 ,area.getArea() ,cityDataTree.getId() ,null) ,id);
+					uniqueMainKeyMapper.updateMainKey(id ,oldId);
+					organization.setParentId(id);
+				}else
+					organization.setParentId(areaDataTree.getId());
+			}
 		}
 
-		if(cityDataTree == null){
-			//如果上面添加了省结点，添加市结点要从id+2开始设置结点id；
-			//如果省结点已存在，则从id+1开始设置结点id
-			insertNodeJudge(id+2 ,city.getCity() ,id+1 ,proIsEmpty);
-
-			cityIsEmpty = true;
-		}
-
-		if(areaDataTree == null){
-
-			if (cityIsEmpty)
-				//如果上面添加了省结点和市结点，则添加区结点要从id+3开始设置结点id；
-				//如果上面只添加了市结点，则添加区结点要从id+2开始设置结点id
-				insertNodeJudge(id+3 ,area.getArea() ,id+2 ,proIsEmpty);
-			else
-				//如果上面只添加了省结点，则添加区结点要从id+2开始设置结点id
-				//如果都没有添加，则添加区结点要从id+1开始设置结点id
-				insertNodeJudge(id+2 ,area.getArea() ,cityDataTree.getId() ,proIsEmpty);
-		}
-
-		organization.setParentId(uniqueMainKeyMapper.getMainKey());
 		organizationMapper.updateByPrimaryKeySelective(organization);
 
 	}
 
-	private void insertNodeJudge(Integer id ,String name ,Integer parentId ,Boolean proIsEmpty){
-		//如果省结点为空
-		if (proIsEmpty)
-			insertNode(new DataTree(id ,name ,parentId ,null));
-		//如果省结点不为空
-		else
-			insertNode(new DataTree(id-1 ,name ,parentId-1 ,null));
-	}
-
-	private void insertNode(DataTree dataTree){
+	private int insertNode(DataTree dataTree ,int id){
 		dataTreeMapper.insertSelective(dataTree);
-		uniqueMainKeyMapper.updateMainKey(dataTree.getId() ,dataTree.getId()-1);
+		id++;
+		return id;
 	}
 
 	@Transactional
@@ -195,7 +186,7 @@ public class DataTreeService extends BaseServiceImpl<DataTree> {
 
 		List<DataTreeVO> dataTreeVOS = getDataTree(parentId);
 
-		if(dataTreeVOS == null)
+		if(dataTreeVOS == null || dataTreeVOS.size() == 0)
 			return null;
 
 		for (DataTreeVO dataTreeVO:dataTreeVOS) {
@@ -235,6 +226,7 @@ public class DataTreeService extends BaseServiceImpl<DataTree> {
 		}
 
 		for (Organization organization : organizations) {
+
 			DataTreeVO dataTreeVO = new DataTreeVO(organization.getOrgId() ,organization.getName()
 					, ORG_TYPE ,organization.getParentId() ,organization.getOrgId());
 
@@ -242,6 +234,7 @@ public class DataTreeService extends BaseServiceImpl<DataTree> {
 		}
 
 		for (ElectricBox electricBox : electricBoxes) {
+			System.out.println(electricBox);
 			DataTreeVO dataTreeVO = new DataTreeVO(electricBox.getId() ,electricBox.getName()
 					, ELECTRIC_BOX_TYPE ,parentId ,electricBox.getOrgId());
 
@@ -250,7 +243,7 @@ public class DataTreeService extends BaseServiceImpl<DataTree> {
 		return dataTreeVOS;
 	}
 
-	public List<DataTreeVO> selectByFuzzyQuery(String name){
+	/*public List<DataTreeVO> selectByFuzzyQuery(String name){
 		List<DataTreeVO> dataTreeVOS = new ArrayList<>();
 		List<DataTree> dataTrees = dataTreeMapper.selectGroupByFuzzyQuery(name);
 	//	List<Organization> organizations = dataTreeMapper.selectOrganizationByFuzzyQuery(name);
@@ -263,12 +256,12 @@ public class DataTreeService extends BaseServiceImpl<DataTree> {
 			dataTreeVOS.add(dataTreeVO);
 		}
 
-	/*	for (Organization organization : organizations) {
+	*//*	for (Organization organization : organizations) {
 			DataTreeVO dataTreeVO = new DataTreeVO(organization.getOrgId() ,organization.getName()
 					, ORG_TYPE ,organization.getParentId() ,organization.getOrgId());
 
 			dataTreeVOS.add(dataTreeVO);
-		}*/
+		}*//*
 
 		for (ElectricBox electricBox : electricBoxes) {
 			DataTreeVO dataTreeVO = new DataTreeVO(electricBox.getId() ,electricBox.getName()
@@ -277,32 +270,42 @@ public class DataTreeService extends BaseServiceImpl<DataTree> {
 			dataTreeVOS.add(dataTreeVO);
 		}
 		return dataTreeVOS;
-	}
+	}*/
 
 
 	/**
 	 * 修改某结点的父母结点（拖动该结点或该名称）,如果某机构下的结点被移动到机构外(传进来的父母结点的orgId为null)则返回并提示错误
 	 * @param id 要修改的节点id
 	 * @param name 要修改的节点名称
-	 * @param parentId 要修改的节点父母节点id
-	 * @param orgId 要修改的父母节点的orgId
+	 * @param parentId 目的结点的id
+	 * @param orgId 要移动的结点的orgId
+	 * @param parentOrgId 目的结点的orgId
 	 * @param typeId 要修改的节点类型
 	 * @return 修改数
 	 */
-	public int update(Integer id ,String name ,Integer parentId ,Integer orgId ,Integer typeId){
+	public int update(Integer id ,String name
+				,Integer parentId ,Integer orgId
+				,Integer parentOrgId ,Integer typeId){
+
 		Integer update;
 		DataTree dataTree;
 		Organization organization;
 		ElectricBox electricBox;
 
-		//如果要修改的节点父母节点的orgId为空，则证明某机构下的结点被移动到机构外
-		if (orgId == null)
-			return -2;
+		//如果移动的是机构内的结点（不包括机构结点）
+		if (orgId != null && typeId != ORG_TYPE)
+			//如果目标结点的orgId与自身orgId不同，证明移动到了所属机构外,返回错误信息
+			if (parentOrgId == null || parentOrgId.intValue() != orgId)
+				return -2;
+
+		//如果目标结点选了自己或自己的孩子结点，则返回并提示错误
+		if (parentId.intValue() == id || !judge(parentId ,id))
+			return -3;
 
 		if (typeId == GROUP_TYPE){
 			dataTree = dataTreeMapper.selectByPrimaryKey(id);
 			dataTree.setName(name);
-			dataTree.setOrgId(orgId);
+		//	dataTree.setOrgId(orgId);
 			dataTree.setParentId(parentId);
 			update = dataTreeMapper.updateByPrimaryKey(dataTree);
 		}
@@ -315,12 +318,44 @@ public class DataTreeService extends BaseServiceImpl<DataTree> {
 		else {
 			electricBox = electricBoxMapper.selectByPrimaryKey(id);
 			electricBox.setName(name);
-			electricBox.setOrgId(orgId);
+		//	electricBox.setOrgId(orgId);
 			electricBox.setParentId(parentId);
 			update = electricBoxMapper.updateByPrimaryKeySelective(electricBox);
 		}
 
 		return update;
+	}
+
+	/**
+	 * 判断结点移动是否移动到了自己的孩子内
+	 * @param id 一开始传进来的id为目标结点的id
+	 * @param updatedId 被修改结点的id
+	 * @return 移动结果
+	 */
+	private Boolean judge(Integer id ,Integer updatedId){
+
+		Integer dataTreeParentId = dataTreeMapper.selectParentIdById(id ,GROUP_TYPE);
+		if (dataTreeParentId == null){
+			Integer orgParentId = dataTreeMapper.selectParentIdById(id ,ORG_TYPE);
+			if (orgParentId == null) {
+				Integer ebParentId = dataTreeMapper.selectParentIdById(id, ELECTRIC_BOX_TYPE);
+				if (ebParentId.intValue() == updatedId)
+					return false;
+				else
+					return judge(ebParentId ,updatedId);
+			}
+			else if (orgParentId.intValue() == updatedId)
+				return false;
+			else
+				return judge(orgParentId ,updatedId);
+		}
+		else if (dataTreeParentId.intValue() == updatedId)
+			return false;
+		else if (dataTreeParentId == -1)
+			return true;
+		else
+			return judge(dataTreeParentId ,updatedId);
+
 	}
 
 	@Override

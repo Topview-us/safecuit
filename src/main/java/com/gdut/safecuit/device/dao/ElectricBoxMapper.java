@@ -13,8 +13,8 @@ import java.util.Map;
 @Repository
 public interface ElectricBoxMapper extends BaseDao<ElectricBox> {
 
-    @Insert("insert into electric_user(user_id ,electric_box_id) values(#{electricBoxId} ,#{userId})")
-    int relateUser(@Param("electricBoxId")Integer electricBoxId ,@Param("userId")Integer userId);
+    //@Insert("insert into electric_user(user_id ,electric_box_id) values(#{electricBoxId} ,#{userId})")
+    int relateUser(@Param("electricBoxId")Integer electricBoxId ,@Param("userIds")List<Integer> userId);
 
     //假删除操作
     @Update("update electric_box set del_tag=1 where id = #{id}")
@@ -23,8 +23,9 @@ public interface ElectricBoxMapper extends BaseDao<ElectricBox> {
     @Results({
             @Result(property = "userId" ,column = "user_id")
     })
-    @Select("select user_id from electric_user where electric_box_id = #{electricBoxId}")
-    List<Integer> selectUserIdByElectricBoxId(@Param("electricBoxId")Integer electricBoxId);
+    @Select("select user_id from electric_user where electric_box_id = #{electricBoxId} limit #{page.index} ,#{page.pageSize}")
+    List<Integer> selectUserIdByElectricBoxId(@Param("electricBoxId")Integer electricBoxId
+                            ,@Param("page")Page page);
 
     //获取某设备的假删除标识
     @Results({
@@ -32,6 +33,9 @@ public interface ElectricBoxMapper extends BaseDao<ElectricBox> {
     })
     @Select("select del_tag from electric_box where id = #{id}")
     int selectDelTag(Integer id);
+
+    @Select("select count(*) from electric_user where electric_box_id = #{electricBoxId}")
+    Integer getRelatedUserTotal(@Param("electricBoxId")Integer electricBoxId);
 
     /**
      * 添加数据树或设备时下拉框显示的对应机构的电箱名称
@@ -46,7 +50,7 @@ public interface ElectricBoxMapper extends BaseDao<ElectricBox> {
      * @param parentId 父母结点id
      * @return 返回电箱信息
      */
-    @Select("select * from electric_box where parent_id = #{parentId}")
+  //  @Select("select * from electric_box where parent_id = #{parentId}")
     List<ElectricBox> selectByParentId(Integer parentId);
 
     /**

@@ -35,7 +35,6 @@ public class InteractiveWarning {
 
 	@WebMethod
 	public Result<Object> getWarningInfoFromDevice(WarningDTO warningDTO) {
-		System.out.println("111");
 		if(warningDTO.getEventCode() == EQPT_ONLINE)
 			//将设备修改为上线状态
 			deviceService.updateIsOnline(warningDTO.getDeviceId() ,EQPT_ONLINE);
@@ -45,7 +44,8 @@ public class InteractiveWarning {
 		else {
 			//语音提醒
 			try {
-				warningSocketController.PushWarningAudio(BaiduString2AudioUtil.getAudioByte(getMessage(warningDTO)));
+				warningSocketController.PushWarningAudio(BaiduString2AudioUtil.getAudioByte(getDeviceMessage(warningDTO)));
+		//		warningSocketController.PushWarningAudio(BaiduString2AudioUtil.getAudioByte(getWarningInfo(warningDTO)));
 			} catch (JSONException e) {
 				e.printStackTrace();
 				LogUtil.error(this.getClass() ,"语音转换抛异常\n" ,e);
@@ -58,11 +58,13 @@ public class InteractiveWarning {
 
 	}
 
-	private String getMessage(WarningDTO warningDTO){
+	private String getDeviceMessage(WarningDTO warningDTO) {
 		Device device = deviceService.selectByPrimaryKey(warningDTO.getDeviceId());
 		ElectricBox electricBox = electricBoxService.selectByPrimaryKey(device.getElectricBoxId());
-		String deviceInfo = "有一则报警信息: 报警设备编号:" + device.getCode() + ",电箱地址:" + electricBox.getAddress();
+		return  "有一则报警信息: 报警设备编号:" + device.getCode() + ",电箱地址:" + electricBox.getAddress();
+	}
 
+	private String getWarningInfo(WarningDTO warningDTO){
 		String warningInfo = "报警原因：";
 
 		if (warningDTO.getEventCode() == CIRCUIT_WARNING)
@@ -77,6 +79,6 @@ public class InteractiveWarning {
 			warningInfo += "设备温度超阈值报警";
 		else
 			warningInfo += "设备漏电流超阈值报警;";
-		return deviceInfo + warningInfo;
+		return warningInfo;
 	}
 }

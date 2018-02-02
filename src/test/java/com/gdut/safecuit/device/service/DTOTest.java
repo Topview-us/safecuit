@@ -33,12 +33,12 @@ public class DTOTest extends BaseTest{
 		warningDTO.setDate(new Date());
 		warningDTO.setEventCode(CIRCUIT_WARNING);
 		try {
-			Object object;
-			/*for (int i = 0 ;i < 5 ;i++){
-				object = client.invoke("getWarningInfoFromDevice" ,warningDTO);
 
-			}*/
-			client.invoke("getWarningInfoFromDevice" ,warningDTO);
+			for (int i = 0 ;i < 5 ;i++){
+				Object object = client.invoke("getWarningInfoFromDevice" ,warningDTO);
+			}
+
+		//	client.invoke("getWarningInfoFromDevice" ,warningDTO);
 		} catch (Exception e) {
 			e.printStackTrace();
 			LogUtil.error(this.getClass() ,"调用硬件端接口出异常" ,e);
@@ -53,7 +53,7 @@ public class DTOTest extends BaseTest{
 		warningDTO.setCircuitNo(1);
 		warningDTO.setDate(new Date());
 		warningDTO.setEventCode(CIRCUIT_WARNING);
-		for (int i =0 ; i<5 ;i++)
+
 		interactiveWarning.getWarningInfoFromDevice(warningDTO);
 	}
 }
