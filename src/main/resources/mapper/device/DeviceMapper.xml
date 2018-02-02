@@ -21,15 +21,6 @@
     where id = #{id,jdbcType=INTEGER}
   </select>
 
-  <!--<resultMap id="selectByPageMap" type="com.gdut.safecuit.device.common.po.Device">
-    <id column="id" property="id" jdbcType="INTEGER" />
-    <result column="code" property="code" jdbcType="VARCHAR" />
-    <result column="name" property="name" jdbcType="VARCHAR" />
-    <result column="electric_box_id" property="electricBoxId" jdbcType="INTEGER" />
-    <result column="is_online" property="isOnline" jdbcType="INTEGER" />
-    <result column="type_id" property="typeId" jdbcType="INTEGER" />
-    <result column="del_tag" property="delTag" jdbcType="INTEGER" />
-  </resultMap>-->
   <select id="selectByPage" resultMap="BaseResultMap">
     select * from device where
     <if test="code != null">

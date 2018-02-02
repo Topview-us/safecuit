@@ -53,7 +53,7 @@ public class DataLogController {
 			message = "url参数不能为空";
 			status = 400;
 			return new Result<>(null ,message ,false ,status);
-		}else {
+		} else {
 			if (typeId != CURRENT_EXCESS && typeId != TEMPERATURE_EXCESS && typeId != MILI_CURRENT_EXCESS){
 				message = "url参数有误";
 				status = 400;

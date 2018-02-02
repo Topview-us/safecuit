@@ -32,7 +32,7 @@ public  class DeviceService extends BaseServiceImpl<Device> {
 	 */
 	@Transactional
 	public int insertDevice(Device device){
-		int insert;
+		Integer insert;
 		device.setDelTag(0);
 		device.setIsOnline(1);//在线
 		//添加设备

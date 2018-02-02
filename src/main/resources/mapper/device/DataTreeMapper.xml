@@ -11,10 +11,26 @@
     id, name, parent_id, org_id
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
-    select 
+    select
     <include refid="Base_Column_List" />
     from data_tree
     where id = #{id,jdbcType=INTEGER}
+  </select>
+
+  <select id="selectParentIdById"  resultType="java.lang.Integer">
+    SELECT parent_id
+    <choose>
+      <when test="typeId == 1">
+         from data_tree WHERE id = #{id}
+      </when>
+      <when test="typeId == 2">
+         from organization WHERE org_id = #{id}
+      </when>
+      <when test="typeId == 3">
+         FROM electric_box WHERE id = #{id}
+      </when>
+    </choose>
+
   </select>
 
   <select id="selectByParentId" resultMap="BaseResultMap" parameterType="java.lang.Integer">
@@ -22,7 +38,11 @@
   </select>
 
   <select id="selectByName" resultMap="BaseResultMap" parameterType="java.lang.String">
-    select * from data_tree where name = #{name} limit 0,1
+    select * from data_tree where name = #{name}
+    <if test="parentId != null">
+      AND parent_id = #{parentId}
+    </if>
+    limit 0,1
   </select>
 
   <select id="selectGroupByFuzzyQuery" resultMap="BaseResultMap" parameterType="java.lang.String">

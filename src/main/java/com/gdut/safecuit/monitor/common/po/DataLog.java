@@ -7,7 +7,7 @@ public class DataLog {
 
     private Integer serialNo;
 
-    private String deviceId;
+    private Integer deviceId;
 
     private Integer circuitNo;
 
@@ -33,12 +33,12 @@ public class DataLog {
         this.serialNo = serialNo;
     }
 
-    public String getDeviceId() {
+    public Integer getDeviceId() {
         return deviceId;
     }
 
-    public void setDeviceId(String deviceId) {
-        this.deviceId = deviceId == null ? null : deviceId.trim();
+    public void setDeviceId(Integer deviceId) {
+        this.deviceId = deviceId;
     }
 
     public Integer getCircuitNo() {
@@ -78,7 +78,7 @@ public class DataLog {
         return "DataLog{" +
                 "id=" + id +
                 ", serialNo=" + serialNo +
-                ", deviceId='" + deviceId + '\'' +
+                ", deviceId=" + deviceId +
                 ", circuitNo=" + circuitNo +
                 ", circuitStatus=" + circuitStatus +
                 ", value='" + value + '\'' +

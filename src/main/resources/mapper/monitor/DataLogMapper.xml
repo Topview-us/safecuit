@@ -4,7 +4,7 @@
   <resultMap id="BaseResultMap" type="com.gdut.safecuit.monitor.common.po.DataLog" >
     <id column="id" property="id" jdbcType="INTEGER" />
     <result column="serial_no" property="serialNo" jdbcType="INTEGER" />
-    <result column="device_id" property="deviceId" jdbcType="VARCHAR" />
+    <result column="device_id" property="deviceId" jdbcType="INTEGER" />
     <result column="circuit_no" property="circuitNo" jdbcType="INTEGER" />
     <result column="circuit_status" property="circuitStatus" jdbcType="INTEGER" />
     <result column="value" property="value" jdbcType="VARCHAR" />
@@ -23,29 +23,30 @@
   <select id="selectByDeviceIdAndCircuitNo" resultMap="BaseResultMap">
     select * from
     <choose>
-      <when test="typeId = 201">
-        data_log_current
-      </when>
-      <when test="typeId = 202">
+      <when test="typeId==201">
         data_log_temperature
       </when>
-      <when test="typeId = 203">
+      <when test="typeId==202">
+        data_log_temperature
+      </when>
+      <when test="typeId==203">
         data_log_mili_current
       </when>
     </choose>
-    where device_id = #{deviceId} and circuit_no = #{circuitNo} limit 0,1
+    where device_id = #{deviceId} and circuit_no = #{circuitNo}
+    limit 0,1
   </select>
 
   <select id="selectHistoryData" resultMap="BaseResultMap">
     SELECT * FROM
     <choose>
-      <when test="typeId = 201">
+      <when test="typeId == 201">
         data_log_current
       </when>
-      <when test="typeId = 202">
+      <when test="typeId == 202">
         data_log_temperature
       </when>
-      <when test="typeId = 203">
+      <when test="typeId == 203">
         data_log_mili_current
       </when>
     </choose>
@@ -63,13 +64,13 @@
   <select id="getTotalByTypeIdAndDeviceId" resultType="java.lang.Integer">
     select count(*) FROM
     <choose>
-      <when test="typeId = 201">
+      <when test="typeId == 201">
         data_log_current
       </when>
-      <when test="typeId = 202">
+      <when test="typeId == 202">
         data_log_temperature
       </when>
-      <when test="typeId = 203">
+      <when test="typeId == 203">
         data_log_mili_current
       </when>
     </choose>
@@ -84,7 +85,7 @@
     insert into data_log (id, serial_no, device_id, 
       circuit_no, circuit_status, value, 
       date)
-    values (#{id,jdbcType=INTEGER}, #{serialNo,jdbcType=INTEGER}, #{deviceId,jdbcType=VARCHAR}, 
+    values (#{id,jdbcType=INTEGER}, #{serialNo,jdbcType=INTEGER}, #{deviceId,jdbcType=INTEGER},
       #{circuitNo,jdbcType=INTEGER}, #{circuitStatus,jdbcType=INTEGER}, #{value,jdbcType=VARCHAR}, 
       #{date,jdbcType=DATE})
   </insert>
@@ -121,7 +122,7 @@
         #{serialNo,jdbcType=INTEGER},
       </if>
       <if test="deviceId != null" >
-        #{deviceId,jdbcType=VARCHAR},
+        #{deviceId,jdbcType=INTEGER},
       </if>
       <if test="circuitNo != null" >
         #{circuitNo,jdbcType=INTEGER},
@@ -144,7 +145,7 @@
         serial_no = #{serialNo,jdbcType=INTEGER},
       </if>
       <if test="deviceId != null" >
-        device_id = #{deviceId,jdbcType=VARCHAR},
+        device_id = #{deviceId,jdbcType=INTEGER},
       </if>
       <if test="circuitNo != null" >
         circuit_no = #{circuitNo,jdbcType=INTEGER},
@@ -164,7 +165,7 @@
   <update id="updateByPrimaryKey" parameterType="com.gdut.safecuit.monitor.common.po.DataLog" >
     update data_log
     set serial_no = #{serialNo,jdbcType=INTEGER},
-      device_id = #{deviceId,jdbcType=VARCHAR},
+      device_id = #{deviceId,jdbcType=INTEGER},
       circuit_no = #{circuitNo,jdbcType=INTEGER},
       circuit_status = #{circuitStatus,jdbcType=INTEGER},
       value = #{value,jdbcType=VARCHAR},

@@ -1,9 +1,11 @@
 package com.gdut.safecuit.device.service;
 
+import com.gdut.safecuit.common.Page;
 import com.gdut.safecuit.common.UniqueMainKeyMapper;
 import com.gdut.safecuit.common.base.BaseDao;
 import com.gdut.safecuit.common.base.BaseServiceImpl;
 import com.gdut.safecuit.device.common.po.ElectricBox;
+import com.gdut.safecuit.device.common.vo.ElectricBoxRelateUserVO;
 import com.gdut.safecuit.device.dao.ElectricBoxMapper;
 import com.gdut.safecuit.user.common.po.User;
 import com.gdut.safecuit.user.common.vo.UserVO;
@@ -13,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -48,23 +51,30 @@ public class ElectricBoxService extends BaseServiceImpl<ElectricBox> {
 	}
 
 	//关联管理员
-	public int relateUser(Integer electricBoxId ,Integer userId){
+	public int relateUser(Integer electricBoxId ,List<Integer> userId){
 		return electricBoxMapper.relateUser(electricBoxId ,userId);
 	}
 
 	//显示关联管理员
-	public List<UserVO> showRelatedUser(Integer electricBoxId){
-		List<Integer> userIds = electricBoxMapper.selectUserIdByElectricBoxId(electricBoxId);
-		List<UserVO> userVOS = new ArrayList<>();
+	public List<ElectricBoxRelateUserVO> showRelatedUser(Page page , Integer electricBoxId){
+		List<Integer> userIds = electricBoxMapper.selectUserIdByElectricBoxId(electricBoxId ,page);
+		List<ElectricBoxRelateUserVO> electricBoxRelateUserVOS = new ArrayList<>();
 		for (Integer userId : userIds) {
 			User user = userMapper.selectByPrimaryKey(userId);
-			UserVO userVO = new UserVO();
-			userVO.setUserId(user.getUserId());
-			userVO.setRealName(user.getRealName());
-			userVO.setPhone(user.getPhone());
-			userVOS.add(userVO);
+			if (user == null)
+				continue;
+			ElectricBoxRelateUserVO electricBoxRelateUserVO = new ElectricBoxRelateUserVO();
+			electricBoxRelateUserVO.setUserId(user.getUserId());
+			electricBoxRelateUserVO.setUserRealName(user.getRealName());
+			electricBoxRelateUserVO.setPhone(user.getPhone());
+			electricBoxRelateUserVO.setDate(new Date());
+			electricBoxRelateUserVOS.add(electricBoxRelateUserVO);
 		}
-		return userVOS;
+		return electricBoxRelateUserVOS;
+	}
+
+	public Integer getRelatedUserTotal(Integer electricBoxId){
+		return electricBoxMapper.getRelatedUserTotal(electricBoxId);
 	}
 
 	/**

@@ -50,13 +50,7 @@ public class DeviceController extends BaseController {
 			return new Result<>(null, "设备id不能为空", false, 400);
 		} else {
 
-			Integer device_total = (Integer) cacheMap.get("DEVICE_TOTAL");
-			if(device_total == null){
-				device_total = deviceService.getTotalByElectricBoxId(electricBoxId);
-				cacheMap.put("DEVICE_TOTAL" ,device_total);
-			}
-
-			Page page = new Page(pageSize ,pageNo ,device_total);
+			Page page = new Page(pageSize ,pageNo ,deviceService.getTotalByElectricBoxId(electricBoxId));
 
 			list = deviceService.selectDeviceByPage(page,electricBoxId, code, typeId);
 			if (list.size() == 0)

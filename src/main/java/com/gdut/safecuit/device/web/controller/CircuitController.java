@@ -56,13 +56,8 @@ public class CircuitController extends BaseController {
 		if (isEmpty(deviceId)){
 			return new Result<>(null, "设备id不能为空", false, 400);
 		} else {
-			Integer circuit_total = (Integer) cacheMap.get("CIRCUIT_TOTAL");
-			if(circuit_total == null){
-				circuit_total = circuitService.getTotalByElectricBoxId(deviceId);
-				cacheMap.put("DEVICE_TOTAL" ,circuit_total);
-			}
 
-			Page page = new Page(pageSize, pageNo ,circuit_total);
+			Page page = new Page(pageSize, pageNo ,circuitService.getTotalByElectricBoxId(deviceId));
 			list = circuitService.selectCircuitByPage(page ,deviceId);
 			if (list.size() == 0)
 				message = "暂无设备";

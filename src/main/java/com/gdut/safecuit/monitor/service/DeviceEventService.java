@@ -41,9 +41,6 @@ public class DeviceEventService extends BaseServiceImpl<DeviceEvent> {
 			for (DeviceEvent deviceEvent :deviceEvents) {
 				Device device = deviceMapper.selectByPrimaryKey(deviceEvent.getDeviceId());
 
-				/*if (device.getElectricBoxId().intValue() !=  electricBoxId)
-					continue;*/
-
 				//将pair分割成json数据
 				JSONObject jsonObject = textToJson(deviceEvent.getPair());
 

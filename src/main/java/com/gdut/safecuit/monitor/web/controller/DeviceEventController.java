@@ -33,8 +33,7 @@ public class DeviceEventController {
 		List<DeviceEventVO> deviceEvents;
 		String message;
 
-		Integer total = deviceEventService.getTotalByElectricBoxId(electricBoxId);
-		Page page = new Page(pageSize ,pageNo ,total);
+		Page page = new Page(pageSize ,pageNo , deviceEventService.getTotalByElectricBoxId(electricBoxId));
 
 		deviceEvents = deviceEventService.selectByPage(page ,electricBoxId);
 

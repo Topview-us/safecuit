@@ -21,14 +21,17 @@ public interface DataTreeMapper extends BaseDao<DataTree> {
 	/*@Select("select * from data_tree where id = #{parentId}")
 	DataTree selectByParentIdInGroup(Integer parentId);*/
 
-	DataTree selectByName(String name);
+	DataTree selectByName(@Param("name") String name ,@Param("parentId")Integer parentId);
 
-	/**
+ 	/**
 	 * 向下查找各结点
 	 * @param parentId 父母结点id
 	 * @return 返回下一层的结点
 	 */
 	List<DataTree> selectByParentId(@Param("parentId")Integer parentId);
+
+	Integer selectParentIdById(@Param("id")Integer id
+			,@Param("typeId")Integer typeId);
 
 	/**
 	 * 根据父母结点id查询是否存在孩子
