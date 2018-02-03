@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.gdut.safecuit.common.Page;
 import com.gdut.safecuit.common.Result;
+import com.gdut.safecuit.common.util.MatchUtil;
 import com.gdut.safecuit.device.common.po.ElectricBox;
 import com.gdut.safecuit.device.common.vo.ElectricBoxRelateUserVO;
 import com.gdut.safecuit.device.service.ElectricBoxService;
@@ -53,14 +54,13 @@ public class ElectricBoxController extends BaseController {
 	/**
 	 * 关联电箱管理员接口
 	 * @param electricBoxId 电箱id
-	 * @param userId 人员id
+	 * @param userIdJson 人员idJSON
 	 * @return 结果集
 	 */
 	@RequestMapping("/relateUser")
 	public Result<Integer> relateUser(@RequestParam(value = "electricBoxId" ,required = false)Integer electricBoxId
 							,@RequestParam(value = "userId" ,required = false)String userIdJson){
 
-		
 		Integer i;
 		if (isEmpty(electricBoxId ,userIdJson))
 			i = -1;
@@ -74,7 +74,10 @@ public class ElectricBoxController extends BaseController {
 			i = electricBoxService.relateUser(electricBoxId ,userIds);
 		}
 
-		return getResult(i);
+		if (i == -3)
+			return new Result<>(-3 ,"请勿关联已关联的人员" ,false ,400);
+		else
+			return getResult(i);
 	}
 
 	/**
@@ -86,8 +89,10 @@ public class ElectricBoxController extends BaseController {
 	public Result<List<ElectricBoxRelateUserVO>> showRelatedUser(@RequestParam(value = "electricBoxId" ,required = false)Integer electricBoxId
 							, @RequestParam(value = "pageNo" ,required = false ,defaultValue = "1")Integer pageNo
 							, @RequestParam(value = "pageSize" ,required = false ,defaultValue = "10")Integer pageSize){
-		if (isEmpty(electricBoxId))
-			return new Result<>(null ,"请求参数不能为空" ,false ,400);
+
+		if (isEmpty(electricBoxId) || pageNo < 1 || pageSize < 1)
+			return new Result<>(null ,"请求参数有误" ,false ,400);
+
 		Integer total = electricBoxService.getRelatedUserTotal(electricBoxId);
 		Page page = new Page(pageSize ,pageNo ,total);
 		List<ElectricBoxRelateUserVO> userVOS = electricBoxService.showRelatedUser(page ,electricBoxId);
@@ -118,7 +123,8 @@ public class ElectricBoxController extends BaseController {
 	 * @param orgId 机构id
  	 * @param name 电箱名称
 	 * @return 结果集
-*/	/*@RequestMapping("/list")
+	 */
+	/*@RequestMapping("/list")
 	public Result<List<ElectricBoxVO>> selectElectricBoxByPage(@RequestParam(value = "pageNo" ,required = false,defaultValue = "0")String pageNo
 			,@RequestParam(value = "pageSize" ,required = false ,defaultValue = "10")String pageSize
 			,@RequestParam(value = "orgId" ,required = false)String orgId

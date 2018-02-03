@@ -27,7 +27,7 @@ public  class DeviceService extends BaseServiceImpl<Device> {
 
 	/**
 	 * 添加设备对象
-	 * @param device device对象，属性包括：设备编码code、设备名称name、所属电箱id、监控类型、温度阈值
+	 * @param device device对象，属性包括：设备编码code、设备名称name、所属电箱id、温度阈值
 	 * @return 添加数据条数
 	 */
 	@Transactional

@@ -13,6 +13,7 @@ import javax.annotation.Resource;
 import java.util.List;
 
 import static com.gdut.safecuit.common.util.MatchUtil.isPositiveInteger;
+import static com.gdut.safecuit.common.util.StringUtil.isEmpty;
 
 /**
  * Created by Garson in 21:30 2018/1/25
@@ -32,6 +33,9 @@ public class DeviceEventController {
 
 		List<DeviceEventVO> deviceEvents;
 		String message;
+
+		if (isEmpty(electricBoxId) || pageNo < 1 || pageSize < 1)
+			return new Result<>(null ,"请求参数有误" ,false ,400);
 
 		Page page = new Page(pageSize ,pageNo , deviceEventService.getTotalByElectricBoxId(electricBoxId));
 

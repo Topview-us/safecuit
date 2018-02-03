@@ -15,6 +15,7 @@ import javax.annotation.Resource;
 import java.util.Date;
 import java.util.List;
 
+import static com.gdut.safecuit.common.util.StringUtil.isEmpty;
 import static com.gdut.safecuit.monitor.common.EventCode.*;
 
 /**
@@ -49,18 +50,19 @@ public class DataLogController {
 		String message;
 		int status;
 
-		if (StringUtil.isEmpty(deviceId)){
-			message = "url参数不能为空";
+		if (StringUtil.isEmpty(deviceId) || pageNo < 1 || pageSize < 1){
+			message = "请求参数有误";
 			status = 400;
 			return new Result<>(null ,message ,false ,status);
 		} else {
-			/*if (typeId != CURRENT_EXCESS && typeId != TEMPERATURE_EXCESS && typeId != MILI_CURRENT_EXCESS){
+			if (typeId != CURRENT_EXCESS && typeId != TEMPERATURE_EXCESS && typeId != MILI_CURRENT_EXCESS){
 				message = "url参数有误";
 				status = 400;
 				return new Result<>(null ,message ,false ,status);
-			}*/
+			}
 
-			Page page  = new Page(pageSize ,pageNo ,dataLogService.getTotalByTypeIdAndDeviceId(typeId ,deviceId));
+			Page page  = new Page(pageSize ,pageNo ,dataLogService.getTotalByTypeIdAndDeviceId(typeId
+					,deviceId ,startDate ,endDate));
 			dataLogHistoryVOS = dataLogService.getHistoryInfo(deviceId ,typeId ,startDate ,endDate ,page);
 
 			if (dataLogHistoryVOS.size() == 0)

@@ -11,7 +11,7 @@ import org.apache.cxf.jaxws.endpoint.dynamic.JaxWsDynamicClientFactory;
 public class HandleDeviceExceptionClient {
 
 
-	public Object handleDeviceException() {
+	public Object handleDeviceWarning() {
 		JaxWsDynamicClientFactory dcf = JaxWsDynamicClientFactory.newInstance();
 		Client client = dcf.createClient("");
 		Object object = null;

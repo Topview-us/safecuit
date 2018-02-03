@@ -23,5 +23,6 @@ public interface DataLogMapper extends BaseDao<DataLog>{
             , @Param("page")Page page);
 
 
-    int getTotalByTypeIdAndDeviceId(@Param("typeId")Integer typeId ,@Param("deviceId")Integer deviceId);
+    int getTotalByTypeIdAndDeviceId(@Param("typeId")Integer typeId ,@Param("deviceId")Integer deviceId
+            ,@Param("startDate")Date startDate ,@Param("endDate")Date endDate);
 }

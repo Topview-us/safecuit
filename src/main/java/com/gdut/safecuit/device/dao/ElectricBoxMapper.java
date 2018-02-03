@@ -13,8 +13,15 @@ import java.util.Map;
 @Repository
 public interface ElectricBoxMapper extends BaseDao<ElectricBox> {
 
-    //@Insert("insert into electric_user(user_id ,electric_box_id) values(#{electricBoxId} ,#{userId})")
+
     int relateUser(@Param("electricBoxId")Integer electricBoxId ,@Param("userIds")List<Integer> userId);
+
+    @Results({
+            @Result(property = "userId" ,column = "user_id")
+    })
+    @Select("select user_id from electric_user where electric_box_id = #{electricBoxId} and user_id = #{userId}")
+    Integer hasRelatedUser(@Param("electricBoxId")Integer electricBoxId ,@Param("userId")Integer userId);
+
 
     //假删除操作
     @Update("update electric_box set del_tag=1 where id = #{id}")
@@ -37,13 +44,6 @@ public interface ElectricBoxMapper extends BaseDao<ElectricBox> {
     @Select("select count(*) from electric_user where electric_box_id = #{electricBoxId}")
     Integer getRelatedUserTotal(@Param("electricBoxId")Integer electricBoxId);
 
-    /**
-     * 添加数据树或设备时下拉框显示的对应机构的电箱名称
-     * @param orgId 机构id
-     * @return 电箱名称集合
-     */
-    @Select("select name from electric_box where org_id = #{orgId}")
-    List<String> selectNameByOrgId(Integer orgId);
 
     /**
      * 查找对应父母结点的电箱信息

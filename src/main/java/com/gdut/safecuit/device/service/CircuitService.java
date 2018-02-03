@@ -34,15 +34,15 @@ public class CircuitService extends BaseServiceImpl<Circuit> {
 	}
 
 	public int deleteCircuit(Integer id ,Integer deviceId){
-		Integer delete = circuitMapper.deleteByPrimaryKey(id);
-		Integer circuit_total = (Integer) cacheMap.get("CIRCUIT_TOTAL");
+		return circuitMapper.deleteByPrimaryKey(id);
+		/*Integer circuit_total = (Integer) cacheMap.get("CIRCUIT_TOTAL");
 
 		if(cacheMap.get("CIRCUIT_TOTAL") == null)
 			cacheMap.put("CIRCUIT_TOTAL" ,circuitMapper.selectCircuitCountByDeviceId(deviceId));
 		else
-			cacheMap.put("CIRCUIT_TOTAL" ,--circuit_total);
+			cacheMap.put("CIRCUIT_TOTAL" ,--circuit_total);*/
 
-		return delete;
+	//	return delete;
 	}
 
 	public List<CircuitVO> selectCircuitByPage(Page page ,Integer deviceId){
