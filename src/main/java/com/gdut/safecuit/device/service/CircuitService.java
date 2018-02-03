@@ -27,7 +27,9 @@ public class CircuitService extends BaseServiceImpl<Circuit> {
 	private DeviceMapper deviceMapper;
 
 	public int insertCircuit(Circuit circuit){
+		synchronized (circuit){
 
+		}
 		Integer circuit_total = circuitMapper.selectCircuitCountByDeviceId(circuit.getDeviceId());
 		circuit.setCircuitNo(++circuit_total);
 		return circuitMapper.insertSelective(circuit);
