@@ -12,7 +12,9 @@ import com.gdut.safecuit.organization.dao.ProvinceMapper;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class ProvinceCityAreaService {
@@ -58,5 +60,16 @@ public class ProvinceCityAreaService {
         example.or().andAreaIdEqualTo(areaId);
         List<Area> list = areaMapper.selectByExample(example);
         return list.size() != 0 ? list.get(0) : null;
+    }
+
+    public Map<String, Object> getProvinceCityArea(int areaId) {
+        Map<String, Object> map = new HashMap<>();
+        Area area = getArea("" + areaId);
+        City city = getCity(area.getFather());
+        Province province = getProvince(city.getFather());
+        map.put("area", area);
+        map.put("city", city);
+        map.put("province", province);
+        return map;
     }
 }

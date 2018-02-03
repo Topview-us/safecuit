@@ -33,12 +33,20 @@ public class OrganizationService {
     @Resource
     private DataTreeService dataTreeService;
 
+    public boolean isExist(Integer orgId) {
+        return orgId != null && selectByOrgId(orgId) != null;
+    }
+
+    public boolean isExist(String orgName) {
+        return orgName != null && selectByOrgName(orgName) != null;
+    }
+
     @Transactional
     public int insert(Organization org, User user) {
         // 从全局变量中获取 orgId
-//        int orgId = uniqueMainKeyMapper.getMainKey();
-//        uniqueMainKeyMapper.updateMainKey(orgId + 1, orgId);
-        int orgId = 5;
+        int orgId = uniqueMainKeyMapper.getMainKey();
+        uniqueMainKeyMapper.updateMainKey(orgId + 1, orgId);
+        orgId++;
 
         // 添加用户
         user.setOrgId(orgId);
@@ -51,48 +59,11 @@ public class OrganizationService {
         org.setDelTag(0);
 
         int effect = organizationMapper.insertSelective(org);
-//        if (effect > 0) {
+        if (effect > 0) {
             // 更新省市区树状图
-//            dataTreeService.insertOrg(orgId);
-//        }
+            dataTreeService.insertOrg(orgId);
+        }
         return effect;
-    }
-
-    public boolean isExist(int orgId) {
-        return selectOrganizationByOrgId(orgId) != null;
-    }
-
-    public Organization selectOrganizationByOrgId(int orgId) {
-        Organization org = organizationMapper.selectByPrimaryKey(orgId);
-        return org.getDelTag() == 1 ? null : org;
-    }
-
-    public List<Organization> fuzzySearchByOrgName(String name) {
-        OrganizationExample example = new OrganizationExample();
-        example.or()
-                .andDelTagEqualTo(0)
-                .andNameLike("%" + name + "%");
-        return organizationMapper.selectByExample(example);
-    }
-
-    public List<Organization> selectOrganizationsByPage(int offset, int limit) {
-        OrganizationExample example = new OrganizationExample();
-        example.setOffset(offset);
-        example.setLimit(limit);
-        example.or()
-                .andDelTagEqualTo(0);
-        return organizationMapper.selectByExample(example);
-    }
-
-    public List<Organization> selectOrganizationByParentId(int parentId) {
-        OrganizationExample example = new OrganizationExample();
-        example.or()
-                .andParentIdEqualTo(parentId);
-        return organizationMapper.selectByExample(example);
-    }
-
-    public int delete(int orgId) {
-        return organizationMapper.deleteByPrimaryKey(orgId);
     }
 
     public int fakeDelete(int orgId) {
@@ -102,17 +73,72 @@ public class OrganizationService {
         return organizationMapper.updateByPrimaryKeySelective(org);
     }
 
-    public int update(Organization org) {
-//        Organization originalOrg = selectOrganizationByOrgId(org.getOrgId());
-        // 设置禁止修改项
-        org.setDelTag(null);
-        return organizationMapper.updateByPrimaryKeySelective(org);
+    @Transactional
+    public int fakeDelete(List<Integer> ids) {
+        if (ids == null) {
+            return -1;
+        }
+        int effect = 0;
+        for (int id : ids) {
+            // 假删除机构
+            effect += fakeDelete(id);
+
+            // 假删除机构员工
+            userService.fakeDeleteByOrgId(id);
+        }
+        return effect;
+    }
+
+    public int delete(int orgId) {
+        return organizationMapper.deleteByPrimaryKey(orgId);
+    }
+
+    public Organization selectByOrgId(int orgId) {
+        Organization org = organizationMapper.selectByPrimaryKey(orgId);
+        return org.getDelTag() == 1 ? null : org;
+    }
+
+    public Organization selectByOrgName(String orgName) {
+        if (orgName == null) {
+            return null;
+        }
+        OrganizationExample example = new OrganizationExample();
+        example.or()
+                .andNameEqualTo(orgName)
+                .andDelTagEqualTo(0);
+        List<Organization> orgs = organizationMapper.selectByExample(example);
+        return orgs.size() == 0 ? null : orgs.get(0);
+    }
+
+    public List<Organization> selectOrganizationByParentId(int parentId) {
+        OrganizationExample example = new OrganizationExample();
+        example.or()
+                .andParentIdEqualTo(parentId)
+                .andDelTagEqualTo(0);
+        return organizationMapper.selectByExample(example);
     }
 
     public List<Organization> selectOrganizationsByArea(int areaId) {
         OrganizationExample example = new OrganizationExample();
-        example.or().andDelTagEqualTo(0).andAreaIdEqualTo(areaId);
+        example.or()
+                .andAreaIdEqualTo(areaId)
+                .andDelTagEqualTo(0);
         return organizationMapper.selectByExample(example);
+    }
+
+    public List<Organization> fuzzySearchByOrgName(String orgName) {
+        OrganizationExample example = new OrganizationExample();
+        example.or()
+                .andDelTagEqualTo(0)
+                .andNameLike("%" + orgName + "%");
+        return organizationMapper.selectByExample(example);
+    }
+
+    public int update(Organization org) {
+//        Organization originalOrg = selectByOrgId(org.getOrgId());
+        // 设置禁止修改项
+        org.setDelTag(null);
+        return organizationMapper.updateByPrimaryKeySelective(org);
     }
 
     public List<Organization> selectOrganizationsByParent(int parentId, int page, int limit) {
@@ -123,13 +149,17 @@ public class OrganizationService {
         OrganizationExample example = new OrganizationExample();
         example.setLimit(limit);
         example.setOffset(offset);
-        example.or().andDelTagEqualTo(0).andParentIdEqualTo(parentId);
+        example.or()
+                .andParentIdEqualTo(parentId)
+                .andDelTagEqualTo(0);
         return organizationMapper.selectByExample(example);
     }
 
     public long getTotalRowsByParentId(int parentId) {
         OrganizationExample example = new OrganizationExample();
-        example.or().andDelTagEqualTo(0).andParentIdEqualTo(parentId);
+        example.or()
+                .andParentIdEqualTo(parentId)
+                .andDelTagEqualTo(0);
         return organizationMapper.countByExample(example);
     }
 
@@ -151,13 +181,5 @@ public class OrganizationService {
 
     public boolean isValidDescription(String desc) {
         return StringUtil.isString(desc, getDescriptionMinLength(), getDescriptionMaxLength());
-    }
-
-    public boolean isValidInfo(Organization org) {
-        return isValidName(org.getName())
-                && isValidAddress(org.getAddress())
-                && isValidEmail(org.getEmail())
-                && isValidPhone(org.getPhone())
-                && isValidDescription(org.getDescription());
     }
 }

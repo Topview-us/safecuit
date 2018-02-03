@@ -1,18 +1,21 @@
 package com.gdut.safecuit.user.common.vo;
 
-public class UserVO {
+/**
+ * 用于编辑用户信息时回显信息
+ */
+public class UserEditVO {
     private Integer userId;
-
     private String username;
-
     private String realName;
-
+    private Integer orgProvinceId;
+    private String orgProvince;
+    private Integer orgCityId;
+    private String orgCity;
+    private Integer orgAreaId;
+    private String orgArea;
     private String orgName;
-
     private String phone; // 可选
-
     private Integer qq; // 可选
-
     private String description; // 可选
 
     public Integer getUserId() {
@@ -37,6 +40,54 @@ public class UserVO {
 
     public void setRealName(String realName) {
         this.realName = realName;
+    }
+
+    public Integer getOrgProvinceId() {
+        return orgProvinceId;
+    }
+
+    public void setOrgProvinceId(Integer orgProvinceId) {
+        this.orgProvinceId = orgProvinceId;
+    }
+
+    public String getOrgProvince() {
+        return orgProvince;
+    }
+
+    public void setOrgProvince(String orgProvince) {
+        this.orgProvince = orgProvince;
+    }
+
+    public Integer getOrgCityId() {
+        return orgCityId;
+    }
+
+    public void setOrgCityId(Integer orgCityId) {
+        this.orgCityId = orgCityId;
+    }
+
+    public String getOrgCity() {
+        return orgCity;
+    }
+
+    public void setOrgCity(String orgCity) {
+        this.orgCity = orgCity;
+    }
+
+    public Integer getOrgAreaId() {
+        return orgAreaId;
+    }
+
+    public void setOrgAreaId(Integer orgAreaId) {
+        this.orgAreaId = orgAreaId;
+    }
+
+    public String getOrgArea() {
+        return orgArea;
+    }
+
+    public void setOrgArea(String orgArea) {
+        this.orgArea = orgArea;
     }
 
     public String getOrgName() {
@@ -73,10 +124,16 @@ public class UserVO {
 
     @Override
     public String toString() {
-        return "UserVO{" +
+        return "UserEditVO{" +
                 "userId=" + userId +
                 ", username='" + username + '\'' +
                 ", realName='" + realName + '\'' +
+                ", orgProvinceId=" + orgProvinceId +
+                ", orgProvince='" + orgProvince + '\'' +
+                ", orgCityId=" + orgCityId +
+                ", orgCity='" + orgCity + '\'' +
+                ", orgAreaId=" + orgAreaId +
+                ", orgArea='" + orgArea + '\'' +
                 ", orgName='" + orgName + '\'' +
                 ", phone='" + phone + '\'' +
                 ", qq=" + qq +

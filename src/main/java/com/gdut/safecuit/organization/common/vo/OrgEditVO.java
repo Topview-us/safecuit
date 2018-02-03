@@ -1,19 +1,19 @@
 package com.gdut.safecuit.organization.common.vo;
 
-public class OrgVO {
+public class OrgEditVO {
     private int orgId; // 机构id
     private String name; // 机构名
+    private Integer provinceId;
     private String province; // 省份
+    private Integer cityId;
     private String city; // 市
+    private Integer areaId;
     private String area; // 区
     private String address; // 地址
     private String admin; // 机构管理员用户名
     private String email; // 机构邮箱
     private String phone; // 机构邮箱
     private String description; // 描述
-
-    public OrgVO() {
-    }
 
     public int getOrgId() {
         return orgId;
@@ -31,6 +31,14 @@ public class OrgVO {
         this.name = name;
     }
 
+    public Integer getProvinceId() {
+        return provinceId;
+    }
+
+    public void setProvinceId(Integer provinceId) {
+        this.provinceId = provinceId;
+    }
+
     public String getProvince() {
         return province;
     }
@@ -39,12 +47,28 @@ public class OrgVO {
         this.province = province;
     }
 
+    public Integer getCityId() {
+        return cityId;
+    }
+
+    public void setCityId(Integer cityId) {
+        this.cityId = cityId;
+    }
+
     public String getCity() {
         return city;
     }
 
     public void setCity(String city) {
         this.city = city;
+    }
+
+    public Integer getAreaId() {
+        return areaId;
+    }
+
+    public void setAreaId(Integer areaId) {
+        this.areaId = areaId;
     }
 
     public String getArea() {
@@ -97,11 +121,14 @@ public class OrgVO {
 
     @Override
     public String toString() {
-        return "OrgVO{" +
+        return "OrgEditVO{" +
                 "orgId=" + orgId +
                 ", name='" + name + '\'' +
+                ", provinceId=" + provinceId +
                 ", province='" + province + '\'' +
+                ", cityId=" + cityId +
                 ", city='" + city + '\'' +
+                ", areaId=" + areaId +
                 ", area='" + area + '\'' +
                 ", address='" + address + '\'' +
                 ", admin='" + admin + '\'' +

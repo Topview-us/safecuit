@@ -98,8 +98,8 @@ public class DataTreeService extends BaseServiceImpl<DataTree> {
 	public void insertOrg(Integer orgId){
 
 		Organization organization = organizationMapper.selectByPrimaryKey(orgId);
-		Area area = areaMapper.selectByPrimaryKey(organization.getAreaId());
-		//Area area = provinceCityAreaService.getArea(String.valueOf(organization.getAreaId()));
+//		Area area = areaMapper.selectByPrimaryKey(organization.getAreaId());
+		Area area = provinceCityAreaService.getArea(String.valueOf(organization.getAreaId()));
 		City city = provinceCityAreaService.getCity(area.getFather());
 		Province province = provinceCityAreaService.getProvince(city.getFather());
 
