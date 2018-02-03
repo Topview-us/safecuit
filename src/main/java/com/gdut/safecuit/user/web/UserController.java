@@ -1,10 +1,15 @@
 package com.gdut.safecuit.user.web;
 
 import com.gdut.safecuit.common.Result;
+import com.gdut.safecuit.organization.common.po.Area;
+import com.gdut.safecuit.organization.common.po.City;
 import com.gdut.safecuit.organization.common.po.Organization;
+import com.gdut.safecuit.organization.common.po.Province;
 import com.gdut.safecuit.organization.service.OrganizationService;
+import com.gdut.safecuit.organization.service.ProvinceCityAreaService;
 import com.gdut.safecuit.user.common.po.User;
 import com.gdut.safecuit.user.common.vo.LoginVO;
+import com.gdut.safecuit.user.common.vo.UserEditVO;
 import com.gdut.safecuit.user.common.vo.UserVO;
 import com.gdut.safecuit.user.service.UserService;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/user")
@@ -24,6 +30,9 @@ public class UserController {
 
     @Resource
     private OrganizationService organizationService;
+
+    @Resource
+    private ProvinceCityAreaService provinceCityAreaService;
 
     @RequestMapping("/login")
     public Result<Integer> checkLogin(LoginVO loginVO) {
@@ -46,21 +55,34 @@ public class UserController {
 
     @RequestMapping("/add")
     public Result<Integer> addUser(User user, @RequestParam("rePassword") String rePassword) {
-//        if (user.getUsername() == null || user.getRealName() == null || user.getPassword() == null
-//                || user.getUserId() == null || rePassword == null) {
-//            return new Result<>(0, "信息不能为空", false, 500);
-//        }
-
         // 校验数据正确性
-        boolean pass = true;
-        if (userService.isExist(user.getUsername())) { // 检验用户名是否重复
-            pass = false;
-        }
-        if (pass && !userService.isValidPassword(user.getPassword(), rePassword)) { // 检查密码是否一致
-            pass = false;
-        }
-        if (pass && !userService.isValidInfo(user)) { // 检查其他信息是否符合
-            pass = false;
+//        boolean pass = true;
+//        if (!userService.isValidUsername(user.getUsername())) {
+//            pass = false;
+//        }
+//        if (pass && userService.isExist(user.getUsername())) {
+//            pass = false;
+//        }
+//        if (pass && !userService.isValidRealName(user.getRealName())) {
+//            pass = false;
+//        }
+//        if (pass && !userService.isValidPassword(user.getPassword(), rePassword)) {
+//            pass = false;
+//        }
+//        if (pass && !userService.isValidQQ(user.getQQ())) {
+//            pass = false;
+//        }
+//        if (pass && !userService.isValidDescription(user.getDescription())) {
+//            pass = false;
+//        }
+        boolean pass = false;
+        if (userService.isValidUsername(user.getUsername())
+                && !userService.isExist(user.getUsername())
+                && userService.isValidRealName(user.getRealName())
+                && userService.isValidPassword(user.getPassword(), rePassword)
+                && userService.isValidQQ(user.getQQ())
+                && userService.isValidDescription(user.getDescription())) {
+            pass = true;
         }
 
         if (pass) {
@@ -73,7 +95,9 @@ public class UserController {
 
     @RequestMapping("/checkDuplicateUsername")
     public Result<Integer> checkDuplicateUsername(@RequestParam("username") String username) {
-        System.out.println("[检测] /user/checkDuplicateUsername: username " + username);
+        if (!userService.isValidUsername(username)) {
+            return new Result<>(0, "用户名不合法", false, 500);
+        }
         if (userService.isExist(username)) {
             return new Result<>(0, "username已存在", false, 500);
         } else {
@@ -81,18 +105,12 @@ public class UserController {
         }
     }
 
-//    @RequestMapping("/delete")
-//    public Result<Integer> deleteUser(@RequestParam("username") String username) {
-//        if (!StringUtil.isString(username, UserConstant.getUsernameMinLength(), UserConstant.getUsernameMaxLength())) {
-//            return new Result<>(0, "用户名不正确", false, 500);
-//        }
-//        int effect = userService.fakeDeleteByUsername(username);
-//        return new Result<>(effect, "删除成功", true, 200);
-//    }
-
     @RequestMapping("/delete")
     public Result<Integer> deleteUsers(@RequestParam("ids") List<Integer> ids) {
-        int effect = userService.fakeDeleteUsers(ids);
+        if (ids == null) {
+            return new Result<>(0, "参数不合法", false, 500);
+        }
+        int effect = userService.fakeDeleteByUserId(ids);
         if (effect > 0) {
             return new Result<>(effect, "删除成功", true, 200);
         } else {
@@ -100,12 +118,22 @@ public class UserController {
         }
     }
 
+    @RequestMapping("/getUserEditInfo")
+    public Result<UserEditVO> getUserEditInfo(@RequestParam("userId") Integer userId) {
+        if (userId == null) {
+            return new Result<>(null, "userId不合法", false, 500);
+        }
+        User user = userService.selectByUserId(userId);
+        if (user == null) {
+            return new Result<>(null, "无法获取用户信息", false, 500);
+        } else {
+            return new Result<>(getUserEditVO(user), "获取成功", true, 200);
+        }
+    }
+
     @RequestMapping("/list")
     public Result<List<UserVO>> selectUsersByPage(@RequestParam("page") Integer page, @RequestParam("limit") Integer limit) {
-//        if (page == null || page < 0 || limit == null || limit < 0) {
-//            return new Result<>(null, "获取用户列表失败", false, 500);
-//        }
-        List<User> users = userService.selectUsersByPage(page, limit);
+        List<User> users = userService.selectByPage(page, limit);
         if (users == null) {
             return new Result<>(null, "获取用户列表失败", false, 500);
 
@@ -123,10 +151,7 @@ public class UserController {
      */
     @RequestMapping("/listByOrg")
     public Result<List<UserVO>> selectUsersByOrgId(@RequestParam("orgId") Integer orgId) {
-//        if (orgId == null) {
-//            return new Result<>(null, "orgId无效", false, 500);
-//        }
-        List<User> users = userService.selectUsersByOrgId(orgId);
+        List<User> users = userService.selectByOrgId(orgId);
         if (users == null) {
             return new Result<>(null, "获取用户列表失败", false, 500);
         }
@@ -137,10 +162,7 @@ public class UserController {
     public Result<List<UserVO>> selectUsersByOrgIdByPage(@RequestParam("orgId") Integer orgId,
                                                          @RequestParam("page") Integer page,
                                                          @RequestParam("limit") Integer limit) {
-//        if (orgId == null || page == null || page < 0 || limit == null || limit < 0) {
-//            return new Result<>(null, "获取用户列表失败", false, 500);
-//        }
-        List<User> users = userService.selectUsersByOrgIdByPage(orgId, page, limit);
+        List<User> users = userService.selectByOrgIdByPage(orgId, page, limit);
         if (users == null) {
             return new Result<>(null, "获取用户列表失败", false, 500);
         }
@@ -154,29 +176,30 @@ public class UserController {
             return new Result<>(0, "获取参数失败", false, 500);
         }
         if (user.getUserId() == null) {
-            return new Result<>(0, "用户id无效", false, 500);
+            return new Result<>(0, "无法获取用户id", false, 500);
         }
         if (!userService.isExist(user.getUsername())) {
             return new Result<>(0, "用户不存在", false, 500);
         }
+
         // 检验数据合法性
         boolean pass = true;
-        if (user.getRealName() != null && !userService.isValidRealName(user.getRealName())) { // 检验真实姓名
+        if (user.getRealName() != null && !userService.isValidRealName(user.getRealName())) { // 如果修改真实姓名, 检验之
             pass = false;
         }
-        if (pass && user.getPassword() != null && !userService.isValidPassword(user.getPassword(), rePassword)) { // 检验密码
+        if (pass && user.getPassword() != null && !userService.isValidPassword(user.getPassword(), rePassword)) { // 如果修改密码, 检验之
             pass = false;
         }
-        if (pass && user.getOrgId() != null && !organizationService.isExist(user.getOrgId())) {
+        if (pass && user.getOrgId() != null && !organizationService.isExist(user.getOrgId())) { // 如果修改机构, 检验机构是否存在
             pass = false;
         }
-//        if (pass && user.getPhone() != null && !userService.isValidPhone(user.getPhone())) {
-//            pass = false;
-//        }
-        if (pass && user.getQQ() != null && !userService.isValidQQ(user.getQQ())) {
+        if (pass && user.getPhone() != null && !userService.isValidPhone(user.getPhone())) { // 如果修改手机号, 检验之
             pass = false;
         }
-        if (pass && user.getDescription() != null && !userService.isValidDescription((user.getDescription()))) {
+        if (pass && user.getQQ() != null && !userService.isValidQQ(user.getQQ())) { // 如果修改QQ, 检验之
+            pass = false;
+        }
+        if (pass && user.getDescription() != null && !userService.isValidDescription((user.getDescription()))) { // 如果修改描述, 检验之
             pass = false;
         }
 
@@ -186,6 +209,36 @@ public class UserController {
         } else {
             return new Result<>(0, "修改失败", true, 200);
         }
+    }
+
+    private UserEditVO getUserEditVO(User user) {
+        UserEditVO userEditVO = new UserEditVO();
+        userEditVO.setUserId(user.getUserId());
+        userEditVO.setUsername(user.getUsername());
+        userEditVO.setRealName(user.getRealName());
+        userEditVO.setPhone(user.getPhone());
+        userEditVO.setQq(user.getQQ());
+        userEditVO.setDescription(user.getDescription());
+
+        // 获取机构信息
+        Organization org = organizationService.selectByOrgId(user.getOrgId());
+        userEditVO.setOrgName(org.getName());
+
+        // 获取省市区
+        Map<String, Object> map = provinceCityAreaService.getProvinceCityArea(org.getAreaId());
+        Province province = (Province) map.get("province");
+        City city = (City) map.get("city");
+        Area area = (Area) map.get("area");
+
+        userEditVO.setOrgProvinceId(Integer.valueOf(province.getProvinceId()));
+        userEditVO.setOrgCityId(Integer.valueOf(city.getCityId()));
+        userEditVO.setOrgAreaId(Integer.valueOf(area.getAreaId()));
+
+        userEditVO.setOrgProvince(province.getProvince());
+        userEditVO.setOrgCity(city.getCity());
+        userEditVO.setOrgArea(area.getArea());
+
+        return userEditVO;
     }
 
     private UserVO getUserVO(User user) {
@@ -198,7 +251,7 @@ public class UserController {
         userVO.setDescription(user.getDescription());
 
         // 获取机构信息
-        Organization org = organizationService.selectOrganizationByOrgId(user.getOrgId());
+        Organization org = organizationService.selectByOrgId(user.getOrgId());
         userVO.setOrgName(org.getName());
 
         return userVO;

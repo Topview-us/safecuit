@@ -24,21 +24,20 @@ public class UserServiceTest extends BaseTest {
 
     @Test
     public void insert() {
-        for (int i = 0; i < 23; i++) {
+        for (int i = 0; i < 13; i++) {
             User user = new User();
-            user.setUsername("abccc" + i);
-            user.setRealName("sunday" + i);
-            user.setPassword("aaaaa11");
-            user.setOrgId(5);
-            int a = userService.insert(user);
-            System.out.println(a);
+            user.setUsername("red_tea" + i);
+            user.setRealName("真实姓名" + i);
+            user.setPassword("123456");
+            user.setOrgId(90);
+            userService.insert(user);
         }
     }
 
     @Test
     public void selectUsersByPage() {
         System.out.println();
-        List<User> users = userService.selectUsersByPage(0, 10);
+        List<User> users = userService.selectByPage(0, 10);
         for (User user : users) {
             System.out.println(user);
         }
@@ -46,12 +45,12 @@ public class UserServiceTest extends BaseTest {
 
     @Test
     public void selectUserByUserId() {
-        System.out.println(userService.selectUserByUserId(1));
+        System.out.println(userService.selectByUserId(1));
     }
 
     @Test
     public void selectUserByUsername() {
-        System.out.println(userService.selectUserByUsername("cccccc12"));
+        System.out.println(userService.selectByUsername("cccccc12"));
     }
 
     @Test
@@ -93,4 +92,10 @@ public class UserServiceTest extends BaseTest {
         user.setDelTag(8);
         userService.updateUserByUserId(user);
     }
+
+    @Test
+    public void nothing() {
+        System.out.println(Long.MAX_VALUE);
+    }
+
 }

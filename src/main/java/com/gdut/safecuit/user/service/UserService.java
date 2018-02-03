@@ -1,5 +1,6 @@
 package com.gdut.safecuit.user.service;
 
+import com.gdut.safecuit.common.util.MatchUtil;
 import com.gdut.safecuit.common.util.Pbkdf2Util;
 import com.gdut.safecuit.common.util.StringUtil;
 import com.gdut.safecuit.user.common.po.User;
@@ -21,19 +22,11 @@ public class UserService {
     @Resource
     private UserMapper userMapper;
 
-    public boolean isExist(String username) {
-        return username != null && selectUserByUsername(username) != null;
-    }
-
-    public boolean isExist(Integer userId) {
-        return userId != null && selectUserByUserId(userId) != null;
-    }
-
     public boolean checkLogin(User user) {
         if (user == null || user.getUsername() == null || user.getPassword() == null) {
             return false;
         }
-        User correct = selectUserByUsername(user.getUsername());
+        User correct = selectByUsername(user.getUsername());
         if (correct == null) {
             return false;
         }
@@ -46,69 +39,12 @@ public class UserService {
         return pass;
     }
 
-    public int fakeDeleteByUserId(Integer userId) {
-        if (userId == null) {
-            return -1;
-        }
-        User user = new User();
-        user.setUserId(userId);
-        user.setDelTag(1);
-        return userMapper.updateByPrimaryKeySelective(user);
+    public boolean isExist(String username) {
+        return username != null && selectByUsername(username) != null;
     }
 
-    public int fakeDeleteByUsername(String username) {
-        if (username == null) {
-            return -1;
-        }
-        // 设定修改的信息
-        User user = new User();
-        user.setDelTag(1);
-        // 设定修改对象
-        UserExample userExample = new UserExample();
-        userExample.or()
-                .andUsernameEqualTo(username);
-        return userMapper.updateByExampleSelective(user, userExample);
-    }
-
-//    @Transactional
-//    public int fakeDeleteUsers(int[] userIds) {
-//        if (userIds == null) {
-//            return -1;
-//        }
-//        int effect = 0;
-//        for (int userId : userIds) {
-//            effect += fakeDeleteByUserId(userId);
-//        }
-//        return effect;
-//    }
-
-    @Transactional
-    public int fakeDeleteUsers(List<Integer> userIds) {
-        if (userIds == null) {
-            return -1;
-        }
-        int effect = 0;
-        for (int userId : userIds) {
-            effect += fakeDeleteByUserId(userId);
-        }
-        return effect;
-    }
-
-    public int deleteByUserId(Integer userId) {
-        if (userId == null) {
-            return -1;
-        }
-        return userMapper.deleteByPrimaryKey(userId);
-    }
-
-    public int deleteByUsername(String username) {
-        if (username == null) {
-            return -1;
-        }
-        UserExample userExample = new UserExample();
-        userExample.or()
-                .andUsernameEqualTo(username);
-        return userMapper.deleteByExample(userExample);
+    public boolean isExist(Integer userId) {
+        return userId != null && selectByUserId(userId) != null;
     }
 
     /**
@@ -133,15 +69,94 @@ public class UserService {
         return 0;
     }
 
-//    public List<User> selectUsersByPage(int offset, int limit) {
-//        UserExample userExample = new UserExample();
-//        userExample.setLimit(limit);
-//        userExample.setOffset(offset);
-//        userExample.or().andDelTagEqualTo(0);
-//        return userMapper.selectByExample(userExample);
-//    }
+    public int fakeDeleteByUsername(String username) {
+        if (username == null) {
+            return -1;
+        }
+        // 设定修改的信息
+        User user = new User();
+        user.setDelTag(1);
+        // 设定修改对象
+        UserExample userExample = new UserExample();
+        userExample.or()
+                .andUsernameEqualTo(username);
+        return userMapper.updateByExampleSelective(user, userExample);
+    }
 
-    public List<User> selectUsersByPage(Integer page, Integer limit) {
+    public int fakeDeleteByUserId(Integer userId) {
+        if (userId == null) {
+            return -1;
+        }
+        User user = new User();
+        user.setUserId(userId);
+        user.setDelTag(1);
+        return userMapper.updateByPrimaryKeySelective(user);
+    }
+
+    @Transactional
+    public int fakeDeleteByUserId(List<Integer> userIds) {
+        if (userIds == null) {
+            return -1;
+        }
+        int effect = 0;
+        for (int userId : userIds) {
+            effect += fakeDeleteByUserId(userId);
+        }
+        return effect;
+    }
+
+    public int fakeDeleteByOrgId(Integer orgId) {
+        if (orgId == null) {
+            return -1;
+        }
+        // 设置更新选项
+        User record = new User();
+        record.setDelTag(1);
+
+        // 设置筛选条件
+        UserExample example = new UserExample();
+        example.or().andOrgIdEqualTo(orgId);
+        return userMapper.updateByExampleSelective(record, example);
+    }
+
+    public int deleteByUserId(Integer userId) {
+        if (userId == null) {
+            return -1;
+        }
+        return userMapper.deleteByPrimaryKey(userId);
+    }
+
+    public int deleteByUsername(String username) {
+        if (username == null) {
+            return -1;
+        }
+        UserExample userExample = new UserExample();
+        userExample.or()
+                .andUsernameEqualTo(username);
+        return userMapper.deleteByExample(userExample);
+    }
+
+    public User selectByUserId(Integer userId) {
+        if (userId == null) {
+            return null;
+        }
+        User user = userMapper.selectByPrimaryKey(userId);
+        return user.getDelTag() == 1 ? null : user;
+    }
+
+    public User selectByUsername(String username) {
+        if (username == null) {
+            return null;
+        }
+        UserExample userExample = new UserExample();
+        userExample.or()
+                .andUsernameEqualTo(username)
+                .andDelTagEqualTo(0);
+        List<User> users = userMapper.selectByExample(userExample);
+        return users.size() == 0 ? null : users.get(0);
+    }
+
+    public List<User> selectByPage(Integer page, Integer limit) {
         if (page == null || page < 0 || limit == null || limit < 0) {
             return null;
         }
@@ -154,7 +169,7 @@ public class UserService {
         return userMapper.selectByExample(userExample);
     }
 
-    public List<User> selectUsersByOrgId(Integer orgId) {
+    public List<User> selectByOrgId(Integer orgId) {
         if (orgId == null) {
             return null;
         }
@@ -165,7 +180,7 @@ public class UserService {
         return userMapper.selectByExample(example);
     }
 
-    public List<User> selectUsersByOrgIdByPage(Integer orgId, Integer page, Integer limit) {
+    public List<User> selectByOrgIdByPage(Integer orgId, Integer page, Integer limit) {
         if (orgId == null || page == null || page < 0 || limit == null || limit < 0) {
             return null;
         }
@@ -177,6 +192,16 @@ public class UserService {
                 .andOrgIdEqualTo(orgId)
                 .andDelTagEqualTo(0);
         return userMapper.selectByExample(userExample);
+    }
+
+    public int updateUserByUserId(User user) {
+        if (user == null) {
+            return -1;
+        }
+        //设置禁止修改项
+        user.setUsername(null);
+        user.setDelTag(null);
+        return userMapper.updateByPrimaryKeySelective(user);
     }
 
     public long getTotalRows() {
@@ -197,42 +222,12 @@ public class UserService {
         return userMapper.countByExample(userExample);
     }
 
-    public User selectUserByUserId(Integer userId) {
-        if (userId == null) {
-            return null;
-        }
-        User user = userMapper.selectByPrimaryKey(userId);
-        return user.getDelTag() == 1 ? null : user;
-    }
-
-    public User selectUserByUsername(String username) {
-        if (username == null) {
-            return null;
-        }
-        UserExample userExample = new UserExample();
-        userExample.or()
-                .andUsernameEqualTo(username)
-                .andDelTagEqualTo(0);
-        List<User> users = userMapper.selectByExample(userExample);
-        return users.size() == 0 ? null : users.get(0);
-    }
-
-    public int updateUserByUserId(User user) {
-        if (user == null) {
-            return -1;
-        }
-        //设置禁止修改项
-        user.setUsername(null);
-        user.setDelTag(null);
-        return userMapper.updateByPrimaryKeySelective(user);
-    }
-
-    public boolean isValidInfo(User user) {
-        return user != null
-                && isValidUsername(user.getUsername())
-                && isValidRealName(user.getRealName())
-                && isValidDescription(user.getDescription());
-    }
+//    public boolean isValidInfo(User user) {
+//        return user != null
+//                && isValidUsername(user.getUsername())
+//                && isValidRealName(user.getRealName())
+//                && isValidDescription(user.getDescription());
+//    }
 
     public boolean isValidUsername(String username) {
         return StringUtil.isString(username, getUsernameMinLength(), getUsernameMaxLength());
@@ -251,6 +246,10 @@ public class UserService {
     }
 
     public boolean isValidQQ(Integer qq) {
-        return false;
+        return qq != null;
+    }
+
+    public boolean isValidPhone(String phone) {
+        return phone != null && MatchUtil.isPhoneNumber(phone);
     }
 }
