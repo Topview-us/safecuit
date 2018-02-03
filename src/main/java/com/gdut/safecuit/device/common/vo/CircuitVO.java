@@ -79,4 +79,13 @@ public class CircuitVO {
 		this.deviceName = deviceName;
 		this.typeId = typeId;
 	}
+
+	public CircuitVO(Integer id, String name, String address, int circuitNo, String deviceCode, String deviceName) {
+		this.id = id;
+		this.name = name;
+		this.address = address;
+		this.circuitNo = circuitNo;
+		this.deviceCode = deviceCode;
+		this.deviceName = deviceName;
+	}
 }

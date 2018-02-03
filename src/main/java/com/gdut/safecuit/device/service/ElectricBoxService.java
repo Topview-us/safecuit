@@ -58,6 +58,7 @@ public class ElectricBoxService extends BaseServiceImpl<ElectricBox> {
 	//显示关联管理员
 	public List<ElectricBoxRelateUserVO> showRelatedUser(Page page , Integer electricBoxId){
 		List<Integer> userIds = electricBoxMapper.selectUserIdByElectricBoxId(electricBoxId ,page);
+		System.out.println(userIds);
 		List<ElectricBoxRelateUserVO> electricBoxRelateUserVOS = new ArrayList<>();
 		for (Integer userId : userIds) {
 			User user = userMapper.selectByPrimaryKey(userId);

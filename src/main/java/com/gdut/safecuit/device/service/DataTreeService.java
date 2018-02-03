@@ -23,7 +23,6 @@ import com.gdut.safecuit.organization.service.ProvinceCityAreaService;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.context.annotation.RequestScope;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
@@ -106,7 +105,7 @@ public class DataTreeService extends BaseServiceImpl<DataTree> {
 		Integer id = uniqueMainKeyMapper.getMainKey();//数据库获取全局唯一的id,该值已用
 		Integer oldId = id;//记录未修改前的全局id
 
-		DataTree provinceDataTree = dataTreeMapper.selectByName(province.getProvince() ,-1);
+		DataTree provinceDataTree = dataTreeMapper.selectByNameAndParentId(province.getProvince() ,-1);
 		DataTree cityDataTree;
 		DataTree areaDataTree;
 
@@ -121,14 +120,14 @@ public class DataTreeService extends BaseServiceImpl<DataTree> {
 
 		} else {
 
-			cityDataTree = dataTreeMapper.selectByName(city.getCity() ,provinceDataTree.getId());
+			cityDataTree = dataTreeMapper.selectByNameAndParentId(city.getCity() ,provinceDataTree.getId());
 			if (cityDataTree == null){
 				id = insertNode(new DataTree(id+1 ,city.getCity() ,provinceDataTree.getId() ,null) ,id);
 				id = insertNode(new DataTree(id+1 ,area.getArea() ,id ,null) ,id);
 				uniqueMainKeyMapper.updateMainKey(id ,oldId);
 				organization.setParentId(id);
 			}else {
-				areaDataTree = dataTreeMapper.selectByName(area.getArea() ,cityDataTree.getId());
+				areaDataTree = dataTreeMapper.selectByNameAndParentId(area.getArea() ,cityDataTree.getId());
 				if (areaDataTree == null){
 					id = insertNode(new DataTree(id+1 ,area.getArea() ,cityDataTree.getId() ,null) ,id);
 					uniqueMainKeyMapper.updateMainKey(id ,oldId);
@@ -168,6 +167,7 @@ public class DataTreeService extends BaseServiceImpl<DataTree> {
 	public List<DataTreeVO> showTree(Integer parentId ,Integer treeType){
 		List<Device> devices = new ArrayList<>();
 		List<Integer> deviceIds = deviceEventMapper.selectDeviceIdByType(EventCode.UNSOLVED);//获取未处理报警的设备对应的电箱id
+		System.out.println(deviceIds);
 		for (Integer deviceId : deviceIds) {
 			Device device = deviceMapper.selectByPrimaryKey(deviceId);
 			devices.add(device);
@@ -184,7 +184,7 @@ public class DataTreeService extends BaseServiceImpl<DataTree> {
 	private List<DataTreeVO> getDataTreeList(Integer parentId, Integer treeType
 			,CopyOnWriteArrayList<Device> copyOnWriteArrayList){
 
-		List<DataTreeVO> dataTreeVOS = getDataTree(parentId);
+		List<DataTreeVO> dataTreeVOS = getDataTree(parentId ,treeType);
 
 		if(dataTreeVOS == null || dataTreeVOS.size() == 0)
 			return null;
@@ -192,9 +192,9 @@ public class DataTreeService extends BaseServiceImpl<DataTree> {
 		for (DataTreeVO dataTreeVO:dataTreeVOS) {
 
 			//如果树的类型为最底层是区(treeType=1)的话，判断orgId是否为空，不为空则不再遍历下面的孩子
-			if (treeType == ORG_TREE_TYPE)
+			/*if (treeType == ORG_TREE_TYPE)
 				if (dataTreeVO.getOrgId() != null)
-					return null;
+					return null;*/
 
 			//报警设备对应的电箱结点显红色的判断
 			if (dataTreeVO.getTypeId() == ELECTRIC_BOX_TYPE)
@@ -211,22 +211,25 @@ public class DataTreeService extends BaseServiceImpl<DataTree> {
 		return dataTreeVOS;
 	}
 
-	private List<DataTreeVO> getDataTree(Integer parentId){
+	private List<DataTreeVO> getDataTree(Integer parentId ,Integer treeType){
 		List<DataTreeVO> dataTreeVOS = new ArrayList<>();
 		List<DataTree> groupDataTrees = dataTreeMapper.selectByParentId(parentId);
 		List<Organization> organizations = organizationService.selectOrganizationByParentId(parentId);
 		List<ElectricBox> electricBoxes = electricBoxMapper.selectByParentId(parentId);
 
 		for (DataTree groupDataTree : groupDataTrees) {
-
+			//System.out.println(groupDataTree);
 			DataTreeVO dataTreeVO = new DataTreeVO(groupDataTree.getId() ,groupDataTree.getName()
 					, GROUP_TYPE ,parentId ,groupDataTree.getOrgId());
 
 			dataTreeVOS.add(dataTreeVO);
 		}
 
-		for (Organization organization : organizations) {
+		if (treeType == ORG_TREE_TYPE)
+			return dataTreeVOS;
 
+		for (Organization organization : organizations) {
+			//System.out.println(organization);
 			DataTreeVO dataTreeVO = new DataTreeVO(organization.getOrgId() ,organization.getName()
 					, ORG_TYPE ,organization.getParentId() ,organization.getOrgId());
 
@@ -234,7 +237,7 @@ public class DataTreeService extends BaseServiceImpl<DataTree> {
 		}
 
 		for (ElectricBox electricBox : electricBoxes) {
-			System.out.println(electricBox);
+			//System.out.println(electricBox);
 			DataTreeVO dataTreeVO = new DataTreeVO(electricBox.getId() ,electricBox.getName()
 					, ELECTRIC_BOX_TYPE ,parentId ,electricBox.getOrgId());
 

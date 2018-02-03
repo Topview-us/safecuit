@@ -49,16 +49,16 @@ public class DataLogController {
 		String message;
 		int status;
 
-		if (StringUtil.isEmpty(deviceId ,typeId)){
+		if (StringUtil.isEmpty(deviceId)){
 			message = "url参数不能为空";
 			status = 400;
 			return new Result<>(null ,message ,false ,status);
 		} else {
-			if (typeId != CURRENT_EXCESS && typeId != TEMPERATURE_EXCESS && typeId != MILI_CURRENT_EXCESS){
+			/*if (typeId != CURRENT_EXCESS && typeId != TEMPERATURE_EXCESS && typeId != MILI_CURRENT_EXCESS){
 				message = "url参数有误";
 				status = 400;
 				return new Result<>(null ,message ,false ,status);
-			}
+			}*/
 
 			Page page  = new Page(pageSize ,pageNo ,dataLogService.getTotalByTypeIdAndDeviceId(typeId ,deviceId));
 			dataLogHistoryVOS = dataLogService.getHistoryInfo(deviceId ,typeId ,startDate ,endDate ,page);

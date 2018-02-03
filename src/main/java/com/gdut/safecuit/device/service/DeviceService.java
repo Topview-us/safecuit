@@ -38,12 +38,12 @@ public  class DeviceService extends BaseServiceImpl<Device> {
 		//添加设备
 		insert = deviceMapper.insertSelective(device);
 
-		Integer device_total = (Integer) cacheMap.get("DEVICE_TOTAL");
+		/*Integer device_total = (Integer) cacheMap.get("DEVICE_TOTAL");
 
 		if (device_total == null)
 			cacheMap.put("DEVICE_TOTAL" ,deviceMapper.getTotalByElectricBoxId(device.getElectricBoxId()));
 		else
-			cacheMap.put("DEVICE_TOTAL" ,++device_total);//全局变量缓存数加一
+			cacheMap.put("DEVICE_TOTAL" ,++device_total);*///全局变量缓存数加一
 
 		return insert;
 	}
@@ -67,7 +67,7 @@ public  class DeviceService extends BaseServiceImpl<Device> {
 	 */
 	@Transactional
 	public int fakeDeleteDevice(Integer id ,Integer electricBoxId){
-		int delete = deviceMapper.fakeDelete(id);
+		/*int delete = deviceMapper.fakeDelete(id);
 
 		Integer device_total = (Integer) cacheMap.get("DEVICE_TOTAL");
 
@@ -75,7 +75,8 @@ public  class DeviceService extends BaseServiceImpl<Device> {
 			cacheMap.put("DEVICE_TOTAL" ,deviceMapper.getTotalByElectricBoxId(electricBoxId));
 		else
 			cacheMap.put("DEVICE_TOTAL" ,--device_total);//全局变量缓存数减一
-		return delete;
+		return delete;*/
+		return deviceMapper.fakeDelete(id);
 	}
 
 	/**
@@ -96,7 +97,7 @@ public  class DeviceService extends BaseServiceImpl<Device> {
 			if(device.getDelTag() == 1)
 				continue;
 			DeviceVOList.add(new DeviceVO(device.getId() ,device.getName() ,device.getCode() ,device.getTemperatureValue()
-					,device.getIsOnline() ,device.getTypeId()));
+					,device.getIsOnline()));
 		}
 
 		return DeviceVOList;
@@ -104,7 +105,7 @@ public  class DeviceService extends BaseServiceImpl<Device> {
 
 	/**
 	 * 修改设备
-	 * @param device 修改的设备对象，属性包括：设备编码code、设备名称name、设备所属电箱的id、监控类型typeId、温度阈值
+	 * @param device 修改的设备对象，属性包括：设备id ,设备编码code、设备名称name、设备所属电箱的id、监控类型typeId、温度阈值
 	 * @return 修改数据条数
 	 */
 	public int updateDevice(Device device){

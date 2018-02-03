@@ -52,6 +52,9 @@ public class CircuitDataLog {
 		this.currentValue = currentValue;
 	}
 
+	public CircuitDataLog() {
+	}
+
 	public CircuitDataLog(int circuitNo, String value) {
 		this.circuitNo = circuitNo;
 		this.value = value;
@@ -62,5 +65,16 @@ public class CircuitDataLog {
 		this.temperatureValue = temperatureValue;
 		this.miliCurrentValue = miliCurrentValue;
 		this.currentValue = currentValue;
+	}
+
+	@Override
+	public String toString() {
+		return "CircuitDataLog{" +
+				"circuitNo=" + circuitNo +
+				", value='" + value + '\'' +
+				", temperatureValue='" + temperatureValue + '\'' +
+				", miliCurrentValue='" + miliCurrentValue + '\'' +
+				", currentValue='" + currentValue + '\'' +
+				'}';
 	}
 }

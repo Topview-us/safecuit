@@ -21,6 +21,10 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import static com.gdut.safecuit.monitor.common.EventCode.CURRENT_EXCESS;
+import static com.gdut.safecuit.monitor.common.EventCode.MILI_CURRENT_EXCESS;
+import static com.gdut.safecuit.monitor.common.EventCode.TEMPERATURE_EXCESS;
+
 /**
  * Created by Garson in 9:39 2018/1/26
  * Description :
@@ -64,29 +68,45 @@ public class DataLogService extends BaseServiceImpl<DataLog> {
 			if (deviceEvent.getType() == 0)
 				isHint = 1;
 
-		return new DataLogVO(device.getId() ,device.getCode() ,device.getIsOnline() ,device.getTypeId()
-				,isHint ,getCircuitDataLogs(deviceId ,device.getTypeId()));
+		return new DataLogVO(device.getId() ,device.getCode() ,device.getIsOnline()
+				,isHint ,getCircuitDataLogs(deviceId));
 	}
 
-	private List<CircuitDataLog> getCircuitDataLogs(Integer deviceId ,Integer typeId){
+	private List<CircuitDataLog> getCircuitDataLogs(Integer deviceId){
 
 		List<CircuitDataLog> circuitDataLogs = new ArrayList<>();
 		Integer circuitCount = circuitMapper.selectCircuitCountByDeviceId(deviceId);
 		for (Integer circuitNo = 1 ; circuitNo <= circuitCount ; circuitNo++){
-				CircuitDataLog circuitDataLog = getCircuitDataLog(deviceId ,typeId ,circuitNo);
-				if (circuitDataLog != null)
-					circuitDataLogs.add(circuitDataLog);
+			CircuitDataLog circuitDataLog = getCircuitDataLog(deviceId ,circuitNo);
+			if (circuitDataLog != null)
+				circuitDataLogs.add(circuitDataLog);
 		}
 
 		return circuitDataLogs;
 	}
 
-	private CircuitDataLog getCircuitDataLog(Integer deviceId ,Integer typeId ,Integer circuitNo){
-		DataLog dataLog = dataLogMapper.selectByDeviceIdAndCircuitNo(deviceId ,circuitNo ,typeId);
-		if (dataLog == null)
+	private CircuitDataLog getCircuitDataLog(Integer deviceId ,Integer circuitNo){
+		DataLog currentDataLog = dataLogMapper.selectByDeviceIdAndCircuitNo(deviceId ,circuitNo ,CURRENT_EXCESS);
+		DataLog temperatureDataLog = dataLogMapper.selectByDeviceIdAndCircuitNo(deviceId ,circuitNo ,TEMPERATURE_EXCESS);
+		DataLog miLiCurrentDataLog = dataLogMapper.selectByDeviceIdAndCircuitNo(deviceId ,circuitNo ,MILI_CURRENT_EXCESS);
+		CircuitDataLog circuitDataLog = new CircuitDataLog();
+		circuitDataLog.setCircuitNo(circuitNo);
+		/*if (currentDataLog == null || temperatureDataLog == null || miLiCurrentDataLog == null)
 			return null;
 		else
-			return new CircuitDataLog(circuitNo ,dataLog.getValue());
+			return new CircuitDataLog(circuitNo ,currentDataLog.getValue() ,temperatureDataLog.getValue()
+					,miLiCurrentDataLog.getValue());*/
+		if (currentDataLog != null)
+			circuitDataLog.setCurrentValue(currentDataLog.getValue());
+
+		if (temperatureDataLog != null)
+			circuitDataLog.setTemperatureValue(temperatureDataLog.getValue());
+
+		if (miLiCurrentDataLog != null)
+			circuitDataLog.setMiliCurrentValue(miLiCurrentDataLog.getValue());
+
+		return circuitDataLog;
+
 	}
 
 	/**

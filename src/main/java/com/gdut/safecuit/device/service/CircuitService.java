@@ -54,7 +54,7 @@ public class CircuitService extends BaseServiceImpl<Circuit> {
 			Device device = deviceMapper.selectByPrimaryKey(circuit.getDeviceId());
 
 			CircuitVO circuitVO = new CircuitVO(circuit.getId() ,circuit.getName() ,circuit.getAddress()
-					,circuit.getCircuitNo() ,device.getCode() ,device.getName() ,device.getTypeId());
+					,circuit.getCircuitNo() ,device.getCode() ,device.getName());
 			circuitVOS.add(circuitVO);
 		}
 
