@@ -48,24 +48,56 @@ public class OrganizationController {
 
     @RequestMapping("/add")
     public Result<Integer> add(OrgAddVO orgAddVO) {
-        boolean pass = false;
+        boolean pass = true;
         // 检验用户信息
-        if (userService.isValidUsername(orgAddVO.getUsername())
-                && userService.isValidRealName(orgAddVO.getUserRealName())
-                && userService.isValidPassword(orgAddVO.getUserPassword(), orgAddVO.getUserRePassword())
-                && userService.isValidPhone(orgAddVO.getUserPhone())
-                && userService.isValidQQ(orgAddVO.getUserQQ())
-                && userService.isValidDescription(orgAddVO.getUserDescription())) {
-            pass = true;
+        // 检验用户名
+        if (!userService.isValidUsername(orgAddVO.getUsername()) || userService.isExist(orgAddVO.getUsername())) {
+            pass = false;
         }
+        // 检验用户真实姓名
+        if (pass && !userService.isValidRealName(orgAddVO.getUserRealName())) {
+            pass = false;
+        }
+        // 检验用户密码
+        if (pass && !userService.isValidPassword(orgAddVO.getUserPassword(), orgAddVO.getUserRePassword())) {
+            pass = false;
+        }
+        // 如果填写手机, 检验手机
+        if (pass && orgAddVO.getUserPhone() != null && !userService.isValidPhone(orgAddVO.getUserPhone())) {
+            pass = false;
+        }
+        // 如果填写qq, 检验qq
+        if (pass && orgAddVO.getUserQQ() != null && !userService.isValidQQ(orgAddVO.getUserQQ())) {
+            pass = false;
+        }
+        // 如果填写描述, 检验描述
+        if (pass && orgAddVO.getUserDescription() != null && !userService.isValidDescription(orgAddVO.getUserDescription())) {
+            pass = false;
+        }
+
         // 检验机构信息
-        if (pass && organizationService.isValidName(orgAddVO.getOrgName())
-                && organizationService.isValidAddress(orgAddVO.getOrgAddress())
-                && organizationService.isValidEmail(orgAddVO.getOrgEmail())
-                && organizationService.isValidPhone(orgAddVO.getOrgPhone())
-                && organizationService.isValidDescription(orgAddVO.getOrgDescription())
-                && provinceCityAreaService.getArea(orgAddVO.getOrgAreaId() + "") != null) {
-            pass = true;
+        if (pass && (!organizationService.isValidName(orgAddVO.getOrgName()) || organizationService.isExist(orgAddVO.getOrgName()))) {
+            pass = false;
+        }
+        // 检验机构地址
+        if (pass && !organizationService.isValidAddress(orgAddVO.getOrgAddress())) {
+            pass = false;
+        }
+        // 检验机构邮箱
+        if (pass && orgAddVO.getOrgEmail() != null && !organizationService.isValidEmail(orgAddVO.getOrgEmail())) {
+            pass = false;
+        }
+        // 检验机构电话
+        if (pass && orgAddVO.getOrgPhone() != null && !organizationService.isValidPhone(orgAddVO.getOrgPhone())) {
+            pass = false;
+        }
+        // 检验机构描述
+        if (pass && orgAddVO.getOrgDescription() != null && !organizationService.isValidDescription(orgAddVO.getUserDescription())) {
+            pass  =false;
+        }
+        // 检验区id是否存在
+        if (pass && orgAddVO.getOrgAreaId() != null && provinceCityAreaService.getArea(orgAddVO.getOrgAreaId() + "") == null) {
+            pass = false;
         }
 
         if (!pass) {
