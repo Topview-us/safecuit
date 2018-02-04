@@ -56,33 +56,26 @@ public class UserController {
     @RequestMapping("/add")
     public Result<Integer> addUser(User user, @RequestParam("rePassword") String rePassword) {
         // 校验数据正确性
-//        boolean pass = true;
-//        if (!userService.isValidUsername(user.getUsername())) {
-//            pass = false;
-//        }
-//        if (pass && userService.isExist(user.getUsername())) {
-//            pass = false;
-//        }
-//        if (pass && !userService.isValidRealName(user.getRealName())) {
-//            pass = false;
-//        }
-//        if (pass && !userService.isValidPassword(user.getPassword(), rePassword)) {
-//            pass = false;
-//        }
-//        if (pass && !userService.isValidQQ(user.getQQ())) {
-//            pass = false;
-//        }
-//        if (pass && !userService.isValidDescription(user.getDescription())) {
-//            pass = false;
-//        }
-        boolean pass = false;
-        if (userService.isValidUsername(user.getUsername())
-                && !userService.isExist(user.getUsername())
-                && userService.isValidRealName(user.getRealName())
-                && userService.isValidPassword(user.getPassword(), rePassword)
-                && userService.isValidQQ(user.getQQ())
-                && userService.isValidDescription(user.getDescription())) {
-            pass = true;
+        boolean pass = true;
+        // 检验用户名
+        if (!userService.isValidUsername(user.getUsername()) || userService.isExist(user.getUsername())) {
+            pass = false;
+        }
+        // 检验真实姓名
+        if (pass && !userService.isValidRealName(user.getRealName())) {
+            pass = false;
+        }
+        // 检验密码
+        if (pass && !userService.isValidPassword(user.getPassword(), rePassword)) {
+            pass = false;
+        }
+        // 若填写, 检验qq
+        if (pass && user.getQQ() != null && !userService.isValidQQ(user.getQQ())) {
+            pass = false;
+        }
+        // 若填写, 检验描述
+        if (pass && user.getDescription() != null && !userService.isValidDescription(user.getDescription())) {
+            pass = false;
         }
 
         if (pass) {
