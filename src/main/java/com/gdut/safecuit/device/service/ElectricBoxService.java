@@ -5,10 +5,11 @@ import com.gdut.safecuit.common.UniqueMainKeyMapper;
 import com.gdut.safecuit.common.base.BaseDao;
 import com.gdut.safecuit.common.base.BaseServiceImpl;
 import com.gdut.safecuit.device.common.po.ElectricBox;
+import com.gdut.safecuit.device.common.po.ElectricUser;
 import com.gdut.safecuit.device.common.vo.ElectricBoxRelateUserVO;
 import com.gdut.safecuit.device.dao.ElectricBoxMapper;
+import com.gdut.safecuit.device.dao.ElectricUserMapper;
 import com.gdut.safecuit.user.common.po.User;
-import com.gdut.safecuit.user.common.vo.UserVO;
 import com.gdut.safecuit.user.dao.UserMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,7 +18,6 @@ import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by Garson in 15:35 2018/1/19
@@ -28,6 +28,8 @@ public class ElectricBoxService extends BaseServiceImpl<ElectricBox> {
 
 	@Resource
 	private ElectricBoxMapper electricBoxMapper;
+	@Resource
+	private ElectricUserMapper electricUserMapper;
 	@Resource
 	private UniqueMainKeyMapper uniqueMainKeyMapper;
 	@Resource
@@ -55,32 +57,38 @@ public class ElectricBoxService extends BaseServiceImpl<ElectricBox> {
 		//if (electricBoxMapper.hasRelatedUser(electricBoxId ,))
 		//判断该电箱是否已关联选择的用户
 		for (Integer userId : userIds) {
-			if (electricBoxMapper.hasRelatedUser(electricBoxId ,userId) != null)
+			if (electricUserMapper.hasRelatedUser(electricBoxId ,userId) != null)
 				return -3;
 		}
-		return electricBoxMapper.relateUser(electricBoxId ,userIds);
+		return electricUserMapper.relateUser(electricBoxId ,userIds ,new Date());
+	}
+
+	//删除关联的管理员
+	public int deleteRelateUser(Integer electricBoxId ,Integer userId){
+		return electricUserMapper.deleteRelateUser(electricBoxId ,userId);
 	}
 
 	//显示关联管理员
 	public List<ElectricBoxRelateUserVO> showRelatedUser(Page page , Integer electricBoxId){
-		List<Integer> userIds = electricBoxMapper.selectUserIdByElectricBoxId(electricBoxId ,page);
+		List<ElectricUser> electricUsers = electricUserMapper.selectByElectricBoxId(electricBoxId ,page);
 		List<ElectricBoxRelateUserVO> electricBoxRelateUserVOS = new ArrayList<>();
-		for (Integer userId : userIds) {
-			User user = userMapper.selectByPrimaryKey(userId);
+
+		for (ElectricUser electricUser : electricUsers) {
+			User user = userMapper.selectByPrimaryKey(electricUser.getUserId());
 			if (user == null)
 				continue;
 			ElectricBoxRelateUserVO electricBoxRelateUserVO = new ElectricBoxRelateUserVO();
 			electricBoxRelateUserVO.setUserId(user.getUserId());
 			electricBoxRelateUserVO.setUserRealName(user.getRealName());
 			electricBoxRelateUserVO.setPhone(user.getPhone());
-			electricBoxRelateUserVO.setDate(new Date());
+			electricBoxRelateUserVO.setDate(electricUser.getDate());
 			electricBoxRelateUserVOS.add(electricBoxRelateUserVO);
 		}
 		return electricBoxRelateUserVOS;
 	}
 
 	public Integer getRelatedUserTotal(Integer electricBoxId){
-		return electricBoxMapper.getRelatedUserTotal(electricBoxId);
+		return electricUserMapper.getRelatedUserTotal(electricBoxId);
 	}
 
 	/**

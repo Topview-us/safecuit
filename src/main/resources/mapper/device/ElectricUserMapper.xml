@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.gdut.safecuit.device.dao.ElectricUserMapper" >
+  <resultMap id="BaseResultMap" type="com.gdut.safecuit.device.common.po.ElectricUser" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="user_id" property="userId" jdbcType="INTEGER" />
+    <result column="electric_box_id" property="electricBoxId" jdbcType="INTEGER" />
+    <result column="date" property="date" jdbcType="DATE" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, user_id, electric_box_id, date
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from electric_user
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+
+  <select id="selectByElectricBoxId" resultMap="BaseResultMap">
+    select * from electric_user
+    where electric_box_id = #{electricBoxId}
+    limit #{page.index} ,#{page.pageSize}
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from electric_user
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+
+
+  <insert id="relateUser" >
+    insert into electric_user(user_id ,electric_box_id ,date) values
+    <foreach collection="userIds" item="userId" separator=",">
+      (#{userId} ,#{electricBoxId} ,#{date})
+    </foreach>
+  </insert>
+
+  <insert id="insert" parameterType="com.gdut.safecuit.device.common.po.ElectricUser" >
+    insert into electric_user (id, user_id, electric_box_id, 
+      date)
+    values (#{id,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER}, #{electricBoxId,jdbcType=INTEGER}, 
+      #{date,jdbcType=DATE})
+  </insert>
+  <insert id="insertSelective" parameterType="com.gdut.safecuit.device.common.po.ElectricUser" >
+    insert into electric_user
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="userId != null" >
+        user_id,
+      </if>
+      <if test="electricBoxId != null" >
+        electric_box_id,
+      </if>
+      <if test="date != null" >
+        date,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="userId != null" >
+        #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="electricBoxId != null" >
+        #{electricBoxId,jdbcType=INTEGER},
+      </if>
+      <if test="date != null" >
+        #{date,jdbcType=DATE},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.gdut.safecuit.device.common.po.ElectricUser" >
+    update electric_user
+    <set >
+      <if test="userId != null" >
+        user_id = #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="electricBoxId != null" >
+        electric_box_id = #{electricBoxId,jdbcType=INTEGER},
+      </if>
+      <if test="date != null" >
+        date = #{date,jdbcType=DATE},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.gdut.safecuit.device.common.po.ElectricUser" >
+    update electric_user
+    set user_id = #{userId,jdbcType=INTEGER},
+      electric_box_id = #{electricBoxId,jdbcType=INTEGER},
+      date = #{date,jdbcType=DATE}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

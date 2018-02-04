@@ -10,6 +10,7 @@ import java.util.List;
 
 @Repository
 public interface DeviceMapper extends BaseDao<Device> {
+
     //假删除操作
     @Update("update device set del_tag=1 where id = #{id}")
     int fakeDelete(Integer id);

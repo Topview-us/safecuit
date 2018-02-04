@@ -60,9 +60,9 @@
   </delete>
 
   <insert id="relateUser" >
-    insert into electric_user(user_id ,electric_box_id) values
+    insert into electric_user(user_id ,electric_box_id ,date) values
     <foreach collection="userIds" item="userId" separator=",">
-      (#{userId} ,#{electricBoxId})
+      (#{userId} ,#{electricBoxId} ,#{date})
     </foreach>
   </insert>
 

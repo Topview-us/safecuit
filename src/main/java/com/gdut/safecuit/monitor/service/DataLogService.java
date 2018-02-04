@@ -52,7 +52,7 @@ public class DataLogService extends BaseServiceImpl<DataLog> {
 		List<DataLogVO> dataLogVOS = new ArrayList<>();
 
 		List<Integer> deviceIds = electricBoxMapper.selectAllDeviceByElectricBoxId(electricBoxId);
-
+//		System.out.println(deviceIds);
 		for (Integer deviceId : deviceIds){
 			dataLogVOS.add(getDataLogVo(deviceId));
 		}
@@ -87,15 +87,12 @@ public class DataLogService extends BaseServiceImpl<DataLog> {
 
 	private CircuitDataLog getCircuitDataLog(Integer deviceId ,Integer circuitNo){
 		DataLog currentDataLog = dataLogMapper.selectByDeviceIdAndCircuitNo(deviceId ,circuitNo ,CURRENT_EXCESS);
+//		System.out.println(currentDataLog);
 		DataLog temperatureDataLog = dataLogMapper.selectByDeviceIdAndCircuitNo(deviceId ,circuitNo ,TEMPERATURE_EXCESS);
 		DataLog miLiCurrentDataLog = dataLogMapper.selectByDeviceIdAndCircuitNo(deviceId ,circuitNo ,MILI_CURRENT_EXCESS);
 		CircuitDataLog circuitDataLog = new CircuitDataLog();
 		circuitDataLog.setCircuitNo(circuitNo);
-		/*if (currentDataLog == null || temperatureDataLog == null || miLiCurrentDataLog == null)
-			return null;
-		else
-			return new CircuitDataLog(circuitNo ,currentDataLog.getValue() ,temperatureDataLog.getValue()
-					,miLiCurrentDataLog.getValue());*/
+
 		if (currentDataLog != null)
 			circuitDataLog.setCurrentValue(currentDataLog.getValue());
 
@@ -104,7 +101,8 @@ public class DataLogService extends BaseServiceImpl<DataLog> {
 
 		if (miLiCurrentDataLog != null)
 			circuitDataLog.setMiliCurrentValue(miLiCurrentDataLog.getValue());
-
+//		System.out.println("deviceId: " + deviceId);
+//		System.out.println(circuitDataLog);
 		return circuitDataLog;
 
 	}

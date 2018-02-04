@@ -24,7 +24,7 @@
     select * from
     <choose>
       <when test="typeId==201">
-        data_log_temperature
+        data_log_current
       </when>
       <when test="typeId==202">
         data_log_temperature

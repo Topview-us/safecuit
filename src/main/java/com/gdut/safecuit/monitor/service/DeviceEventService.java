@@ -37,10 +37,10 @@ public class DeviceEventService extends BaseServiceImpl<DeviceEvent> {
 
 		try{
 			List<DeviceEvent> deviceEvents = deviceEventMapper.selectAllByPage(page ,electricBoxId);
-			System.out.println(deviceEvents);
+//			System.out.println(deviceEvents);
 			for (DeviceEvent deviceEvent :deviceEvents) {
 				Device device = deviceMapper.selectByPrimaryKey(deviceEvent.getDeviceId());
-				System.out.println(device);
+//				System.out.println(device);
 				//将pair分割成json数据
 				JSONObject jsonObject = textToJson(deviceEvent.getPair());
 

@@ -11,10 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.annotation.Resource;
 import java.util.List;
 
-import static com.gdut.safecuit.common.util.CacheManager.cacheMap;
 import static com.gdut.safecuit.common.util.StringUtil.isEmpty;
-import static com.gdut.safecuit.device.common.DataTreeType.ELECTRIC_BOX_TREE_TYPE;
-import static com.gdut.safecuit.device.common.DataTreeType.ORG_TREE_TYPE;
 
 /**
  * Created by Garson in 11:16 2018/1/21
@@ -59,7 +56,7 @@ public class DataTreeController {
 			return new Result<>(delete ,"分组下仍有分组，请删除孩子分组再删除该分组" ,true,400);
 	}
 
-	@SuppressWarnings("unchecked")
+//	@SuppressWarnings("unchecked")
 	@RequestMapping("/list")
 	public Result<List<DataTreeVO>> list(@RequestParam(value = "treeType" ,required = false)Integer treeType){
 
@@ -96,7 +93,7 @@ public class DataTreeController {
 		if (isEmpty(id ,parentId ,typeId ,name))
 			return new Result<>(-1 ,"请求参数不能为空", false ,400);
 		System.out.println(orgId);
-		Integer update = dataTreeService.update(id ,name ,parentId ,parentOrgId ,orgId ,typeId);
+		Integer update = dataTreeService.update(id ,name ,parentId ,orgId ,parentOrgId ,typeId);
 		if(update == 0)
 			return new Result<>(update ,"修改失败，请重试" ,false ,400);
 		else if (update == -2)

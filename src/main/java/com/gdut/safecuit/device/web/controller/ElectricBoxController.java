@@ -103,6 +103,23 @@ public class ElectricBoxController extends BaseController {
 	}
 
 	/**
+	 * 删除关联管理员
+	 * @param electricBoxId 电箱id
+	 * @param userId 管理员id
+	 * @return 结果集
+	 */
+	@RequestMapping("/deleteRelatedUser")
+	public Result<Integer> deleteRelatedUser(@RequestParam(value = "electricBoxId" ,required = false)Integer electricBoxId
+							,@RequestParam(value = "userId" ,required = false)Integer userId){
+		Integer i;
+		if (isEmpty(electricBoxId ,userId))
+			i = -1;
+		else
+			i = electricBoxService.deleteRelateUser(electricBoxId ,userId);
+		return getResult(i);
+	}
+
+	/**
 	 * 假删除电箱接口
 	 * url:/electricBox/delete?id=xxx
 	 * @param id 电箱id

@@ -44,8 +44,8 @@ public class DataTreeService extends BaseServiceImpl<DataTree> {
 	private DataTreeMapper dataTreeMapper;
 	@Resource
 	private OrganizationMapper organizationMapper;
-	@Resource
-	private AreaMapper areaMapper;
+//	@Resource
+//	private AreaMapper areaMapper;
 	@Resource
 	private ProvinceCityAreaService provinceCityAreaService;
 	@Resource
@@ -295,6 +295,8 @@ public class DataTreeService extends BaseServiceImpl<DataTree> {
 		DataTree dataTree;
 		Organization organization;
 		ElectricBox electricBox;
+//		System.out.println("orgId:" + orgId);
+//		System.out.println("parentOrgId:" + parentOrgId);
 
 		//如果移动的是机构内的结点（不包括机构结点）
 		if (orgId != null && typeId != ORG_TYPE)
@@ -337,7 +339,7 @@ public class DataTreeService extends BaseServiceImpl<DataTree> {
 	 * @return 移动结果
 	 */
 	private Boolean judge(Integer id ,Integer updatedId){
-
+//		System.out.println("judge");
 		Integer dataTreeParentId = dataTreeMapper.selectParentIdById(id ,GROUP_TYPE);
 		if (dataTreeParentId == null){
 			Integer orgParentId = dataTreeMapper.selectParentIdById(id ,ORG_TYPE);

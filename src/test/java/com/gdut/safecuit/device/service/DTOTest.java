@@ -34,10 +34,10 @@ public class DTOTest extends BaseTest{
 		warningDTO.setEventCode(CIRCUIT_WARNING);
 		try {
 
-			for (int i = 0 ;i < 5 ;i++){
-				Object object = client.invoke("getWarningInfoFromDevice" ,warningDTO);
-			}
-
+//			for (int i = 0 ;i < 5 ;i++){
+//				Object object = client.invoke("getWarningInfoFromDevice" ,warningDTO);
+//			}
+			Object object = client.invoke("getWarningInfoFromDevice" ,warningDTO);
 		//	client.invoke("getWarningInfoFromDevice" ,warningDTO);
 		} catch (Exception e) {
 			e.printStackTrace();

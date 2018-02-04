@@ -36,7 +36,7 @@
     select * from data_tree where parent_id = #{parentId}
   </select>
 
-  <select id="selectByNameAndParentId" resultMap="BaseResultMap" parameterType="java.lang.String">
+  <select id="selectByNameAndParentId" resultMap="BaseResultMap">
     select * from data_tree where name = #{name} AND parent_id = #{parentId}
   </select>
 
@@ -59,6 +59,7 @@
       </when>
     </choose>
     WHERE parent_id = #{parentId}
+    limit 0,1
   </select>
 
 
