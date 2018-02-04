@@ -51,14 +51,19 @@ public class ElectricBoxService extends BaseServiceImpl<ElectricBox> {
 	}
 
 	//关联管理员
-	public int relateUser(Integer electricBoxId ,List<Integer> userId){
-		return electricBoxMapper.relateUser(electricBoxId ,userId);
+	public int relateUser(Integer electricBoxId ,List<Integer> userIds){
+		//if (electricBoxMapper.hasRelatedUser(electricBoxId ,))
+		//判断该电箱是否已关联选择的用户
+		for (Integer userId : userIds) {
+			if (electricBoxMapper.hasRelatedUser(electricBoxId ,userId) != null)
+				return -3;
+		}
+		return electricBoxMapper.relateUser(electricBoxId ,userIds);
 	}
 
 	//显示关联管理员
 	public List<ElectricBoxRelateUserVO> showRelatedUser(Page page , Integer electricBoxId){
 		List<Integer> userIds = electricBoxMapper.selectUserIdByElectricBoxId(electricBoxId ,page);
-		System.out.println(userIds);
 		List<ElectricBoxRelateUserVO> electricBoxRelateUserVOS = new ArrayList<>();
 		for (Integer userId : userIds) {
 			User user = userMapper.selectByPrimaryKey(userId);
@@ -137,15 +142,6 @@ public class ElectricBoxService extends BaseServiceImpl<ElectricBox> {
 	}*/
 
 	/**
-	 * 添加数据树或设备时下拉框显示的对应机构的电箱名称
-	 * @param orgId 机构id
-	 * @return 电箱名称集合
-	 */
-	public List<String> selectElectricBoxNameByOrgId(Integer orgId){
-		return electricBoxMapper.selectNameByOrgId(orgId);
-	}
-
-	/**
 	 * 修改电箱
 	 * @param electricBox 修改的电箱对象，属性包括：电箱名称name、地址address、电箱所属机构的id、经度longitude、纬度latitude
 	 * @return 修改数据条数
@@ -153,15 +149,15 @@ public class ElectricBoxService extends BaseServiceImpl<ElectricBox> {
 	@Transactional
 	public int updateElectricBox(ElectricBox electricBox){
 
-		Integer update;
+		return electricBoxMapper.updateByPrimaryKeySelective(electricBox);
 
 		// 如果该设备假删除标识为1，则返回0
-		if(electricBoxMapper.selectDelTag(electricBox.getId()) == 1)
+		/*if(electricBoxMapper.selectDelTag(electricBox.getId()) == 1)
 			return 0;
 		else {
 			update = electricBoxMapper.updateByPrimaryKeySelective(electricBox);
 		}
-		return update;
+		return update;*/
 	}
 
 	@Override

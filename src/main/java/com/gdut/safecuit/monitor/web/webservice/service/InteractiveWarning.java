@@ -44,8 +44,9 @@ public class InteractiveWarning {
 		else {
 			//语音提醒
 			try {
-				warningSocketController.PushWarningAudio(BaiduString2AudioUtil.getAudioByte(getDeviceMessage(warningDTO)));
-		//		warningSocketController.PushWarningAudio(BaiduString2AudioUtil.getAudioByte(getWarningInfo(warningDTO)));
+				warningSocketController.PushWarningAudio(BaiduString2AudioUtil.getAudioByte(
+						getDeviceMessage(warningDTO) + getWarningInfo(warningDTO)));
+			//	warningSocketController.PushWarningAudio(BaiduString2AudioUtil.getAudioByte(getWarningInfo(warningDTO)));
 			} catch (JSONException e) {
 				e.printStackTrace();
 				LogUtil.error(this.getClass() ,"语音转换抛异常\n" ,e);
@@ -65,7 +66,7 @@ public class InteractiveWarning {
 	}
 
 	private String getWarningInfo(WarningDTO warningDTO){
-		String warningInfo = "报警原因：";
+		String warningInfo = ";报警原因：";
 
 		if (warningDTO.getEventCode() == CIRCUIT_WARNING)
 			warningInfo += "回路序号" + warningDTO.getCircuitNo() + CIRCUIT_WARNING_AUDIO;

@@ -95,7 +95,7 @@ public class DataTreeController {
 			,@RequestParam(value = "typeId" ,required = false)Integer typeId){
 		if (isEmpty(id ,parentId ,typeId ,name))
 			return new Result<>(-1 ,"请求参数不能为空", false ,400);
-
+		System.out.println(orgId);
 		Integer update = dataTreeService.update(id ,name ,parentId ,parentOrgId ,orgId ,typeId);
 		if(update == 0)
 			return new Result<>(update ,"修改失败，请重试" ,false ,400);

@@ -46,7 +46,7 @@ public class DeviceController extends BaseController {
 		List<DeviceVO> list;
 		String message;
 
-		if (isEmpty(electricBoxId)){
+		if (isEmpty(electricBoxId) || pageNo < 1 || pageSize < 1){
 			return new Result<>(null, "设备id不能为空", false, 400);
 		} else {
 
@@ -65,7 +65,7 @@ public class DeviceController extends BaseController {
 	/**
 	 * 添加设备接口
 	 * url:	/device/add
-	 * @param device device对象，属性包括：设备编码code、设备名称name、所属电箱id、温度阈值temperatureValue、监控类型typeId
+	 * @param device device对象，属性包括：设备编码code、设备名称name、所属电箱id、温度阈值temperatureValue
 	 * @return 结果集
 	 */
 	@RequestMapping("/add")
@@ -99,7 +99,7 @@ public class DeviceController extends BaseController {
 	/**
 	 * 更改设备信息接口
 	 * url：/device/update
-	 * @param device 设备对象，属性包括：设备id ,设备编码code、设备名称name、设备所属电箱的id、温度阈值temperatureValue、监控类型typeId
+	 * @param device 设备对象，属性包括：设备id ,设备编码code、设备名称name、设备所属电箱的id、温度阈值temperatureValue
 	 * @return 结果集
 	 */
 	@RequestMapping("/update")

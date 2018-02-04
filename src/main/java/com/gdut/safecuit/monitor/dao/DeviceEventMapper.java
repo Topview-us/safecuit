@@ -12,7 +12,7 @@ import java.util.List;
 @Repository
 public interface DeviceEventMapper extends BaseDao<DeviceEvent> {
 
-    int updateByPrimaryKeyWithBLOBs(DeviceEvent record);
+//    int updateByPrimaryKeyWithBLOBs(DeviceEvent record);
 
     /**
      * 根据处理状态搜索对应的设备id

@@ -12,6 +12,7 @@ import com.gdut.safecuit.device.dao.DeviceMapper;
 import com.gdut.safecuit.device.dao.ElectricBoxMapper;
 import com.gdut.safecuit.monitor.common.EventCode;
 import com.gdut.safecuit.monitor.dao.DeviceEventMapper;
+import com.gdut.safecuit.monitor.service.DataLogService;
 import com.gdut.safecuit.organization.common.po.Area;
 import com.gdut.safecuit.organization.common.po.City;
 import com.gdut.safecuit.organization.common.po.Organization;
@@ -102,43 +103,44 @@ public class DataTreeService extends BaseServiceImpl<DataTree> {
 		City city = provinceCityAreaService.getCity(area.getFather());
 		Province province = provinceCityAreaService.getProvince(city.getFather());
 
-		Integer id = uniqueMainKeyMapper.getMainKey();//数据库获取全局唯一的id,该值已用
-		Integer oldId = id;//记录未修改前的全局id
+		synchronized (DataLogService.class) {
+			Integer id = uniqueMainKeyMapper.getMainKey();//数据库获取全局唯一的id,该值已用
+			Integer oldId = id;//记录未修改前的全局id
 
-		DataTree provinceDataTree = dataTreeMapper.selectByNameAndParentId(province.getProvince() ,-1);
-		DataTree cityDataTree;
-		DataTree areaDataTree;
+			DataTree provinceDataTree = dataTreeMapper.selectByNameAndParentId(province.getProvince(), -1);
+			DataTree cityDataTree;
+			DataTree areaDataTree;
 
-		//先查看是否存在数据，再决定是否将数据插入树中
-		if(provinceDataTree == null){
+			//先查看是否存在数据，再决定是否将数据插入树中
+			if (provinceDataTree == null) {
 
-			id = insertNode(new DataTree(id+1 ,province.getProvince() ,-1 ,null) ,id);
-			id = insertNode(new DataTree(id+1 ,city.getCity() ,id ,null) ,id);
-			id = insertNode(new DataTree(id+1 ,area.getArea() ,id ,null) ,id);
-			uniqueMainKeyMapper.updateMainKey(id ,oldId);
-			organization.setParentId(id);
-
-		} else {
-
-			cityDataTree = dataTreeMapper.selectByNameAndParentId(city.getCity() ,provinceDataTree.getId());
-			if (cityDataTree == null){
-				id = insertNode(new DataTree(id+1 ,city.getCity() ,provinceDataTree.getId() ,null) ,id);
-				id = insertNode(new DataTree(id+1 ,area.getArea() ,id ,null) ,id);
-				uniqueMainKeyMapper.updateMainKey(id ,oldId);
+				id = insertNode(new DataTree(id + 1, province.getProvince(), -1, null), id);
+				id = insertNode(new DataTree(id + 1, city.getCity(), id, null), id);
+				id = insertNode(new DataTree(id + 1, area.getArea(), id, null), id);
+				uniqueMainKeyMapper.updateMainKey(id, oldId);
 				organization.setParentId(id);
-			}else {
-				areaDataTree = dataTreeMapper.selectByNameAndParentId(area.getArea() ,cityDataTree.getId());
-				if (areaDataTree == null){
-					id = insertNode(new DataTree(id+1 ,area.getArea() ,cityDataTree.getId() ,null) ,id);
-					uniqueMainKeyMapper.updateMainKey(id ,oldId);
+
+			} else {
+
+				cityDataTree = dataTreeMapper.selectByNameAndParentId(city.getCity(), provinceDataTree.getId());
+				if (cityDataTree == null) {
+					id = insertNode(new DataTree(id + 1, city.getCity(), provinceDataTree.getId(), null), id);
+					id = insertNode(new DataTree(id + 1, area.getArea(), id, null), id);
+					uniqueMainKeyMapper.updateMainKey(id, oldId);
 					organization.setParentId(id);
-				}else
-					organization.setParentId(areaDataTree.getId());
+				} else {
+					areaDataTree = dataTreeMapper.selectByNameAndParentId(area.getArea(), cityDataTree.getId());
+					if (areaDataTree == null) {
+						id = insertNode(new DataTree(id + 1, area.getArea(), cityDataTree.getId(), null), id);
+						uniqueMainKeyMapper.updateMainKey(id, oldId);
+						organization.setParentId(id);
+					} else
+						organization.setParentId(areaDataTree.getId());
+				}
 			}
+
+			organizationMapper.updateByPrimaryKeySelective(organization);
 		}
-
-		organizationMapper.updateByPrimaryKeySelective(organization);
-
 	}
 
 	private int insertNode(DataTree dataTree ,int id){
@@ -167,7 +169,6 @@ public class DataTreeService extends BaseServiceImpl<DataTree> {
 	public List<DataTreeVO> showTree(Integer parentId ,Integer treeType){
 		List<Device> devices = new ArrayList<>();
 		List<Integer> deviceIds = deviceEventMapper.selectDeviceIdByType(EventCode.UNSOLVED);//获取未处理报警的设备对应的电箱id
-		System.out.println(deviceIds);
 		for (Integer deviceId : deviceIds) {
 			Device device = deviceMapper.selectByPrimaryKey(deviceId);
 			devices.add(device);

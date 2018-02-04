@@ -53,8 +53,8 @@ public class CircuitController extends BaseController {
 		List<CircuitVO> list;
 		String message;
 
-		if (isEmpty(deviceId)){
-			return new Result<>(null, "设备id不能为空", false, 400);
+		if (isEmpty(deviceId) || pageNo < 1 || pageSize < 1){
+			return new Result<>(null, "请求参数有误", false, 400);
 		} else {
 
 			Page page = new Page(pageSize, pageNo ,circuitService.getTotalByElectricBoxId(deviceId));

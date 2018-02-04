@@ -134,8 +134,8 @@ public class DataLogService extends BaseServiceImpl<DataLog> {
 		return dataLogHistoryVOS;
 	}
 
-	public Integer getTotalByTypeIdAndDeviceId(Integer typeId ,Integer deviceId){
-		return dataLogMapper.getTotalByTypeIdAndDeviceId(typeId ,deviceId);
+	public Integer getTotalByTypeIdAndDeviceId(Integer typeId ,Integer deviceId ,Date startDate ,Date endDate){
+		return dataLogMapper.getTotalByTypeIdAndDeviceId(typeId ,deviceId ,startDate ,endDate);
 	}
 
 	@Override
